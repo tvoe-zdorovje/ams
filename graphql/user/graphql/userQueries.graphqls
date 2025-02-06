@@ -1,0 +1,9 @@
+extend type UserQueries {
+    user(id: ID!): User
+}
+
+type User {
+    id: ID!
+    firstName: String!
+    lastName: String!
+}

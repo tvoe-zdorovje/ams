@@ -5,8 +5,11 @@
 
 rootProject.name = "ams"
 
-include("common")
-include("user-service")
+include(
+    "common",
+    "user-service",
+    "graphql"
+)
 
 dependencyResolutionManagement {
     // Use Maven Central as the default repository (where Gradle will download dependencies) in all subprojects.

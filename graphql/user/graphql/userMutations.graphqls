@@ -1,0 +1,8 @@
+extend type UserMutations {
+    createUser(request: CreateUserRequest!): ID!
+}
+
+input CreateUserRequest {
+    firstName: String!
+    lastName: String!
+}

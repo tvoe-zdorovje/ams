@@ -1,0 +1,13 @@
+mutation CreateUser(
+    $firstName: String!
+    $lastName: String!
+) {
+    users {
+        createUser(
+            request: {
+                firstName: $firstName
+                lastName: $lastName
+            }
+        )
+    }
+}
