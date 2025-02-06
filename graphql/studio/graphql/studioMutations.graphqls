@@ -1,0 +1,8 @@
+extend type StudioMutations {
+    createStudio(request: CreateStudioRequest!): ID!
+}
+
+input CreateStudioRequest {
+    name: String!
+    description: String!
+}

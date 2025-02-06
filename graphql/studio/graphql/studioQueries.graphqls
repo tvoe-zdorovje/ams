@@ -1,0 +1,9 @@
+extend type StudioQueries {
+    studio(id: ID!): Studio
+}
+
+type Studio {
+    id: ID!
+    name: String!
+    description: String!
+}

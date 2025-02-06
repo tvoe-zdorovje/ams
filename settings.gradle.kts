@@ -10,6 +10,7 @@ include(
     "graphql",
     "user-service",
     "brand-service",
+    "studio-service",
 )
 
 dependencyResolutionManagement {

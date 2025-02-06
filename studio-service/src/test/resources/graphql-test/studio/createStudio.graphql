@@ -1,0 +1,13 @@
+mutation CreateStudio(
+    $name: String!
+    $description: String!
+) {
+    studios {
+        createStudio(
+            request: {
+                name: $name
+                description: $description
+            }
+        )
+    }
+}
