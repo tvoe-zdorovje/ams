@@ -11,6 +11,7 @@ include(
     "user-service",
     "brand-service",
     "studio-service",
+    "appointment-service",
 )
 
 dependencyResolutionManagement {

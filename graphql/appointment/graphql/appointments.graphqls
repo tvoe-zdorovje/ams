@@ -1,0 +1,11 @@
+extend type Mutation {
+    appointments: AppointmentMutations!
+}
+
+extend type Query {
+    appointments: AppointmentQueries
+}
+
+type AppointmentMutations
+
+type AppointmentQueries

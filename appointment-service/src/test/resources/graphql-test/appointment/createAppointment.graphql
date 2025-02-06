@@ -1,0 +1,13 @@
+mutation CreateAppointment(
+    $name: String!
+    $description: String!
+) {
+    appointments {
+        createAppointment(
+            request: {
+                name: $name
+                description: $description
+            }
+        )
+    }
+}

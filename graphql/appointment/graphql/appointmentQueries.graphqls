@@ -1,0 +1,9 @@
+extend type AppointmentQueries {
+    appointment(id: ID!): Appointment
+}
+
+type Appointment {
+    id: ID!
+    name: String!
+    description: String!
+}

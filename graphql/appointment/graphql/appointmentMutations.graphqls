@@ -1,0 +1,8 @@
+extend type AppointmentMutations {
+    createAppointment(request: CreateAppointmentRequest!): ID!
+}
+
+input CreateAppointmentRequest {
+    name: String!
+    description: String!
+}
