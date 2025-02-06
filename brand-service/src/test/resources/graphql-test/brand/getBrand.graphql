@@ -1,0 +1,11 @@
+query GetBrand(
+    $id: ID!
+) {
+    brands {
+        brand(id: $id) {
+            id
+            name
+            description
+        }
+    }
+}

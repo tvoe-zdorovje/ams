@@ -1,0 +1,9 @@
+extend type BrandQueries {
+    brand(id: ID!): Brand
+}
+
+type Brand {
+    id: ID!
+    name: String!
+    description: String!
+}

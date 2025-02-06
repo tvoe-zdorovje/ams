@@ -1,0 +1,8 @@
+extend type BrandMutations {
+    createBrand(request: CreateBrandRequest!): ID!
+}
+
+input CreateBrandRequest {
+    name: String!
+    description: String!
+}

@@ -7,8 +7,9 @@ rootProject.name = "ams"
 
 include(
     "common",
+    "graphql",
     "user-service",
-    "graphql"
+    "brand-service",
 )
 
 dependencyResolutionManagement {

@@ -1,0 +1,13 @@
+mutation CreateBrand(
+    $name: String!
+    $description: String!
+) {
+    brands {
+        createBrand(
+            request: {
+                name: $name
+                description: $description
+            }
+        )
+    }
+}
