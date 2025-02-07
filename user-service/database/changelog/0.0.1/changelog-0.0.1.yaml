@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: anatolyloyko
+      changes:
+        - sqlFile:
+            path: changelog/0.0.1/01-init-schema.sql
+        - sqlFile:
+            path: changelog/0.0.1/02-init-table.sql
