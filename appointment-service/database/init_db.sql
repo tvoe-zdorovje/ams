@@ -51,6 +51,11 @@ ALTER DEFAULT PRIVILEGES
 CREATE SCHEMA IF NOT EXISTS appointments;
 
 
+GRANT USAGE, CREATE
+    ON SCHEMA appointments
+    TO apsliquibase;
+
+
 CREATE USER apsportal WITH PASSWORD 'apsportal';
 
 

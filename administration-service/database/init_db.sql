@@ -53,6 +53,11 @@ ALTER DEFAULT PRIVILEGES
 CREATE SCHEMA IF NOT EXISTS administration;
 
 
+GRANT USAGE, CREATE
+    ON SCHEMA administration
+    TO adsliquibase;
+
+
 CREATE USER adsportal WITH PASSWORD 'adsportal';
 
 

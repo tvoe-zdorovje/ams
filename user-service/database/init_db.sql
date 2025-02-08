@@ -51,6 +51,11 @@ ALTER DEFAULT PRIVILEGES
 CREATE SCHEMA IF NOT EXISTS users;
 
 
+GRANT USAGE, CREATE
+    ON SCHEMA users
+    TO ussliquibase;
+
+
 CREATE USER ussportal WITH PASSWORD 'ussportal';
 
 

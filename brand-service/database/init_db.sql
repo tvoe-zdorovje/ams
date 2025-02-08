@@ -51,6 +51,11 @@ ALTER DEFAULT PRIVILEGES
 CREATE SCHEMA IF NOT EXISTS brands;
 
 
+GRANT USAGE, CREATE
+    ON SCHEMA brands
+    TO brsliquibase;
+
+
 CREATE USER brsportal WITH PASSWORD 'brsportal';
 
 

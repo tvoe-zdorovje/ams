@@ -51,6 +51,11 @@ ALTER DEFAULT PRIVILEGES
 CREATE SCHEMA IF NOT EXISTS studios;
 
 
+GRANT USAGE, CREATE
+    ON SCHEMA studios
+    TO stsliquibase;
+
+
 CREATE USER stssportal WITH PASSWORD 'stssportal';
 
 
