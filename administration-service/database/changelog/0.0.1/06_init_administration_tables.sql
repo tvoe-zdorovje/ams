@@ -1,6 +1,3 @@
-CREATE SCHEMA IF NOT EXISTS administration;
-
-
 CREATE TABLE IF NOT EXISTS administration.role(
     id INT PRIMARY KEY NOT NULL,
     name VARCHAR(100) NOT NULL,
@@ -65,7 +62,7 @@ CREATE TABLE IF NOT EXISTS administration.user_roles(
             ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS administration.brand_studios(
+CREATE TABLE IF NOT EXISTS administration.brand_studios( -- TODO one studio - one brand; one brand - many studios
     brand_id INT,
     studio_id INT,
     CONSTRAINT fk_brand_studios_brand_id

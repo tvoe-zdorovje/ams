@@ -1,5 +1,3 @@
-CREATE SCHEMA IF NOT EXISTS appointments;
-
 CREATE TYPE appointments.appointment_status AS ENUM (
     'REQUESTED',    -- requested or corrected by a client
     'CORRECTED',    -- corrected by authorized staff
@@ -11,7 +9,7 @@ CREATE TYPE appointments.appointment_status AS ENUM (
 CREATE TABLE IF NOT EXISTS appointments.appointment(
     id UUID PRIMARY KEY NOT NULL,
     description VARCHAR(255) NOT NULL,
-    client_user_id INT,
+    client_user_id INT, -- TODO client id != master id \ manager id
     master_user_id INT,
     manager_user_id INT,
     studio_id INT,

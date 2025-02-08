@@ -4,8 +4,14 @@ databaseChangeLog:
       author: anatolyloyko
       changes:
         - sqlFile:
-            path: changelog/0.0.1/02_init_fdw.sql
+            path: changelog/0.0.1/01_init_schemas.sql
         - sqlFile:
-            path: changelog/0.0.1/03_init_fdw_schema.sql
+            path: changelog/0.0.1/02_init_users.sql
         - sqlFile:
-            path: changelog/0.0.1/04-init-administration_schema.sql
+            path: changelog/0.0.1/03_init_fdw_servers.sql
+        - sqlFile:
+            path: changelog/0.0.1/04_init_fdw_user_mappings.sql
+        - sqlFile:
+            path: changelog/0.0.1/05_init_fdw_tables.sql
+        - sqlFile:
+            path: changelog/0.0.1/06_init_administration_tables.sql
