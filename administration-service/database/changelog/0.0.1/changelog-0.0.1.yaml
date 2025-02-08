@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: anatolyloyko
+      changes:
+        - sqlFile:
+            path: changelog/0.0.1/02_init_fdw.sql
+        - sqlFile:
+            path: changelog/0.0.1/03_init_fdw_schema.sql
+        - sqlFile:
+            path: changelog/0.0.1/04-init-administration_schema.sql

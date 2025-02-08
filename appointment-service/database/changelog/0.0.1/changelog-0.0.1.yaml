@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: anatolyloyko
+      changes:
+        - sqlFile:
+            path: changelog/0.0.1/04_init_appointments_schema.sql

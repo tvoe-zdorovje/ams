@@ -65,7 +65,49 @@ services:
       - ./studio-service/database/changelog:/liquibase/changelog
     command: update
 
+  administration_db:
+    image: postgres:17.2-alpine3.21
+    container_name: administration_db
+    restart: always
+    ports:
+      - "5444:5432"
+    depends_on:
+      - user_db
+      - liquibase_user_db
+      - brand_db
+      - liquibase_brand_db
+      - studio_db
+      - liquibase_studio_db
+    volumes:
+      - administration_db_volume:/var/lib/postgresql/data
+    env_file:
+      - administration-service/.env
+
+  liquibase_administration_db:
+    image: liquibase/liquibase:latest
+    container_name: liquibase_administration_db
+    env_file:
+      - administration-service/.env
+    depends_on:
+      - administration_db
+    volumes:
+      - ./administration-service/database/changelog:/liquibase/changelog
+    command: update
+
+  liquibase_appointment_db:
+    image: liquibase/liquibase:latest
+    container_name: liquibase_appointment_db
+    env_file:
+      - appointment-service/.env
+    depends_on:
+      - administration_db
+      - liquibase_administration_db
+    volumes:
+      - ./administration-service/database/changelog:/liquibase/changelog
+    command: update
+
 volumes:
   user_db_volume:
   brand_db_volume:
   studio_db_volume:
+  administration_db_volume:
