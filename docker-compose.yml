@@ -21,5 +21,28 @@ services:
       - ./user-service/database/changelog:/liquibase/changelog
     command: update
 
+  brand_db:
+    image: postgres:17.2-alpine3.21
+    container_name: brand_db
+    restart: always
+    ports:
+      - "5442:5432"
+    volumes:
+      - brand_db_volume:/var/lib/postgresql/data
+    env_file:
+      - brand-service/.env
+
+  liquibase_brand_db:
+    image: liquibase/liquibase:latest
+    container_name: liquibase_brand_db
+    env_file:
+      - brand-service/.env
+    depends_on:
+      - brand_db
+    volumes:
+      - ./brand-service/database/changelog:/liquibase/changelog
+    command: update
+
 volumes:
   user_db_volume:
+  brand_db_volume:
