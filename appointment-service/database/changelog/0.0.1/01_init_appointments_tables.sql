@@ -6,6 +6,7 @@ CREATE TYPE appointments.appointment_status AS ENUM (
     'CANCELLED'     -- cancelled by a client or authorized staff
 );
 
+-- TODO cache, foreign keys
 CREATE TABLE IF NOT EXISTS appointments.appointment(
     id UUID PRIMARY KEY NOT NULL,
     description VARCHAR(255) NOT NULL,

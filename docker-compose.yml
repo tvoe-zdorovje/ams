@@ -80,6 +80,8 @@ services:
       - liquibase_studio_db
     volumes:
       - administration_db_volume:/var/lib/postgresql/data
+      - ./administration-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_administration_db.sql
+      - ./appointment-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_appointment_db.sql
     env_file:
       - administration-service/.env
 
@@ -101,9 +103,8 @@ services:
       - appointment-service/.env
     depends_on:
       - administration_db
-      - liquibase_administration_db
     volumes:
-      - ./administration-service/database/changelog:/liquibase/changelog
+      - ./appointment-service/database/changelog:/liquibase/changelog
     command: update
 
 volumes:
