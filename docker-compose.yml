@@ -7,6 +7,7 @@ services:
         - "5441:5432"
     volumes:
       - user_db_volume:/var/lib/postgresql/data
+      - ./user-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
     env_file:
       - user-service/.env
 
@@ -29,6 +30,7 @@ services:
       - "5442:5432"
     volumes:
       - brand_db_volume:/var/lib/postgresql/data
+      - ./brand-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
     env_file:
       - brand-service/.env
 
@@ -51,6 +53,7 @@ services:
       - "5443:5432"
     volumes:
       - studio_db_volume:/var/lib/postgresql/data
+      - ./studio-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
     env_file:
       - studio-service/.env
 

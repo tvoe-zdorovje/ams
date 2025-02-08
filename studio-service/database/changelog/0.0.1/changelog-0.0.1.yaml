@@ -4,6 +4,4 @@ databaseChangeLog:
       author: anatolyloyko
       changes:
         - sqlFile:
-            path: changelog/0.0.1/01_init_schema.sql
-        - sqlFile:
-            path: changelog/0.0.1/02_init_table.sql
+            path: changelog/0.0.1/01_init_table.sql

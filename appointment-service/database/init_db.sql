@@ -1,5 +1,7 @@
 CREATE DATABASE appointment_db;
 
+\c appointment_db;
+
 
 -- init liquibase infrastructure
 
@@ -17,7 +19,7 @@ GRANT ALL
 
 REVOKE GRANT OPTION FOR ALL
     ON DATABASE appointment_db
-    FROM adsliquibase;
+    FROM apsliquibase;
 
 ALTER DEFAULT PRIVILEGES
     FOR USER apsliquibase
@@ -43,7 +45,7 @@ ALTER DEFAULT PRIVILEGES
     TO apsliquibase;
 
 
--- init administration-service infrastructure
+-- init appointment-service infrastructure
 
 
 CREATE SCHEMA IF NOT EXISTS appointments;
@@ -80,5 +82,5 @@ CREATE EXTENSION IF NOT EXISTS postgres_fdw;
 CREATE SERVER administration_fdw_db FOREIGN DATA WRAPPER postgres_fdw
     OPTIONS (host 'administration_db', dbname 'administration_db', port '5432');
 
-CREATE USER MAPPING FOR adsportal SERVER administration_fdw_db
+CREATE USER MAPPING FOR apsportal SERVER administration_fdw_db
     OPTIONS (user 'apsportal_fdw', password 'apsportal_fdw');

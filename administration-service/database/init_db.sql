@@ -1,5 +1,7 @@
 CREATE DATABASE administration_db;
 
+\c administration_db;
+
 
 -- init liquibase infrastructure
 
