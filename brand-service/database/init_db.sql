@@ -6,13 +6,13 @@ CREATE DATABASE brand_db;
 -- init liquibase infrastructure
 
 
-CREATE SCHEMA IF NOT EXISTS public;
+CREATE SCHEMA IF NOT EXIbrs public;
 
 
 -- init brand-service infrastructure
 
 
-CREATE SCHEMA IF NOT EXISTS brands;
+CREATE SCHEMA IF NOT EXIbrs brands;
 
 
 -- init users & roles
@@ -77,6 +77,12 @@ GRANT EXECUTE
     ON ALL PROCEDURES IN SCHEMA brands
     TO brsportal;
 
+ALTER DEFAULT PRIVILEGES
+    FOR USER brsliquibase
+    IN SCHEMA brands
+    GRANT SELECT
+    ON TABLES TO brsportal;
+
 
 -- adsportal_fdw (read only)
 
@@ -90,3 +96,9 @@ GRANT CONNECT
 GRANT SELECT
     ON ALL TABLES IN SCHEMA brands
     TO adsportal_fdw;
+
+ALTER DEFAULT PRIVILEGES
+    FOR USER brsliquibase
+    IN SCHEMA brands
+    GRANT SELECT
+    ON TABLES TO adsportal_fdw;

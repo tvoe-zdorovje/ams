@@ -66,7 +66,9 @@ ALTER DEFAULT PRIVILEGES
 
 CREATE USER ussportal WITH PASSWORD 'ussportal';
 
-
+GRANT USAGE
+    ON SCHEMA users
+    TO ussportal;
 GRANT SELECT
     ON ALL TABLES IN SCHEMA users
     TO ussportal;
@@ -76,6 +78,12 @@ GRANT EXECUTE
 GRANT EXECUTE
     ON ALL PROCEDURES IN SCHEMA users
     TO ussportal;
+
+ALTER DEFAULT PRIVILEGES
+    FOR USER ussliquibase
+    IN SCHEMA users
+    GRANT SELECT
+    ON TABLES TO ussportal;
 
 
 -- adsportal_fdw (read only)
@@ -90,3 +98,9 @@ GRANT CONNECT
 GRANT SELECT
     ON ALL TABLES IN SCHEMA users
     TO adsportal_fdw;
+
+ALTER DEFAULT PRIVILEGES
+    FOR USER ussliquibase
+    IN SCHEMA users
+    GRANT SELECT
+    ON TABLES TO adsportal_fdw;

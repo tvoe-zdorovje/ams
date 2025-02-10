@@ -122,6 +122,12 @@ GRANT USAGE
     ON SCHEMA fdw
     TO adsportal;
 
+ALTER DEFAULT PRIVILEGES
+    FOR USER adsliquibase
+    IN SCHEMA administration
+    GRANT SELECT
+    ON TABLES TO adsportal;
+
 
 -- apsportal_fdw (read only)
 

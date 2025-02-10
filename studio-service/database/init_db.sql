@@ -77,6 +77,12 @@ GRANT EXECUTE
     ON ALL PROCEDURES IN SCHEMA studios
     TO stsportal;
 
+ALTER DEFAULT PRIVILEGES
+    FOR USER stsliquibase
+    IN SCHEMA studios
+    GRANT SELECT
+    ON TABLES TO stsportal;
+
 
 -- adsportal_fdw (read only)
 
@@ -90,3 +96,9 @@ GRANT CONNECT
 GRANT SELECT
     ON ALL TABLES IN SCHEMA studios
     TO adsportal_fdw;
+
+ALTER DEFAULT PRIVILEGES
+    FOR USER stsliquibase
+    IN SCHEMA studios
+    GRANT SELECT
+    ON TABLES TO adsportal_fdw;

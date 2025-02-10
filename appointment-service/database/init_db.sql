@@ -92,5 +92,11 @@ GRANT EXECUTE
     ON ALL PROCEDURES IN SCHEMA appointments
     TO apsportal;
 
+ALTER DEFAULT PRIVILEGES
+    FOR USER apsliquibase
+    IN SCHEMA appointments
+    GRANT SELECT
+    ON TABLES TO apsportal;
+
 CREATE USER MAPPING FOR apsportal SERVER administration_fdw_db
     OPTIONS (user 'apsportal_fdw', password 'apsportal_fdw');
