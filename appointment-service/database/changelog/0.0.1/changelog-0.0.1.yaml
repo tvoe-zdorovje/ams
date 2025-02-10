@@ -4,6 +4,6 @@ databaseChangeLog:
       author: anatolyloyko
       changes:
         - sqlFile:
-            path: changelog/0.0.1/01_init_tables.sql
+            path: changelog/0.0.1/01_init_appointments_tables.sql
         - sqlFile:
             path: changelog/0.0.1/02_init_administration-fdw_tables.sql

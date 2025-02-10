@@ -80,6 +80,10 @@ GRANT SELECT
     ON ALL TABLES IN SCHEMA administration_fdw
     TO apsportal;
 
+GRANT USAGE, CREATE
+    ON SCHEMA administration_fdw
+    TO apsliquibase;
+
 
 CREATE EXTENSION IF NOT EXISTS postgres_fdw;
 
@@ -89,3 +93,7 @@ CREATE SERVER administration_fdw_db FOREIGN DATA WRAPPER postgres_fdw
 
 CREATE USER MAPPING FOR apsportal SERVER administration_fdw_db
     OPTIONS (user 'apsportal_fdw', password 'apsportal_fdw');
+
+GRANT USAGE
+    ON FOREIGN SERVER administration_fdw_db
+    TO apsliquibase;

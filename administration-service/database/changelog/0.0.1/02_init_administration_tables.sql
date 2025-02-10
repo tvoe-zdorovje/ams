@@ -27,10 +27,10 @@ CREATE TABLE IF NOT EXISTS administration.role_permissions(
 CREATE TABLE IF NOT EXISTS administration.brand_roles(
     brand_id INT,
     role_id INT,
-    CONSTRAINT fk_brand_roles_brand_id
-        FOREIGN KEY (brand_id)
-            REFERENCES fdw.brand (id)
-            ON DELETE CASCADE,
+--     CONSTRAINT fk_brand_roles_brand_id
+--         FOREIGN KEY (brand_id)
+--             REFERENCES fdw.brand (id)
+--             ON DELETE CASCADE,
     CONSTRAINT fk_brand_roles_role_id
         FOREIGN KEY (role_id)
             REFERENCES administration.role (id)
@@ -40,10 +40,10 @@ CREATE TABLE IF NOT EXISTS administration.brand_roles(
 CREATE TABLE IF NOT EXISTS administration.studio_roles(
     studio_id INT,
     role_id INT,
-    CONSTRAINT fk_studio_roles_studio_id
-      FOREIGN KEY (studio_id)
-          REFERENCES fdw.studio (id)
-          ON DELETE CASCADE,
+--     CONSTRAINT fk_studio_roles_studio_id
+--       FOREIGN KEY (studio_id)
+--           REFERENCES fdw.studio (id)
+--           ON DELETE CASCADE,
     CONSTRAINT fk_studio_roles_role_id
       FOREIGN KEY (role_id)
           REFERENCES administration.role (id)
@@ -53,10 +53,10 @@ CREATE TABLE IF NOT EXISTS administration.studio_roles(
 CREATE TABLE IF NOT EXISTS administration.user_roles(
     user_id INT,
     role_id INT,
-    CONSTRAINT fk_user_roles_user_id
-        FOREIGN KEY (user_id)
-            REFERENCES fdw.user (id)
-            ON DELETE CASCADE,
+--     CONSTRAINT fk_user_roles_user_id
+--         FOREIGN KEY (user_id)
+--             REFERENCES fdw.user (id)
+--             ON DELETE CASCADE,
     CONSTRAINT fk_user_roles_role_id
         FOREIGN KEY (role_id)
             REFERENCES administration.role (id)
@@ -65,13 +65,13 @@ CREATE TABLE IF NOT EXISTS administration.user_roles(
 
 CREATE TABLE IF NOT EXISTS administration.brand_studios( -- TODO one studio - one brand; one brand - many studios
     brand_id INT,
-    studio_id INT,
-    CONSTRAINT fk_brand_studios_brand_id
-       FOREIGN KEY (brand_id)
-           REFERENCES fdw.brand (id)
-           ON DELETE CASCADE,
-    CONSTRAINT fk_brand_studios_studio_id
-       FOREIGN KEY (studio_id)
-           REFERENCES fdw.studio (id)
-           ON DELETE CASCADE
+    studio_id INT
+--     CONSTRAINT fk_brand_studios_brand_id
+--        FOREIGN KEY (brand_id)
+--            REFERENCES fdw.brand (id)
+--            ON DELETE CASCADE,
+--     CONSTRAINT fk_brand_studios_studio_id
+--        FOREIGN KEY (studio_id)
+--            REFERENCES fdw.studio (id)
+--            ON DELETE CASCADE
 );

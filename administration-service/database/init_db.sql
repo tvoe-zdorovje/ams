@@ -85,6 +85,10 @@ GRANT SELECT
     ON ALL TABLES IN SCHEMA fdw
     TO adsportal;
 
+GRANT USAGE, CREATE
+    ON SCHEMA fdw
+    TO adsliquibase;
+
 
 CREATE EXTENSION IF NOT EXISTS postgres_fdw;
 
@@ -109,6 +113,10 @@ CREATE SERVER studio_fdw_db FOREIGN DATA WRAPPER postgres_fdw
 CREATE USER MAPPING FOR adsportal SERVER studio_fdw_db
     OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
 
+
+GRANT USAGE
+    ON FOREIGN SERVER brand_fdw_db, studio_fdw_db, user_fdw_db
+    TO adsliquibase;
 
 -- init other users
 
