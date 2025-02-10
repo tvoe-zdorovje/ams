@@ -124,7 +124,7 @@ GRANT USAGE
 
 ALTER DEFAULT PRIVILEGES
     FOR USER adsliquibase
-    IN SCHEMA administration
+    IN SCHEMA administration, fdw
     GRANT SELECT
     ON TABLES TO adsportal;
 
@@ -141,3 +141,12 @@ GRANT CONNECT
 GRANT SELECT
     ON ALL TABLES IN SCHEMA administration
     TO apsportal_fdw;
+GRANT USAGE
+    ON SCHEMA administration
+    TO apsportal_fdw;
+
+ALTER DEFAULT PRIVILEGES
+    FOR USER adsliquibase
+    IN SCHEMA administration
+    GRANT SELECT
+    ON TABLES TO apsportal_fdw;

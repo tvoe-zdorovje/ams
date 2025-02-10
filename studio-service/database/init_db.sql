@@ -96,6 +96,9 @@ GRANT CONNECT
 GRANT SELECT
     ON ALL TABLES IN SCHEMA studios
     TO adsportal_fdw;
+GRANT USAGE
+    ON SCHEMA studios
+    TO adsportal_fdw;
 
 ALTER DEFAULT PRIVILEGES
     FOR USER stsliquibase

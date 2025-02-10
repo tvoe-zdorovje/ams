@@ -82,6 +82,9 @@ ALTER DEFAULT PRIVILEGES
 
 CREATE USER apsportal WITH PASSWORD 'apsportal';
 
+GRANT CONNECT
+    ON DATABASE administration_db
+    TO apsportal;
 GRANT SELECT
     ON ALL TABLES IN SCHEMA appointments, administration_fdw
     TO apsportal;
@@ -91,10 +94,16 @@ GRANT EXECUTE
 GRANT EXECUTE
     ON ALL PROCEDURES IN SCHEMA appointments
     TO apsportal;
+GRANT USAGE
+    ON FOREIGN SERVER administration_fdw_db
+    TO apsportal;
+GRANT USAGE
+    ON SCHEMA administration_fdw
+    TO apsportal;
 
 ALTER DEFAULT PRIVILEGES
-    FOR USER apsliquibase
-    IN SCHEMA appointments
+    FOR USER apsliquibase, adsliquibase
+    IN SCHEMA appointments, administration_fdw
     GRANT SELECT
     ON TABLES TO apsportal;
 

@@ -14,6 +14,7 @@ services:
   liquibase_user_db:
     image: liquibase/liquibase:latest
     container_name: liquibase_user_db
+    restart: on-failure
     env_file:
       - user-service/.env
     depends_on:
@@ -37,6 +38,7 @@ services:
   liquibase_brand_db:
     image: liquibase/liquibase:latest
     container_name: liquibase_brand_db
+    restart: on-failure
     env_file:
       - brand-service/.env
     depends_on:
@@ -60,6 +62,7 @@ services:
   liquibase_studio_db:
     image: liquibase/liquibase:latest
     container_name: liquibase_studio_db
+    restart: on-failure
     env_file:
       - studio-service/.env
     depends_on:
@@ -91,6 +94,7 @@ services:
   liquibase_administration_db:
     image: liquibase/liquibase:latest
     container_name: liquibase_administration_db
+    restart: on-failure
     env_file:
       - administration-service/.env
     depends_on:
@@ -102,6 +106,7 @@ services:
   liquibase_appointment_db:
     image: liquibase/liquibase:latest
     container_name: liquibase_appointment_db
+    restart: on-failure
     env_file:
       - appointment-service/.env
     depends_on:

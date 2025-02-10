@@ -98,6 +98,9 @@ GRANT CONNECT
 GRANT SELECT
     ON ALL TABLES IN SCHEMA users
     TO adsportal_fdw;
+GRANT USAGE
+    ON SCHEMA users
+    TO adsportal_fdw;
 
 ALTER DEFAULT PRIVILEGES
     FOR USER ussliquibase
