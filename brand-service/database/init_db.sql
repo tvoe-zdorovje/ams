@@ -8,6 +8,19 @@ CREATE DATABASE brand_db;
 
 CREATE SCHEMA IF NOT EXISTS public;
 
+
+-- init brand-service infrastructure
+
+
+CREATE SCHEMA IF NOT EXISTS brands;
+
+
+-- init users & roles
+
+
+-- brsliquibase (crete only)
+
+
 CREATE USER brsliquibase WITH PASSWORD 'brsliquibase';
 
 GRANT CONNECT, CREATE
@@ -15,6 +28,9 @@ GRANT CONNECT, CREATE
     TO brsliquibase;
 GRANT ALL
     ON SCHEMA public
+    TO brsliquibase;
+GRANT USAGE, CREATE
+    ON SCHEMA brands
     TO brsliquibase;
 
 REVOKE GRANT OPTION FOR ALL
@@ -45,15 +61,7 @@ ALTER DEFAULT PRIVILEGES
     TO brsliquibase;
 
 
--- init brand-service infrastructure
-
-
-CREATE SCHEMA IF NOT EXISTS brands;
-
-
-GRANT USAGE, CREATE
-    ON SCHEMA brands
-    TO brsliquibase;
+-- brsportal (read only & execute procedures and functions)
 
 
 CREATE USER brsportal WITH PASSWORD 'brsportal';
@@ -70,7 +78,7 @@ GRANT EXECUTE
     TO brsportal;
 
 
--- init other users
+-- adsportal_fdw (read only)
 
 
 CREATE USER adsportal_fdw WITH PASSWORD 'adsportal_fdw';

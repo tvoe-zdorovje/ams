@@ -8,6 +8,32 @@ CREATE DATABASE appointment_db;
 
 CREATE SCHEMA IF NOT EXISTS public;
 
+
+-- init appointment-service infrastructure
+
+
+CREATE SCHEMA IF NOT EXISTS appointments;
+
+
+-- init FDW infrastructure
+
+
+CREATE SCHEMA IF NOT EXISTS administration_fdw;
+
+
+CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+
+
+CREATE SERVER administration_fdw_db FOREIGN DATA WRAPPER postgres_fdw
+    OPTIONS (host 'administration_db', dbname 'administration_db', port '5432');
+
+
+-- init users & roles
+
+
+-- apsliquibase (crete only)
+
+
 CREATE USER apsliquibase WITH PASSWORD 'apsliquibase';
 
 GRANT CONNECT, CREATE
@@ -15,6 +41,12 @@ GRANT CONNECT, CREATE
     TO apsliquibase;
 GRANT ALL
     ON SCHEMA public
+    TO apsliquibase;
+GRANT USAGE, CREATE
+    ON SCHEMA appointments, administration_fdw
+    TO apsliquibase;
+GRANT USAGE
+    ON FOREIGN SERVER administration_fdw_db
     TO apsliquibase;
 
 REVOKE GRANT OPTION FOR ALL
@@ -45,22 +77,13 @@ ALTER DEFAULT PRIVILEGES
     TO apsliquibase;
 
 
--- init appointment-service infrastructure
-
-
-CREATE SCHEMA IF NOT EXISTS appointments;
-
-
-GRANT USAGE, CREATE
-    ON SCHEMA appointments
-    TO apsliquibase;
+-- apsportal (read only & execute procedures and functions)
 
 
 CREATE USER apsportal WITH PASSWORD 'apsportal';
 
-
 GRANT SELECT
-    ON ALL TABLES IN SCHEMA appointments
+    ON ALL TABLES IN SCHEMA appointments, administration_fdw
     TO apsportal;
 GRANT EXECUTE
     ON ALL FUNCTIONS IN SCHEMA appointments
@@ -69,31 +92,5 @@ GRANT EXECUTE
     ON ALL PROCEDURES IN SCHEMA appointments
     TO apsportal;
 
-
--- init FDW infrastructure
-
-
-CREATE SCHEMA IF NOT EXISTS administration_fdw;
-
-
-GRANT SELECT
-    ON ALL TABLES IN SCHEMA administration_fdw
-    TO apsportal;
-
-GRANT USAGE, CREATE
-    ON SCHEMA administration_fdw
-    TO apsliquibase;
-
-
-CREATE EXTENSION IF NOT EXISTS postgres_fdw;
-
-
-CREATE SERVER administration_fdw_db FOREIGN DATA WRAPPER postgres_fdw
-    OPTIONS (host 'administration_db', dbname 'administration_db', port '5432');
-
 CREATE USER MAPPING FOR apsportal SERVER administration_fdw_db
     OPTIONS (user 'apsportal_fdw', password 'apsportal_fdw');
-
-GRANT USAGE
-    ON FOREIGN SERVER administration_fdw_db
-    TO apsliquibase;

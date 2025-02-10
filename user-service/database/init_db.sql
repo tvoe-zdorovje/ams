@@ -8,6 +8,19 @@ CREATE DATABASE user_db;
 
 CREATE SCHEMA IF NOT EXISTS public;
 
+
+-- init user-service infrastructure
+
+
+CREATE SCHEMA IF NOT EXISTS users;
+
+
+-- init users & roles
+
+
+-- ussliquibase (crete only)
+
+
 CREATE USER ussliquibase WITH PASSWORD 'ussliquibase';
 
 GRANT CONNECT, CREATE
@@ -15,6 +28,9 @@ GRANT CONNECT, CREATE
     TO ussliquibase;
 GRANT ALL
     ON SCHEMA public
+    TO ussliquibase;
+GRANT USAGE, CREATE
+    ON SCHEMA users
     TO ussliquibase;
 
 REVOKE GRANT OPTION FOR ALL
@@ -45,15 +61,7 @@ ALTER DEFAULT PRIVILEGES
     TO ussliquibase;
 
 
--- init user-service infrastructure
-
-
-CREATE SCHEMA IF NOT EXISTS users;
-
-
-GRANT USAGE, CREATE
-    ON SCHEMA users
-    TO ussliquibase;
+-- ussportal (read only & execute procedures and functions)
 
 
 CREATE USER ussportal WITH PASSWORD 'ussportal';
@@ -70,7 +78,7 @@ GRANT EXECUTE
     TO ussportal;
 
 
--- init other users
+-- adsportal_fdw (read only)
 
 
 CREATE USER adsportal_fdw WITH PASSWORD 'adsportal_fdw';

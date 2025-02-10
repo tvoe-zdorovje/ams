@@ -8,6 +8,19 @@ CREATE DATABASE studio_db;
 
 CREATE SCHEMA IF NOT EXISTS public;
 
+
+-- init studio-service infrastructure
+
+
+CREATE SCHEMA IF NOT EXISTS studios;
+
+
+-- init users & roles
+
+
+-- stsliquibase (crete only)
+
+
 CREATE USER stsliquibase WITH PASSWORD 'stsliquibase';
 
 GRANT CONNECT, CREATE
@@ -15,6 +28,9 @@ GRANT CONNECT, CREATE
     TO stsliquibase;
 GRANT ALL
     ON SCHEMA public
+    TO stsliquibase;
+GRANT USAGE, CREATE
+    ON SCHEMA studios
     TO stsliquibase;
 
 REVOKE GRANT OPTION FOR ALL
@@ -45,32 +61,24 @@ ALTER DEFAULT PRIVILEGES
     TO stsliquibase;
 
 
--- init studio-service infrastructure
+-- stsportal (read only & execute procedures and functions)
 
 
-CREATE SCHEMA IF NOT EXISTS studios;
-
-
-GRANT USAGE, CREATE
-    ON SCHEMA studios
-    TO stsliquibase;
-
-
-CREATE USER stssportal WITH PASSWORD 'stssportal';
+CREATE USER stsportal WITH PASSWORD 'stsportal';
 
 
 GRANT SELECT
     ON ALL TABLES IN SCHEMA studios
-    TO stssportal;
+    TO stsportal;
 GRANT EXECUTE
     ON ALL FUNCTIONS IN SCHEMA studios
-    TO stssportal;
+    TO stsportal;
 GRANT EXECUTE
     ON ALL PROCEDURES IN SCHEMA studios
-    TO stssportal;
+    TO stsportal;
 
 
--- init other users
+-- adsportal_fdw (read only)
 
 
 CREATE USER adsportal_fdw WITH PASSWORD 'adsportal_fdw';
