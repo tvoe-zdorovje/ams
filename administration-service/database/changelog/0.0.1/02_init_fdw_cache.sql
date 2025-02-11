@@ -2,6 +2,8 @@ CREATE TABLE administration.user AS
     SELECT * FROM fdw."user"
     WITH NO DATA;
 
+ALTER TABLE administration.user ADD PRIMARY KEY (id);
+
 CREATE OR REPLACE PROCEDURE administration.refresh_fdw_user()
     LANGUAGE SQL
 BEGIN ATOMIC
@@ -18,6 +20,8 @@ CREATE TABLE administration.brand AS
     SELECT * FROM fdw.brand
     WITH NO DATA;
 
+ALTER TABLE administration.brand ADD PRIMARY KEY (id);
+
 CREATE OR REPLACE PROCEDURE administration.refresh_fdw_brand()
     LANGUAGE SQL
 BEGIN ATOMIC
@@ -33,6 +37,8 @@ END;
 CREATE TABLE administration.studio AS
     SELECT * FROM fdw.studio
     WITH NO DATA;
+
+ALTER TABLE administration.studio ADD PRIMARY KEY (id);
 
 CREATE OR REPLACE PROCEDURE administration.refresh_fdw_studio()
     LANGUAGE SQL
