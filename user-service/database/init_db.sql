@@ -66,17 +66,11 @@ ALTER DEFAULT PRIVILEGES
 
 CREATE USER ussportal WITH PASSWORD 'ussportal';
 
+GRANT CONNECT
+    ON DATABASE user_db
+    TO ussportal;
 GRANT USAGE
     ON SCHEMA users
-    TO ussportal;
-GRANT SELECT
-    ON ALL TABLES IN SCHEMA users
-    TO ussportal;
-GRANT EXECUTE
-    ON ALL FUNCTIONS IN SCHEMA users
-    TO ussportal;
-GRANT EXECUTE
-    ON ALL PROCEDURES IN SCHEMA users
     TO ussportal;
 
 ALTER DEFAULT PRIVILEGES

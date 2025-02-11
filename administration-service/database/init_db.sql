@@ -106,20 +106,11 @@ CREATE USER MAPPING FOR adsportal SERVER studio_fdw_db
 GRANT CONNECT
     ON DATABASE administration_db
     TO adsportal;
-GRANT SELECT
-    ON ALL TABLES IN SCHEMA administration, fdw
-    TO adsportal;
-GRANT EXECUTE
-    ON ALL FUNCTIONS IN SCHEMA administration
-    TO adsportal;
-GRANT EXECUTE
-    ON ALL PROCEDURES IN SCHEMA administration
-    TO adsportal;
 GRANT USAGE
     ON FOREIGN SERVER brand_fdw_db, studio_fdw_db, user_fdw_db
     TO adsportal;
 GRANT USAGE
-    ON SCHEMA fdw
+    ON SCHEMA administration, fdw
     TO adsportal;
 
 ALTER DEFAULT PRIVILEGES
@@ -127,6 +118,16 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA administration, fdw
     GRANT SELECT
     ON TABLES TO adsportal;
+ALTER DEFAULT PRIVILEGES
+    FOR USER adsliquibase
+    IN SCHEMA administration
+    GRANT INSERT, UPDATE, DELETE
+    ON TABLES TO adsportal;
+ALTER DEFAULT PRIVILEGES
+    FOR USER adsliquibase
+    IN SCHEMA administration
+    GRANT EXECUTE
+    ON FUNCTIONS TO adsportal;
 
 
 -- apsportal_fdw (read only)

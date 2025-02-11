@@ -67,14 +67,11 @@ ALTER DEFAULT PRIVILEGES
 CREATE USER brsportal WITH PASSWORD 'brsportal';
 
 
-GRANT SELECT
-    ON ALL TABLES IN SCHEMA brands
+GRANT CONNECT
+    ON DATABASE brand_db
     TO brsportal;
-GRANT EXECUTE
-    ON ALL FUNCTIONS IN SCHEMA brands
-    TO brsportal;
-GRANT EXECUTE
-    ON ALL PROCEDURES IN SCHEMA brands
+GRANT USAGE
+    ON SCHEMA brands
     TO brsportal;
 
 ALTER DEFAULT PRIVILEGES
@@ -82,6 +79,16 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA brands
     GRANT SELECT
     ON TABLES TO brsportal;
+ALTER DEFAULT PRIVILEGES
+    FOR USER brsliquibase
+    IN SCHEMA brands
+    GRANT INSERT, UPDATE, DELETE
+    ON TABLES TO brsportal;
+ALTER DEFAULT PRIVILEGES
+    FOR USER brsliquibase
+    IN SCHEMA brands
+    GRANT EXECUTE
+    ON FUNCTIONS TO brsportal;
 
 
 -- adsportal_fdw (read only)

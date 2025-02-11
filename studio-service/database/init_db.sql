@@ -67,14 +67,11 @@ ALTER DEFAULT PRIVILEGES
 CREATE USER stsportal WITH PASSWORD 'stsportal';
 
 
-GRANT SELECT
-    ON ALL TABLES IN SCHEMA studios
+GRANT CONNECT
+    ON DATABASE studio_db
     TO stsportal;
-GRANT EXECUTE
-    ON ALL FUNCTIONS IN SCHEMA studios
-    TO stsportal;
-GRANT EXECUTE
-    ON ALL PROCEDURES IN SCHEMA studios
+GRANT USAGE
+    ON SCHEMA studios
     TO stsportal;
 
 ALTER DEFAULT PRIVILEGES
@@ -82,6 +79,16 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA studios
     GRANT SELECT
     ON TABLES TO stsportal;
+ALTER DEFAULT PRIVILEGES
+    FOR USER stsliquibase
+    IN SCHEMA studios
+    GRANT INSERT, UPDATE, DELETE
+    ON TABLES TO studios;
+ALTER DEFAULT PRIVILEGES
+    FOR USER stsliquibase
+    IN SCHEMA studios
+    GRANT EXECUTE
+    ON FUNCTIONS TO studios;
 
 
 -- adsportal_fdw (read only)

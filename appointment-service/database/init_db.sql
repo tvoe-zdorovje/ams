@@ -85,20 +85,11 @@ CREATE USER apsportal WITH PASSWORD 'apsportal';
 GRANT CONNECT
     ON DATABASE administration_db
     TO apsportal;
-GRANT SELECT
-    ON ALL TABLES IN SCHEMA appointments, administration_fdw
-    TO apsportal;
-GRANT EXECUTE
-    ON ALL FUNCTIONS IN SCHEMA appointments
-    TO apsportal;
-GRANT EXECUTE
-    ON ALL PROCEDURES IN SCHEMA appointments
-    TO apsportal;
 GRANT USAGE
     ON FOREIGN SERVER administration_fdw_db
     TO apsportal;
 GRANT USAGE
-    ON SCHEMA administration_fdw
+    ON SCHEMA appointments, administration_fdw
     TO apsportal;
 
 ALTER DEFAULT PRIVILEGES
@@ -106,6 +97,16 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA appointments, administration_fdw
     GRANT SELECT
     ON TABLES TO apsportal;
+ALTER DEFAULT PRIVILEGES
+    FOR USER apsliquibase
+    IN SCHEMA appointments
+    GRANT INSERT, UPDATE, DELETE
+    ON TABLES TO apsportal;
+ALTER DEFAULT PRIVILEGES
+    FOR USER apsliquibase
+    IN SCHEMA appointments
+    GRANT EXECUTE
+    ON FUNCTIONS TO apsportal;
 
 CREATE USER MAPPING FOR apsportal SERVER administration_fdw_db
     OPTIONS (user 'apsportal_fdw', password 'apsportal_fdw');
