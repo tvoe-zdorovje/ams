@@ -1,4 +1,3 @@
--- todo unique constraints
 CREATE TABLE IF NOT EXISTS administration.role(
     id INT PRIMARY KEY NOT NULL,
     name VARCHAR(100) NOT NULL,
@@ -21,7 +20,8 @@ CREATE TABLE IF NOT EXISTS administration.role_permissions(
     CONSTRAINT fk_role_permissions_permission_id
         FOREIGN KEY (permission_id)
         REFERENCES administration.permission (id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT unique_role_id_permission_id UNIQUE (role_id, permission_id)
 );
 
 CREATE TABLE IF NOT EXISTS administration.brand_roles(
@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS administration.brand_roles(
     CONSTRAINT fk_brand_roles_role_id
         FOREIGN KEY (role_id)
             REFERENCES administration.role (id)
-            ON DELETE CASCADE
+            ON DELETE CASCADE,
+    CONSTRAINT unique_brand_id_role_id UNIQUE (brand_id, role_id)
 );
 
 CREATE TABLE IF NOT EXISTS administration.studio_roles(
@@ -47,7 +48,8 @@ CREATE TABLE IF NOT EXISTS administration.studio_roles(
     CONSTRAINT fk_studio_roles_role_id
       FOREIGN KEY (role_id)
           REFERENCES administration.role (id)
-          ON DELETE CASCADE
+          ON DELETE CASCADE,
+    CONSTRAINT unique_studio_id_role_id UNIQUE (studio_id, role_id)
 );
 
 CREATE TABLE IF NOT EXISTS administration.user_roles(
@@ -60,7 +62,8 @@ CREATE TABLE IF NOT EXISTS administration.user_roles(
     CONSTRAINT fk_user_roles_role_id
         FOREIGN KEY (role_id)
             REFERENCES administration.role (id)
-            ON DELETE CASCADE
+            ON DELETE CASCADE,
+    CONSTRAINT unique_user_id_role_id UNIQUE (user_id, role_id)
 );
 
 CREATE TABLE IF NOT EXISTS administration.brand_studios(
