@@ -78,6 +78,16 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA users
     GRANT SELECT
     ON TABLES TO ussportal;
+ALTER DEFAULT PRIVILEGES
+    FOR USER ussliquibase
+    IN SCHEMA users
+    GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES
+    ON TABLES TO ussportal;
+ALTER DEFAULT PRIVILEGES
+    FOR USER ussliquibase
+    IN SCHEMA users
+    GRANT EXECUTE
+    ON FUNCTIONS TO ussportal;
 
 
 -- adsportal_fdw (read only)

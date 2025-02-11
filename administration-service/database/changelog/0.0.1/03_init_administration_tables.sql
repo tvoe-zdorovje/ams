@@ -1,3 +1,4 @@
+-- todo unique constraints
 CREATE TABLE IF NOT EXISTS administration.role(
     id INT PRIMARY KEY NOT NULL,
     name VARCHAR(100) NOT NULL,

@@ -77,18 +77,13 @@ GRANT USAGE
 ALTER DEFAULT PRIVILEGES
     FOR USER stsliquibase
     IN SCHEMA studios
-    GRANT SELECT
+    GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES
     ON TABLES TO stsportal;
 ALTER DEFAULT PRIVILEGES
     FOR USER stsliquibase
     IN SCHEMA studios
-    GRANT INSERT, UPDATE, DELETE
-    ON TABLES TO studios;
-ALTER DEFAULT PRIVILEGES
-    FOR USER stsliquibase
-    IN SCHEMA studios
     GRANT EXECUTE
-    ON FUNCTIONS TO studios;
+    ON FUNCTIONS TO stsportal;
 
 
 -- adsportal_fdw (read only)

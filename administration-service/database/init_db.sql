@@ -59,6 +59,7 @@ GRANT USAGE
     ON FOREIGN SERVER brand_fdw_db, studio_fdw_db, user_fdw_db
     TO adsliquibase;
 
+
 REVOKE GRANT OPTION FOR ALL PRIVILEGES
     ON DATABASE administration_db
     FROM adsliquibase;
@@ -85,6 +86,11 @@ ALTER DEFAULT PRIVILEGES
     GRANT ALL PRIVILEGES
     ON TABLES
     TO adsliquibase;
+
+DO $$
+    BEGIN
+        EXECUTE format('GRANT %I TO %I', current_user, 'adsliquibase');
+    END $$;
 
 
 -- adsportal (read only & execute procedures and functions)
@@ -121,7 +127,7 @@ ALTER DEFAULT PRIVILEGES
 ALTER DEFAULT PRIVILEGES
     FOR USER adsliquibase
     IN SCHEMA administration
-    GRANT INSERT, UPDATE, DELETE
+    GRANT INSERT, UPDATE, DELETE, REFERENCES
     ON TABLES TO adsportal;
 ALTER DEFAULT PRIVILEGES
     FOR USER adsliquibase
@@ -151,3 +157,41 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA administration
     GRANT SELECT
     ON TABLES TO apsportal_fdw;
+
+
+ -- change owner trigger
+
+
+CREATE OR REPLACE FUNCTION change_owner()
+    RETURNS event_trigger AS $$
+DECLARE
+    obj record;
+    schema_owner TEXT;
+BEGIN
+    FOR obj IN
+        SELECT schema_name, object_identity
+        FROM pg_event_trigger_ddl_commands()
+        WHERE command_tag = 'CREATE TABLE'
+        LOOP
+            SELECT pg_catalog.pg_get_userbyid(nspowner)
+            INTO schema_owner
+            FROM pg_namespace
+            WHERE nspname = obj.schema_name;
+
+            RAISE WARNING 'BLABLA: ALTER TABLE IF EXISTS % OWNER TO %', obj.object_identity, schema_owner;
+
+            IF schema_owner IS NOT NULL THEN
+                EXECUTE format(
+                    'ALTER TABLE IF EXISTS %s OWNER TO %I',
+                    obj.object_identity,
+                    schema_owner
+                );
+            END IF;
+        END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE EVENT TRIGGER change_table_owner
+    ON ddl_command_end
+    WHEN TAG IN ('CREATE TABLE', 'CREATE TABLE AS')
+EXECUTE FUNCTION change_owner();
