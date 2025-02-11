@@ -60,6 +60,13 @@ ALTER DEFAULT PRIVILEGES
     ON TABLES
     TO brsliquibase;
 
+-- allows the liquibase user to use 'SET ROLE <superuser>'
+-- that's required to change an owner of a table
+DO $$
+    BEGIN
+        EXECUTE format('GRANT %I TO %I', current_user, 'brsliquibase');
+    END $$;
+
 
 -- brsportal (read only & execute procedures and functions)
 
@@ -107,3 +114,44 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA brands
     GRANT SELECT
     ON TABLES TO adsportal_fdw;
+
+
+-- change owner trigger
+-- Foreign keys work on behalf of the table owner.
+-- To avoid granting additional privileges to the liquibase user,
+-- this trigger changes the table owner to the schema owner.
+
+
+CREATE OR REPLACE FUNCTION change_owner()
+    RETURNS event_trigger AS $$
+DECLARE
+    obj record;
+    schema_owner TEXT;
+BEGIN
+    FOR obj IN
+        SELECT schema_name, object_identity
+        FROM pg_event_trigger_ddl_commands()
+        WHERE command_tag = 'CREATE TABLE'
+        LOOP
+            SELECT pg_catalog.pg_get_userbyid(nspowner)
+            INTO schema_owner
+            FROM pg_namespace
+            WHERE nspname = obj.schema_name;
+
+            RAISE LOG 'Execute: ALTER TABLE IF EXISTS % OWNER TO %', obj.object_identity, schema_owner;
+
+            IF schema_owner IS NOT NULL THEN
+                EXECUTE format(
+                    'ALTER TABLE IF EXISTS %s OWNER TO %I',
+                    obj.object_identity,
+                    schema_owner
+                );
+            END IF;
+        END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE EVENT TRIGGER change_table_owner
+    ON ddl_command_end
+    WHEN TAG IN ('CREATE TABLE', 'CREATE TABLE AS')
+EXECUTE FUNCTION change_owner();

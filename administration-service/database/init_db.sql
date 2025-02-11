@@ -87,6 +87,8 @@ ALTER DEFAULT PRIVILEGES
     ON TABLES
     TO adsliquibase;
 
+-- allows the liquibase user to use 'SET ROLE <superuser>'
+-- that's required to change an owner of a table
 DO $$
     BEGIN
         EXECUTE format('GRANT %I TO %I', current_user, 'adsliquibase');
@@ -160,6 +162,9 @@ ALTER DEFAULT PRIVILEGES
 
 
  -- change owner trigger
+ -- Foreign keys work on behalf of the table owner.
+ -- To avoid granting additional privileges to the liquibase user,
+ -- this trigger changes the table owner to the schema owner.
 
 
 CREATE OR REPLACE FUNCTION change_owner()
@@ -178,7 +183,7 @@ BEGIN
             FROM pg_namespace
             WHERE nspname = obj.schema_name;
 
-            RAISE WARNING 'BLABLA: ALTER TABLE IF EXISTS % OWNER TO %', obj.object_identity, schema_owner;
+            RAISE LOG 'Execute: ALTER TABLE IF EXISTS % OWNER TO %', obj.object_identity, schema_owner;
 
             IF schema_owner IS NOT NULL THEN
                 EXECUTE format(
