@@ -1,7 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: 0.0.1
       author: anatolyloyko
       changes:
         - sqlFile:
             path: changelog/0.0.1/01_init_table.sql
+        - tagDatabase:
+            tag: 0.0.1
+      rollback: empty
