@@ -2,4 +2,5 @@
 
 set -ex
 
-pg_prove ./tests/*.sql
+pg_prove ./tests/ --recurse --ext .sql
+pg_prove --verbose --failures --comments --runtests
