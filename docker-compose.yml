@@ -26,6 +26,7 @@ services:
     volumes:
       - ./user-service/database/changelog:/liquibase/changelog
       - ./user-service/database/test:/liquibase/tests
+      - ./postgres/test/_util:/liquibase/tests/_util
     command: sh -c "liquibase update && ./run_tests.sh"
 
   brand_db:
