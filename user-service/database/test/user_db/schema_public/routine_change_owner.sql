@@ -4,25 +4,26 @@ CREATE EXTENSION IF NOT EXISTS pgtap SCHEMA tap;
 
 SET search_path TO tap, tests, users, public;
 
+
 CREATE OR REPLACE FUNCTION tests.test_change_owner_routine_structure() RETURNS SETOF TEXT AS $$
 BEGIN
     RETURN NEXT has_function(
         'public',
         'change_owner',
-        'routine change_owner must exist'
+        'routine "CHANGE_OWNER" must exist'
     );
 
     RETURN NEXT is_normal_function(
         'public',
         'change_owner',
-        'routine change_owner must be a normal function'
+        'routine "CHANGE_OWNER" must be a normal function'
     );
 
     RETURN NEXT function_returns(
         'public',
         'change_owner',
         'event_trigger',
-        'routine change_owner must have EVENT_TRIGGER return type'
+        'routine "CHANGE_OWNER" must have "EVENT_TRIGGER" return type'
     );
 END;
 $$ LANGUAGE plpgsql;
@@ -40,10 +41,11 @@ BEGIN
         'public',
         'test_table',
         schema_owner,
-        'routine change_owner must change a table owner to a schema owner'
+        'routine "CHANGE_OWNER" must change a table owner to a schema owner'
     );
 END;
 $$ LANGUAGE plpgsql;
+
 
 select plan(2);
 select has_function('test_change_owner_routine_structure');

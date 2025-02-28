@@ -4,9 +4,13 @@ CREATE EXTENSION IF NOT EXISTS pgtap SCHEMA tap;
 
 SET search_path TO tap, tests, users, public;
 
+
 CREATE OR REPLACE FUNCTION tests.test_databasechangeloglock_table() RETURNS SETOF TEXT AS $$
 BEGIN
-    RETURN NEXT has_table('databasechangeloglock', 'table DATABASECHANGELOGLOCK must exist');
+    RETURN NEXT has_table(
+        'databasechangeloglock',
+        'table "DATABASECHANGELOGLOCK" must exist'
+    );
 END;
 $$ LANGUAGE plpgsql;
 

@@ -4,13 +4,14 @@ CREATE EXTENSION IF NOT EXISTS pgtap SCHEMA tap;
 
 SET search_path TO tap, tests, users, public;
 
-CREATE OR REPLACE FUNCTION tests.test_users_schema_exists() RETURNS SETOF TEXT AS $$
+
+CREATE OR REPLACE FUNCTION tests.test_schemas_structure() RETURNS SETOF TEXT AS $$
 BEGIN
-    RETURN NEXT has_schema('users', 'schema USERS must exist');
+    RETURN NEXT schemas_are(ARRAY ['public', 'users', 'tap', 'tests']);
 END;
 $$ LANGUAGE plpgsql;
 
 
 select plan(1);
-select has_function('test_users_schema_exists');
+select has_function('test_schemas_structure');
 select finish(true);

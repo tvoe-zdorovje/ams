@@ -21,5 +21,5 @@ $$ LANGUAGE plpgsql;
 
 
 select plan(1);
-select has_function('public', 'runtests', 'descSADFSDFSD');
+select has_function('public'::name, 'runtests'::name);
 select finish(true);
