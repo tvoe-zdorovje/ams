@@ -1,8 +1,4 @@
-CREATE SCHEMA IF NOT EXISTS tap;
-CREATE SCHEMA IF NOT EXISTS tests;
-CREATE EXTENSION IF NOT EXISTS pgtap SCHEMA tap;
-
-SET search_path TO tap, tests, users, public;
+SET search_path TO tap, tests, public;
 
 
 CREATE OR REPLACE FUNCTION tests.test_schemas_structure() RETURNS SETOF TEXT AS $$

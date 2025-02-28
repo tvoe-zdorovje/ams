@@ -2,13 +2,16 @@ CREATE SCHEMA IF NOT EXISTS tap;
 CREATE SCHEMA IF NOT EXISTS tests;
 CREATE EXTENSION IF NOT EXISTS pgtap SCHEMA tap;
 
-SET search_path TO tap, tests, users, public;
+SET search_path TO tap, tests, public;
 
 
-CREATE OR REPLACE FUNCTION public.runtests() RETURNS SETOF text AS
-$$
+CREATE OR REPLACE FUNCTION public.runtests() RETURNS SETOF TEXT AS $$
 BEGIN
-    SET search_path TO tap, tests, users, public;
+    EXECUTE 'SET search_path TO ' || (
+        SELECT string_agg(nspname, ', ')
+        FROM pg_catalog.pg_namespace
+        WHERE nspname NOT LIKE 'pg_%' AND nspname <> 'information_schema'
+    );
 
     RETURN QUERY SELECT * FROM tap.runtests('^test');
 
