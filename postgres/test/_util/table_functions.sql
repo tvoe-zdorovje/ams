@@ -26,7 +26,7 @@ BEGIN
         schema_name,
         table_name,
         schema_owner,
-        format('table "%s" must be owned by "%s"', UPPER(table_name), UPPER(schema_owner))
+        format('table "%s" must be owned by the schema owner: "%s"', UPPER(table_name), UPPER(schema_owner))
     );
 
 

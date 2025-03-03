@@ -156,5 +156,5 @@ $$ LANGUAGE plpgsql;
 
 CREATE EVENT TRIGGER change_table_owner
     ON ddl_command_end
-    WHEN TAG IN ('CREATE TABLE', 'CREATE TABLE AS')
+    WHEN TAG IN ('CREATE TABLE', 'CREATE TABLE AS', 'CREATE FOREIGN TABLE')
 EXECUTE FUNCTION change_owner();

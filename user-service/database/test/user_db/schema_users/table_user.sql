@@ -4,14 +4,14 @@ SET search_path TO tap, tests, public;
 CREATE OR REPLACE FUNCTION tests.test_users_table_structure() RETURNS SETOF TEXT AS $$
 BEGIN
     RETURN QUERY SELECT table_structure(
-        'users',
-        'user',
-        ARRAY [
+        schema_name := 'users',
+        table_name := 'user',
+        columns_with_type := ARRAY [
             'id INT',
             'first_name VARCHAR(50)',
             'last_name VARCHAR(50)'
         ],
-        'id'
+        primary_key := 'id'
    );
 END;
 $$ LANGUAGE plpgsql;
