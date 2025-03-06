@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS brands.brand(
+    id INT PRIMARY KEY NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(255) NOT NULL
+);

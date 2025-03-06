@@ -1,0 +1,150 @@
+services:
+  user_db:
+    build:
+      context: postgres
+      dockerfile: postgres.Dockerfile
+    container_name: user_db
+    restart: always
+    ports:
+        - "5441:5432"
+    volumes:
+      - user_db_volume:/var/lib/postgresql/data
+      - ./user-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    env_file:
+      - user-service/.env
+
+  liquibase_user_db:
+    build:
+      context: postgres
+      dockerfile: liquibase.Dockerfile
+    container_name: liquibase_user_db
+    restart: on-failure
+    env_file:
+      - user-service/.env
+    depends_on:
+      - user_db
+    volumes:
+      - ./user-service/database/changelog:/liquibase/changelog
+      - ./user-service/database/test:/liquibase/tests
+      - ./postgres/test/_util:/liquibase/tests/_util
+    command: sh -c "liquibase update && ./run_tests.sh"
+
+  brand_db:
+    build:
+      context: postgres
+      dockerfile: postgres.Dockerfile
+    container_name: brand_db
+    restart: always
+    ports:
+      - "5442:5432"
+    volumes:
+      - brand_db_volume:/var/lib/postgresql/data
+      - ./brand-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    env_file:
+      - brand-service/.env
+
+  liquibase_brand_db:
+    build:
+      context: postgres
+      dockerfile: liquibase.Dockerfile
+    container_name: liquibase_brand_db
+    restart: on-failure
+    env_file:
+      - brand-service/.env
+    depends_on:
+      - brand_db
+    volumes:
+      - ./brand-service/database/changelog:/liquibase/changelog
+      - ./brand-service/database/test:/liquibase/tests
+      - ./postgres/test/_util:/liquibase/tests/_util
+    command: sh -c "liquibase update && ./run_tests.sh"
+
+  studio_db:
+    build:
+      context: postgres
+      dockerfile: postgres.Dockerfile
+    container_name: studio_db
+    restart: always
+    ports:
+      - "5443:5432"
+    volumes:
+      - studio_db_volume:/var/lib/postgresql/data
+      - ./studio-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    env_file:
+      - studio-service/.env
+
+  liquibase_studio_db:
+    build:
+      context: postgres
+      dockerfile: liquibase.Dockerfile
+    container_name: liquibase_studio_db
+    restart: on-failure
+    env_file:
+      - studio-service/.env
+    depends_on:
+      - studio_db
+    volumes:
+      - ./studio-service/database/changelog:/liquibase/changelog
+      - ./studio-service/database/test:/liquibase/tests
+      - ./postgres/test/_util:/liquibase/tests/_util
+    command: sh -c "liquibase update && ./run_tests.sh"
+
+  administration_db:
+    build:
+      context: postgres
+      dockerfile: postgres.Dockerfile
+    container_name: administration_db
+    restart: always
+    ports:
+      - "5444:5432"
+    depends_on:
+      - user_db
+      - liquibase_user_db
+      - brand_db
+      - liquibase_brand_db
+      - studio_db
+      - liquibase_studio_db
+    volumes:
+      - administration_db_volume:/var/lib/postgresql/data
+      - ./administration-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_administration_db.sql
+      - ./appointment-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_appointment_db.sql
+    env_file:
+      - administration-service/.env
+
+  liquibase_administration_db:
+    build:
+      context: postgres
+      dockerfile: liquibase.Dockerfile
+    container_name: liquibase_administration_db
+    restart: on-failure
+    env_file:
+      - administration-service/.env
+    depends_on:
+      - administration_db
+    volumes:
+      - ./administration-service/database/changelog:/liquibase/changelog
+      - ./administration-service/database/test:/liquibase/tests
+      - ./postgres/test/_util:/liquibase/tests/_util
+    command: sh -c "liquibase update && ./run_tests.sh"
+
+  liquibase_appointment_db:
+    build:
+      context: postgres
+      dockerfile: liquibase.Dockerfile
+    container_name: liquibase_appointment_db
+    restart: on-failure
+    env_file:
+      - appointment-service/.env
+    depends_on:
+      - administration_db
+    volumes:
+      - ./appointment-service/database/changelog:/liquibase/changelog
+      - ./appointment-service/database/test:/liquibase/tests
+      - ./postgres/test/_util:/liquibase/tests/_util
+    command: sh -c "liquibase update && ./run_tests.sh"
+
+volumes:
+  user_db_volume:
+  brand_db_volume:
+  studio_db_volume:
+  administration_db_volume:
