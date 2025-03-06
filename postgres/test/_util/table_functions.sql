@@ -4,8 +4,7 @@ SET search_path TO tap, tests, public;
 CREATE OR REPLACE FUNCTION tests.table_structure(
     schema_name NAME,
     table_name NAME,
-    columns_with_type TEXT[],
-    primary_key TEXT
+    columns_with_type TEXT[]
 ) RETURNS SETOF TEXT AS $$
 DECLARE
     column_with_type TEXT;
@@ -51,13 +50,73 @@ BEGIN
         column_names,
         format('table "%s" must not have extra columns', UPPER(table_name))
     );
+END;
+$$ LANGUAGE plpgsql;
 
+
+CREATE OR REPLACE FUNCTION tests.table_structure(
+    schema_name NAME,
+    table_name NAME,
+    columns_with_type TEXT[],
+    primary_key NAME
+) RETURNS SETOF TEXT AS $$
+BEGIN
+    RETURN QUERY SELECT table_structure(
+        schema_name := schema_name,
+        table_name := table_name,
+        columns_with_type := columns_with_type
+    );
 
     RETURN QUERY SELECT col_is_pk(
         schema_name,
         table_name,
         primary_key,
         format('table "%s" must have "%s" primary key', UPPER(table_name), UPPER(primary_key))
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION tests.table_structure(
+    schema_name NAME,
+    table_name NAME,
+    columns_with_type TEXT[],
+    foreign_keys NAME[],
+    unique_columns NAME[]
+) RETURNS SETOF TEXT AS $$
+    DECLARE
+        foreign_key NAME;
+BEGIN
+    RETURN QUERY SELECT table_structure(
+        schema_name := schema_name,
+        table_name := table_name,
+        columns_with_type := columns_with_type
+    );
+
+
+    FOREACH foreign_key IN ARRAY foreign_keys LOOP
+        RETURN QUERY SELECT col_is_fk(
+            schema_name,
+            table_name,
+            foreign_key,
+            format('table "%s" must have foreign key on the "%s" column', UPPER(table_name), UPPER(foreign_key))
+        );
+    END LOOP;
+
+
+    IF unique_columns IS NULL OR array_length(unique_columns, 1) IS NULL THEN
+        RETURN;
+    END IF;
+
+    RETURN QUERY SELECT col_is_unique(
+        schema_name,
+        table_name,
+        unique_columns,
+        format(
+            'table "%s" must have an unique constraint on the following columns: %s',
+            UPPER(table_name),
+            unique_columns
+        )
     );
 END;
 $$ LANGUAGE plpgsql;

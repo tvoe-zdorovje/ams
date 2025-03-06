@@ -24,6 +24,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-select plan(1);
+select plan(2);
 select has_function('test_administration_fdw_db_server_structure');
+select has_function('test_administration_fdw_db_server_user_mapping');
 select finish(true);
