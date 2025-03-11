@@ -1,7 +1,7 @@
 package by.anatolyloyko.ams.brand.graphql.resolver
 
 import by.anatolyloyko.ams.brand.query.GetBrandQuery
-import by.anatolyloyko.ams.infrastructure.service.query.QueryGateway
+import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller

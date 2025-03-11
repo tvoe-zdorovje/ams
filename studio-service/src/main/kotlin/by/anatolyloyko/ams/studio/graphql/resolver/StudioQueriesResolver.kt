@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.studio.graphql.resolver
 
-import by.anatolyloyko.ams.infrastructure.service.query.QueryGateway
+import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
 import by.anatolyloyko.ams.studio.query.GetStudioQuery
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.SchemaMapping

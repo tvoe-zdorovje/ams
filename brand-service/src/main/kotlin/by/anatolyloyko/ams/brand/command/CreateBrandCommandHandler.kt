@@ -1,7 +1,7 @@
 package by.anatolyloyko.ams.brand.command
 
 import by.anatolyloyko.ams.brand.action.CreateBrandAction
-import by.anatolyloyko.ams.infrastructure.service.command.BaseCommandHandler
+import by.anatolyloyko.ams.common.infrastructure.service.command.BaseCommandHandler
 import org.springframework.stereotype.Component
 
 /**

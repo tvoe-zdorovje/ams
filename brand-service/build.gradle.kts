@@ -11,8 +11,10 @@ plugins {
     id("io.spring.dependency-management")
 }
 
+val jdkVersion: Int = (project.findProperty("jdkVersion") as String).toInt()
+
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(jdkVersion)
 }
 
 dependencies {

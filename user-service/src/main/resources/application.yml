@@ -1,5 +1,0 @@
-debug: false
-spring:
-    graphql:
-        graphiql:
-            enabled: true

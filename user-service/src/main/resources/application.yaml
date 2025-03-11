@@ -1,0 +1,9 @@
+debug: false
+spring:
+    graphql:
+        graphiql:
+            enabled: true
+    datasource:
+        url: jdbc:postgresql://localhost:5441/user_db
+        username: ussportal
+        password: ussportal

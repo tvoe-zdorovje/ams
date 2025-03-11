@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.user.graphql.resolver
 
-import by.anatolyloyko.ams.infrastructure.service.command.CommandGateway
+import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
 import by.anatolyloyko.ams.user.command.CreateUserCommand
 import by.anatolyloyko.ams.user.graphql.dto.CreateUserRequest
 import by.anatolyloyko.ams.user.model.User

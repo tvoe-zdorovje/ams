@@ -2,7 +2,7 @@ package by.anatolyloyko.ams.appointment.query
 
 import by.anatolyloyko.ams.appointment.finder.AppointmentFinder
 import by.anatolyloyko.ams.appointment.model.Appointment
-import by.anatolyloyko.ams.infrastructure.service.query.BaseQueryHandler
+import by.anatolyloyko.ams.common.infrastructure.service.query.BaseQueryHandler
 import org.springframework.stereotype.Component
 
 /**

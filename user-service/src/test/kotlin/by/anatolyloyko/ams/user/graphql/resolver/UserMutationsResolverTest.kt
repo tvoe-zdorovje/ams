@@ -1,8 +1,8 @@
 package by.anatolyloyko.ams.user.graphql.resolver
 
-import by.anatolyloyko.ams.infrastructure.service.command.CommandGateway
-import by.anatolyloyko.ams.infrastructure.testing.get
-import by.anatolyloyko.ams.infrastructure.testing.matches
+import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
+import by.anatolyloyko.ams.common.infrastructure.testing.get
+import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import by.anatolyloyko.ams.user.USER_ID
 import by.anatolyloyko.ams.user.command.CreateUserCommand
 import com.ninjasquad.springmockk.MockkBean

@@ -1,3 +1,4 @@
+import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
@@ -11,8 +12,10 @@ plugins {
     id("io.spring.dependency-management")
 }
 
+val jdkVersion: Int = (project.findProperty("jdkVersion") as String).toInt()
+
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(jdkVersion)
 }
 
 dependencies {
@@ -36,8 +39,18 @@ sourceSets {
     }
 }
 
+tasks.register("generateDatabaseSchema") {
+    group = "generation"
+    description = "Generate Kotlin classes representing database tables based on a database schema."
+
+    doLast {
+        GenerateDatabaseSchemasTask(project)
+            .execute("users")
+    }
+}
+
 tasks.withType<BootJar> {
-    mainClass.set("by.anatolyloyko.ams.user.UserServiceApplication")
+    mainClass.set("${project.group}.user.UserServiceApplication")
 }
 
 tasks.test {

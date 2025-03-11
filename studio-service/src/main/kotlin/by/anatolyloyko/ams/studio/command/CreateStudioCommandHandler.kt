@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.studio.command
 
-import by.anatolyloyko.ams.infrastructure.service.command.BaseCommandHandler
+import by.anatolyloyko.ams.common.infrastructure.service.command.BaseCommandHandler
 import by.anatolyloyko.ams.studio.action.CreateStudioAction
 import org.springframework.stereotype.Component
 

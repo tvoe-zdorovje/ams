@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.user.command
 
-import by.anatolyloyko.ams.infrastructure.service.command.BaseCommandHandler
+import by.anatolyloyko.ams.common.infrastructure.service.command.BaseCommandHandler
 import by.anatolyloyko.ams.user.action.CreateUserAction
 import org.springframework.stereotype.Component
 
