@@ -3,7 +3,7 @@ package by.anatolyloyko.ams.user.finder
 import by.anatolyloyko.ams.user.model.User
 
 /**
- * Finder responsible for finding a user.
+ * Finder responsible for finding users.
  */
 interface UserFinder {
     /**

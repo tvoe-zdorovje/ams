@@ -24,13 +24,18 @@ dependencyResolutionManagement {
 }
 
 pluginManagement {
+    val kotlinVersion: String by settings
+    val springBootVersion: String by settings
+    val springDependencyManagementVersion: String by settings
+    val foojayResolverConventionVersion: String by settings
+
     plugins {
-        kotlin("jvm") version "2.1.10"
-        kotlin("plugin.spring") version "2.1.0"
+        kotlin("jvm") version kotlinVersion
+        kotlin("plugin.spring") version kotlinVersion
 
-        id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+        id("org.gradle.toolchains.foojay-resolver-convention") version foojayResolverConventionVersion
 
-        id("org.springframework.boot") version "3.4.2"
-        id("io.spring.dependency-management") version "1.1.7"
+        id("org.springframework.boot") version springBootVersion
+        id("io.spring.dependency-management") version springDependencyManagementVersion
     }
 }

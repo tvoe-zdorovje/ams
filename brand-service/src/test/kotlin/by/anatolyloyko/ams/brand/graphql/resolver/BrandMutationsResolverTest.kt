@@ -3,9 +3,9 @@ package by.anatolyloyko.ams.brand.graphql.resolver
 import by.anatolyloyko.ams.brand.BRAND
 import by.anatolyloyko.ams.brand.BRAND_ID
 import by.anatolyloyko.ams.brand.command.CreateBrandCommand
-import by.anatolyloyko.ams.infrastructure.service.command.CommandGateway
-import by.anatolyloyko.ams.infrastructure.testing.get
-import by.anatolyloyko.ams.infrastructure.testing.matches
+import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
+import by.anatolyloyko.ams.common.infrastructure.testing.get
+import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.junit.jupiter.api.Test

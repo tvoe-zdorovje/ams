@@ -1,8 +1,8 @@
 package by.anatolyloyko.ams.studio.graphql.resolver
 
-import by.anatolyloyko.ams.infrastructure.service.command.CommandGateway
-import by.anatolyloyko.ams.infrastructure.testing.get
-import by.anatolyloyko.ams.infrastructure.testing.matches
+import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
+import by.anatolyloyko.ams.common.infrastructure.testing.get
+import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import by.anatolyloyko.ams.studio.STUDIO
 import by.anatolyloyko.ams.studio.STUDIO_ID
 import by.anatolyloyko.ams.studio.command.CreateStudioCommand

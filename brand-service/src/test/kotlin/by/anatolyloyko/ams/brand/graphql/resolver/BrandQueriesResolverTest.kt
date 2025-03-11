@@ -2,9 +2,9 @@ package by.anatolyloyko.ams.brand.graphql.resolver
 
 import by.anatolyloyko.ams.brand.BRAND
 import by.anatolyloyko.ams.brand.query.GetBrandQuery
-import by.anatolyloyko.ams.infrastructure.service.query.QueryGateway
-import by.anatolyloyko.ams.infrastructure.testing.get
-import by.anatolyloyko.ams.infrastructure.testing.matches
+import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
+import by.anatolyloyko.ams.common.infrastructure.testing.get
+import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.junit.jupiter.api.Test

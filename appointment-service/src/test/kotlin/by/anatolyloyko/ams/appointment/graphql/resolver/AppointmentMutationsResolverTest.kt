@@ -3,9 +3,9 @@ package by.anatolyloyko.ams.appointment.graphql.resolver
 import by.anatolyloyko.ams.appointment.APPOINTMENT
 import by.anatolyloyko.ams.appointment.APPOINTMENT_ID
 import by.anatolyloyko.ams.appointment.command.CreateAppointmentCommand
-import by.anatolyloyko.ams.infrastructure.service.command.CommandGateway
-import by.anatolyloyko.ams.infrastructure.testing.get
-import by.anatolyloyko.ams.infrastructure.testing.matches
+import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
+import by.anatolyloyko.ams.common.infrastructure.testing.get
+import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.junit.jupiter.api.Test

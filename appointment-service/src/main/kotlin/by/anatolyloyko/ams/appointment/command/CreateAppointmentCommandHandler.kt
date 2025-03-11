@@ -1,7 +1,7 @@
 package by.anatolyloyko.ams.appointment.command
 
 import by.anatolyloyko.ams.appointment.action.CreateAppointmentAction
-import by.anatolyloyko.ams.infrastructure.service.command.BaseCommandHandler
+import by.anatolyloyko.ams.common.infrastructure.service.command.BaseCommandHandler
 import org.springframework.stereotype.Component
 
 /**

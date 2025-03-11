@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.studio.query
 
-import by.anatolyloyko.ams.infrastructure.service.query.BaseQueryHandler
+import by.anatolyloyko.ams.common.infrastructure.service.query.BaseQueryHandler
 import by.anatolyloyko.ams.studio.finder.StudioFinder
 import by.anatolyloyko.ams.studio.model.Studio
 import org.springframework.stereotype.Component

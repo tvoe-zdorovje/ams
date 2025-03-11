@@ -1,7 +1,7 @@
 package by.anatolyloyko.ams.appointment.query
 
 import by.anatolyloyko.ams.appointment.model.Appointment
-import by.anatolyloyko.ams.infrastructure.service.query.BaseQuery
+import by.anatolyloyko.ams.common.infrastructure.service.query.BaseQuery
 
 /**
  * A query to retrieve a appointment {@link Appointment} by ID {@link Long}.

@@ -13,9 +13,20 @@ plugins {
     id("io.spring.dependency-management")
 }
 
+val jdkVersion: Int = (project.findProperty("jdkVersion") as String).toInt()
+
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(jdkVersion)
 }
+
+val databaseDriver: String by project
+
+val exposedSpringBootStarterVersion: String by project
+val logbookSpringBootStarterVersion: String by project
+
+val mockkVersion: String by project
+val springMockkVersion: String by project
+val h2Version: String by project
 
 dependencies {
     api(kotlin("stdlib"))
@@ -24,9 +35,17 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-logging")
     api("org.springframework.boot:spring-boot-starter-graphql")
     api("org.springframework.boot:spring-boot-starter-web")
+
+    api(
+        group = "org.jetbrains.exposed",
+        name = "exposed-spring-boot-starter",
+        version = exposedSpringBootStarterVersion
+    )
+    api(group = "org.zalando", name = "logbook-spring-boot-starter", version = logbookSpringBootStarterVersion)
+
     compileOnly("org.springframework.graphql:spring-graphql-test")
 
-    api(group = "org.zalando", name = "logbook-spring-boot-starter", version = "3.10.0")
+    api(databaseDriver)
 
 
     testFixturesApi("org.springframework.boot:spring-boot-starter-test") {
@@ -35,8 +54,10 @@ dependencies {
     testFixturesApi("org.springframework.graphql:spring-graphql-test")
     testFixturesApi("org.springframework.boot:spring-boot-starter-webflux")
 
-    testFixturesApi(group = "io.mockk", name = "mockk", version = "1.13.16")
-    testFixturesApi(group = "com.ninja-squad", name = "springmockk", version = "4.0.2")
+    testFixturesApi(group = "io.mockk", name = "mockk", version = mockkVersion)
+    testFixturesApi(group = "com.ninja-squad", name = "springmockk", version = springMockkVersion)
+
+    testFixturesApi("com.h2database", "h2", h2Version)
 }
 
 tasks.withType<BootJar> {

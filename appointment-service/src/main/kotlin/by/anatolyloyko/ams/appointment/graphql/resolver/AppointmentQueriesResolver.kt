@@ -1,7 +1,7 @@
 package by.anatolyloyko.ams.appointment.graphql.resolver
 
 import by.anatolyloyko.ams.appointment.query.GetAppointmentQuery
-import by.anatolyloyko.ams.infrastructure.service.query.QueryGateway
+import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller

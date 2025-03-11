@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.studio.graphql.resolver
 
-import by.anatolyloyko.ams.infrastructure.service.command.CommandGateway
+import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
 import by.anatolyloyko.ams.studio.command.CreateStudioCommand
 import by.anatolyloyko.ams.studio.graphql.dto.CreateStudioRequest
 import by.anatolyloyko.ams.studio.model.Studio

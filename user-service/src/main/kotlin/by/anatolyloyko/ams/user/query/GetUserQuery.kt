@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.user.query
 
-import by.anatolyloyko.ams.infrastructure.service.query.BaseQuery
+import by.anatolyloyko.ams.common.infrastructure.service.query.BaseQuery
 import by.anatolyloyko.ams.user.model.User
 
 /**

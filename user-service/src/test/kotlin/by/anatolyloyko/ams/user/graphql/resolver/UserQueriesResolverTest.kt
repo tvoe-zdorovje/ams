@@ -1,8 +1,8 @@
 package by.anatolyloyko.ams.user.graphql.resolver
 
-import by.anatolyloyko.ams.infrastructure.service.query.QueryGateway
-import by.anatolyloyko.ams.infrastructure.testing.get
-import by.anatolyloyko.ams.infrastructure.testing.matches
+import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
+import by.anatolyloyko.ams.common.infrastructure.testing.get
+import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import by.anatolyloyko.ams.user.USER
 import by.anatolyloyko.ams.user.query.GetUserQuery
 import com.ninjasquad.springmockk.MockkBean

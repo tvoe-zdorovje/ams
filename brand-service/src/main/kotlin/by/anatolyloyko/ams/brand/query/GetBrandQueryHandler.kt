@@ -2,7 +2,7 @@ package by.anatolyloyko.ams.brand.query
 
 import by.anatolyloyko.ams.brand.finder.BrandFinder
 import by.anatolyloyko.ams.brand.model.Brand
-import by.anatolyloyko.ams.infrastructure.service.query.BaseQueryHandler
+import by.anatolyloyko.ams.common.infrastructure.service.query.BaseQueryHandler
 import org.springframework.stereotype.Component
 
 /**

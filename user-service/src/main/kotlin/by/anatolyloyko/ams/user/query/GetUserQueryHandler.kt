@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.user.query
 
-import by.anatolyloyko.ams.infrastructure.service.query.BaseQueryHandler
+import by.anatolyloyko.ams.common.infrastructure.service.query.BaseQueryHandler
 import by.anatolyloyko.ams.user.finder.UserFinder
 import by.anatolyloyko.ams.user.model.User
 import org.springframework.stereotype.Component
