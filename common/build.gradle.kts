@@ -26,6 +26,7 @@ val logbookSpringBootStarterVersion: String by project
 
 val mockkVersion: String by project
 val springMockkVersion: String by project
+val h2Version: String by project
 
 dependencies {
     api(kotlin("stdlib"))
@@ -55,6 +56,8 @@ dependencies {
 
     testFixturesApi(group = "io.mockk", name = "mockk", version = mockkVersion)
     testFixturesApi(group = "com.ninja-squad", name = "springmockk", version = springMockkVersion)
+
+    testFixturesApi("com.h2database", "h2", h2Version)
 }
 
 tasks.withType<BootJar> {

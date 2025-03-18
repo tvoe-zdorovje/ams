@@ -28,7 +28,7 @@ private const val KDOC = """
  *  █
  *  ███████████████████████████████████████████████████████████████████
 
- Represents a table in the database.
+ Represents the %L table in the database.
  
  Defines the structure of the table to facilitate database operations using the Exposed library.
 """
@@ -102,12 +102,20 @@ internal abstract class KotlinPoetSchemaGenerator(
     private fun generateSchema(schemaInfo: SchemaInfo): List<Path> = schemaInfo
         .tables
         .map { tableInfo ->
+            val schemaName = schemaInfo.name
+            val className = "${tableInfo.name.normalize(true)}Table"
             FileSpec
                 .builder(
-                    packageName = "$destinationPackage.${schemaInfo.name}",
-                    fileName = tableInfo.name.normalize(true)
+                    packageName = "$destinationPackage.$schemaName",
+                    fileName = className
                 )
-                .addType(generateTypeSpec(tableInfo))
+                .addType(
+                    generateTypeSpec(
+                        schemaName = schemaName,
+                        className = className,
+                        tableInfo = tableInfo
+                    )
+                )
                 .build()
         }
         .map { fileSpec ->
@@ -117,23 +125,24 @@ internal abstract class KotlinPoetSchemaGenerator(
             Paths.get(destinationDirectory.toString(), fileSpec.relativePath)
         }
 
-    private fun generateTypeSpec(tableInfo: SchemaInfo.TableInfo): TypeSpec {
-        val className = tableInfo.name.normalize(true)
-
-        return TypeSpec
-            .objectBuilder(className)
-            .addModifiers(KModifier.INTERNAL)
-            .superclass(Table::class)
-            .addKdoc()
-            .suppress("MagicNumber")
-            .addProperties(
-                tableInfo
-                    .columns
-                    .map(::generatePropertySpec)
-            )
-            .addPrimarykey()
-            .build()
-    }
+    private fun generateTypeSpec(
+        schemaName: String,
+        className: String,
+        tableInfo: SchemaInfo.TableInfo
+    ): TypeSpec = TypeSpec
+        .objectBuilder(className)
+        .addModifiers(KModifier.INTERNAL)
+        .superclass(Table::class)
+        .addSuperclassConstructorParameter("%S", "$schemaName.${tableInfo.name}")
+        .addKdoc()
+        .suppress("MagicNumber")
+        .addProperties(
+            tableInfo
+                .columns
+                .map(::generatePropertySpec)
+        )
+        .addPrimarykey()
+        .build()
 
     private fun generatePropertySpec(columnInfo: SchemaInfo.TableInfo.ColumnInfo): PropertySpec {
         val name = columnInfo.name
@@ -158,7 +167,10 @@ internal abstract class KotlinPoetSchemaGenerator(
 
     private fun TypeSpec.Builder.addKdoc() = this.addKdoc(
         KDOC,
+        // a module name for the task invocation example
         pathToDestinationModule.substringAfterLast(File.separatorChar),
+        // a table name (including a schema name)
+        superclassConstructorParameters.first()
     )
 
     private fun TypeSpec.Builder.suppress(vararg values: String) = this.addAnnotation(
