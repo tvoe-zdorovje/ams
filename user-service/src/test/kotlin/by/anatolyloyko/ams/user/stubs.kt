@@ -2,7 +2,7 @@ package by.anatolyloyko.ams.user
 
 import by.anatolyloyko.ams.user.model.User
 
-const val USER_ID = 1000000010004131211
+const val USER_ID = 100000001413121100
 
 val NEW_USER = User(
     firstName = "Alexey",

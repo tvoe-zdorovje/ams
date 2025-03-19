@@ -7,7 +7,7 @@ BEGIN
         schema_name := 'users',
         table_name := 'user',
         columns_with_type := ARRAY [
-            'id INT',
+            'id BIGINT',
             'first_name VARCHAR(50)',
             'last_name VARCHAR(50)'
         ],
