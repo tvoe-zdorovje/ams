@@ -83,8 +83,8 @@ GRANT USAGE
 ALTER DEFAULT PRIVILEGES
     FOR USER ussliquibase
     IN SCHEMA users
-    GRANT SELECT
-    ON TABLES TO ussportal;
+    GRANT SELECT, UPDATE
+    ON SEQUENCES TO ussportal;
 ALTER DEFAULT PRIVILEGES
     FOR USER ussliquibase
     IN SCHEMA users

@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.tasks
 
-import by.anatolyloyko.ams.orm.util.generator.SchemaGenerator
+import by.anatolyloyko.ams.orm.exposed.util.generator.SchemaGenerator
 import org.gradle.api.Project
 import org.yaml.snakeyaml.Yaml
 

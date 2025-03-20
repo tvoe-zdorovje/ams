@@ -20,6 +20,15 @@ internal inline fun <T> T.alsoIf(condition: Boolean, block: (T) -> Unit): T {
 }
 
 /**
+ * Converts the first character of the string to uppercase.
+ *
+ * @return a new string with the first character in uppercase.
+ */
+internal fun String.uppercaseFirstChar() = replaceFirstChar {
+    if (it.isLowerCase()) it.uppercaseChar() else it
+}
+
+/**
  * Converts the first character of the string to lowercase.
  *
  * @return a new string with the first character in lowercase.

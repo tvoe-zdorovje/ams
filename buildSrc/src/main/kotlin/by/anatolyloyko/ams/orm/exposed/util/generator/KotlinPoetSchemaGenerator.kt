@@ -1,21 +1,25 @@
-package by.anatolyloyko.ams.orm.util.generator
+package by.anatolyloyko.ams.orm.exposed.util.generator
 
 import by.anatolyloyko.ams.infrastructure.kotlin.alsoIf
 import by.anatolyloyko.ams.infrastructure.kotlin.lowercaseFirstChar
-import by.anatolyloyko.ams.orm.exposed.util.generator.DataTypeMapping
+import by.anatolyloyko.ams.infrastructure.kotlin.uppercaseFirstChar
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asTypeName
 import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.CustomFunction
+import org.jetbrains.exposed.sql.QueryParameter
 import org.jetbrains.exposed.sql.Table
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.reflect.KClass
+
 
 private const val MODULE_DESTINATION_DIRECTORY = "src/main/kotlin"
 
@@ -28,12 +32,10 @@ private const val KDOC = """
  *  █
  *  ███████████████████████████████████████████████████████████████████
 
- Represents the %L table in the database.
+ Represents the %L %L in the database.
  
- Defines the structure of the table to facilitate database operations using the Exposed library.
+ Defines the structure to facilitate database operations using the Exposed library.
 """
-
-private const val VARCHAR_TYPE_NAME = "varchar"
 
 private const val PRIMARY_KEY_PROPERTY_NAME = "primaryKey"
 
@@ -43,11 +45,12 @@ private const val NULLABLE_INITIALIZER = "\n.nullable()"
 
 private const val NAME_DELIMITER = "_"
 
+
 /**
  * Abstract implementation of [SchemaGenerator] for generating Kotlin classes using the KotlinPoet library.
  *
  * The class relies on the KotlinPoet library
- * to generate the Kotlin code representing database tables based on schema information,
+ * to generate the Kotlin code representing database tables and functions based on schema information,
  * and it provides the structure to define the schema lookup logic via the abstract method [lookupSchemas].
  *
  * This implementation first looks up schemas by their names,
@@ -61,7 +64,7 @@ internal abstract class KotlinPoetSchemaGenerator(
     private val destinationPackage: String,
 ) : SchemaGenerator {
     /**
-     * Generates Kotlin classes representing the structure of tables in the provided schemas.
+     * Generates Kotlin classes representing the structure of tables and functions in the provided schemas.
      *
      * This method looks up corresponding schema information for the given schema names,
      * and generates Kotlin classes for each schema. The method ensures that the list of schema names is not empty.
@@ -99,60 +102,116 @@ internal abstract class KotlinPoetSchemaGenerator(
      * @param schemaInfo an object containing the schema details.
      * @return a list of paths to the generated Kotlin files.
      */
-    private fun generateSchema(schemaInfo: SchemaInfo): List<Path> = schemaInfo
-        .tables
-        .map { tableInfo ->
-            val schemaName = schemaInfo.name
-            val className = "${tableInfo.name.normalize(true)}Table"
-            FileSpec
-                .builder(
-                    packageName = "$destinationPackage.$schemaName",
-                    fileName = className
-                )
-                .addType(
-                    generateTypeSpec(
-                        schemaName = schemaName,
-                        className = className,
-                        tableInfo = tableInfo
-                    )
-                )
-                .build()
-        }
-        .map { fileSpec ->
-            val destinationDirectory = Paths.get(pathToDestinationModule, MODULE_DESTINATION_DIRECTORY)
-            fileSpec.writeTo(destinationDirectory)
-
-            Paths.get(destinationDirectory.toString(), fileSpec.relativePath)
+    private fun generateSchema(schemaInfo: SchemaInfo): List<Path> {
+        val tableFileSpecs = schemaInfo.tables.map {
+            buildTableFileSpec(schemaInfo.name, it)
         }
 
-    private fun generateTypeSpec(
+        val functionFileSpecs: List<FileSpec> = schemaInfo.functions.map {
+            buildFunctionFileSpec(schemaInfo.name, it)
+        }
+
+        return (tableFileSpecs + functionFileSpecs)
+            .map { fileSpec ->
+                val destinationDirectory = Paths.get(pathToDestinationModule, MODULE_DESTINATION_DIRECTORY)
+                fileSpec.writeTo(destinationDirectory)
+
+                Paths.get(destinationDirectory.toString(), fileSpec.relativePath)
+            }
+    }
+
+    private fun buildTableFileSpec(
         schemaName: String,
-        className: String,
         tableInfo: SchemaInfo.TableInfo
-    ): TypeSpec = TypeSpec
-        .objectBuilder(className)
-        .addModifiers(KModifier.INTERNAL)
-        .superclass(Table::class)
-        .addSuperclassConstructorParameter("%S", "$schemaName.${tableInfo.name}")
-        .addKdoc()
-        .suppress("MagicNumber")
-        .addProperties(
-            tableInfo
-                .columns
-                .map(::generatePropertySpec)
-        )
-        .addPrimarykey()
-        .build()
+    ): FileSpec {
+        val objectType = "table"
+        val className = "${tableInfo.name.normalize(true)}${objectType.uppercaseFirstChar()}"
+
+        return FileSpec
+            .builder(
+                packageName = "$destinationPackage.$schemaName.$objectType",
+                fileName = className
+            )
+            .addType(
+                TypeSpec
+                    .objectBuilder(className)
+                    .addModifiers(KModifier.INTERNAL)
+                    .superclass(Table::class)
+                    .addSuperclassConstructorParameter("%S", "$schemaName.${tableInfo.name}")
+                    .addKdoc(objectType = objectType)
+                    .suppress("MagicNumber")
+                    .addProperties(
+                        tableInfo
+                            .columns
+                            .map(::generatePropertySpec)
+                    )
+                    .addPrimarykey()
+                    .build()
+            )
+            .build()
+    }
+
+    private fun buildFunctionFileSpec(
+        schemaName: String,
+        functionInfo: SchemaInfo.FunctionInfo
+    ): FileSpec {
+        val functionType = functionInfo.type
+        val className = "${functionInfo.name.normalize(true)}${functionType.uppercaseFirstChar()}"
+
+
+        return FileSpec
+            .builder(
+                packageName = "$destinationPackage.$schemaName.$functionType",
+                fileName = className
+            )
+            .addType(
+                TypeSpec
+                    .classBuilder(className)
+                    .addModifiers(KModifier.INTERNAL)
+                    .superclass(CustomFunction::class.parameterizedBy(functionInfo.resultType.propertyType))
+                    .primaryConstructor(
+                        FunSpec
+                            .constructorBuilder()
+                            .apply {
+                                functionInfo.arguments.forEach { (name, type) ->
+                                    addParameter(
+                                        name = name.normalize(),
+                                        type = type.propertyType.asTypeName().copy(nullable = true)
+                                    )
+                                }
+                            }
+                            .build()
+                    )
+                    .addSuperclassConstructorParameter("\n\t%S", "$schemaName.${functionInfo.name}")
+                    .addSuperclassConstructorParameter("\n\t%T()", functionInfo.resultType.exposedColumnType::class)
+                    .apply {
+                        functionInfo.arguments.forEach { (name, type) ->
+                            addSuperclassConstructorParameter(
+                                "\n\t%T(%L, %T().%L)",
+                                QueryParameter::class,
+                                name.normalize(),
+                                type.exposedColumnType::class,
+                                "apply { nullable = true }"
+                            )
+                        }
+                            addSuperclassConstructorParameter("\n")
+                    }
+                    .addKdoc(objectType = functionType)
+                    .suppress("MagicNumber", "ConstructorParameterNaming")
+                    .build()
+            )
+            .build()
+    }
 
     private fun generatePropertySpec(columnInfo: SchemaInfo.TableInfo.ColumnInfo): PropertySpec {
         val name = columnInfo.name
         val type = columnInfo.type
-        val isPrecisedVarchar = type == VARCHAR_TYPE_NAME && columnInfo.varcharLength != null
+        val isPrecisedVarchar = type == DataType.varchar && columnInfo.varcharLength != null
 
         return PropertySpec
             .builder(
                 name = columnInfo.name.normalize(),
-                type = Column::class.parameterizedBy(type.toKClass())
+                type = Column::class.parameterizedBy(type.propertyType)
             )
             .initializer(
                 CodeBlock
@@ -165,12 +224,14 @@ internal abstract class KotlinPoetSchemaGenerator(
             .build()
     }
 
-    private fun TypeSpec.Builder.addKdoc() = this.addKdoc(
+    private fun TypeSpec.Builder.addKdoc(objectType: String) = this.addKdoc(
         KDOC,
         // a module name for the task invocation example
         pathToDestinationModule.substringAfterLast(File.separatorChar),
-        // a table name (including a schema name)
-        superclassConstructorParameters.first()
+        // an object name (including a schema name)
+        superclassConstructorParameters.first(),
+        // an object type (table | function | procedure)
+        objectType
     )
 
     private fun TypeSpec.Builder.suppress(vararg values: String) = this.addAnnotation(
@@ -202,9 +263,4 @@ internal abstract class KotlinPoetSchemaGenerator(
             }
         }
         .alsoIf(!capitalizeFirstChar) { return it.lowercaseFirstChar() }
-
-    private fun String.toKClass(): KClass<*> =
-        DataTypeMapping
-            .findByColumnType(this)
-            .propertyType
 }

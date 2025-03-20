@@ -1,6 +1,5 @@
-package by.anatolyloyko.ams.orm.util.generator
+package by.anatolyloyko.ams.orm.exposed.util.generator
 
-import by.anatolyloyko.ams.orm.exposed.util.generator.ExposeSchemaGenerator
 import java.nio.file.Path
 
 /**

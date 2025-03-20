@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.user.finder
 
-import by.anatolyloyko.ams.orm.exposed.schemas.users.UserTable
+import by.anatolyloyko.ams.orm.exposed.schemas.users.table.UserTable
 import org.assertj.core.api.WithAssertions
 import org.jetbrains.exposed.sql.Schema
 import org.jetbrains.exposed.sql.SchemaUtils

@@ -1,9 +1,9 @@
 package by.anatolyloyko.ams.orm.exposed.util.generator
 
-import by.anatolyloyko.ams.orm.util.generator.KotlinPoetSchemaGenerator
-import by.anatolyloyko.ams.orm.util.generator.SchemaInfo
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Expression
 import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.leftJoin
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -50,7 +50,7 @@ internal class ExposeSchemaGenerator(
             password = password
         )
     ) {
-        TableColumnInfoTable
+        val tablesData = TableColumnInfoTable
             .selectAll()
             .where { TableColumnInfoTable.tableSchema inList schemaNames }
             .orderBy(
@@ -58,6 +58,38 @@ internal class ExposeSchemaGenerator(
                 TableColumnInfoTable.columnOrdinalPosition to SortOrder.ASC
             )
             .toList()
-            .let(ExposeSchemaInfoMapper::map)
+
+        Expression
+        val functionsData = PgProcTable
+            .leftJoin(PgNamespaceTable) { PgProcTable.namespace eq PgNamespaceTable.oid }
+            .select(
+                PgProcTable.name,
+                PgProcTable.type,
+                PgProcTable.resultType,
+                PgProcTable.arguments,
+
+                PgNamespaceTable.name
+            )
+            .where { PgNamespaceTable.name inList schemaNames}
+            .toList()
+
+        ExposeSchemaInfoMapper.map(
+            tablesData = tablesData,
+            functionsData = functionsData
+        )
+    }
+}
+
+fun main() {
+    try {
+        ExposeSchemaGenerator(
+            url = "jdbc:postgresql://localhost:5441/user_db",
+            user = "ussportal",
+            password = "ussportal",
+            pathToDestinationModule = "",
+            destinationPackage = ""
+        ).generate(listOf("users"))
+    } catch (e: Throwable) {
+        println(e.message)
     }
 }

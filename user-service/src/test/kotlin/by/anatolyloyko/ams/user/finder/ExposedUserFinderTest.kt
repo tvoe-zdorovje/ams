@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.user.finder
 
-import by.anatolyloyko.ams.orm.exposed.schemas.users.UserTable
+import by.anatolyloyko.ams.orm.exposed.schemas.users.table.UserTable
 import by.anatolyloyko.ams.user.USER
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction

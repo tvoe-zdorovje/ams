@@ -1,8 +1,5 @@
-package `by`.anatolyloyko.ams.orm.exposed.schemas.users
+package `by`.anatolyloyko.ams.orm.exposed.schemas.users.table
 
-import kotlin.Long
-import kotlin.String
-import kotlin.Suppress
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
@@ -18,7 +15,7 @@ import org.jetbrains.exposed.sql.Table
  *
  *  Represents the "users.user" table in the database.
  *  
- *  Defines the structure of the table to facilitate database operations using the Exposed library.
+ *  Defines the structure to facilitate database operations using the Exposed library.
  */
 @Suppress("MagicNumber")
 internal object UserTable : Table("users.user") {
