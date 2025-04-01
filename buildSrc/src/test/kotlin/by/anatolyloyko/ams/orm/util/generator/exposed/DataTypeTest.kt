@@ -1,4 +1,4 @@
-package by.anatolyloyko.ams.orm.exposed.util.generator
+package by.anatolyloyko.ams.orm.util.generator.exposed
 
 import org.assertj.core.api.WithAssertions
 import org.junit.jupiter.api.Test

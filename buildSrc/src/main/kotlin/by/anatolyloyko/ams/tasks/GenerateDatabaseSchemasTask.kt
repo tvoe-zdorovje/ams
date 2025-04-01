@@ -1,6 +1,7 @@
 package by.anatolyloyko.ams.tasks
 
-import by.anatolyloyko.ams.orm.exposed.util.generator.SchemaGenerator
+import by.anatolyloyko.ams.orm.util.generator.SchemaGenerator
+import by.anatolyloyko.ams.orm.util.generator.SchemaGenerator.Generators
 import org.gradle.api.Project
 import org.yaml.snakeyaml.Yaml
 
@@ -20,6 +21,10 @@ private const val CONFIG_FILE_NAME = "application.yaml"
 class GenerateDatabaseSchemasTask(
     private val project: Project
 ) {
+    fun execute(generator: Generators, vararg schemas: String) = executeInternal(generator, schemas.toList())
+
+    fun execute(vararg schemas: String) = executeInternal(Generators.JOOQ, schemas.toList())
+
     /**
      * Executes the schema generation task for the specified schemas.
      *
@@ -27,12 +32,12 @@ class GenerateDatabaseSchemasTask(
      * @throws IllegalArgumentException if no schemas are provided.
      * @see SchemaGenerator
      */
-    fun execute(vararg schemas: String) {
+    private fun executeInternal(
+        generator: Generators,
+        schemas: List<String>
+    ) {
         val moduleName = project.name
-        val schemaNames = schemas
-            .toList()
-            .ifEmpty { null }
-            ?: error("No value passed to parameter 'schemas'")
+        val schemaNames = schemas.ifEmpty { null } ?: error("No value passed to parameter 'schemas'")
 
         println("""
             ================================================================================================
@@ -48,16 +53,14 @@ class GenerateDatabaseSchemasTask(
 
         println("Using database URL: $dbUrl")
 
-        SchemaGenerator
-            .buildGenerator(
-                url = dbUrl,
-                user = dbUsername,
-                password = dbPassword,
-                pathToDestinationModule = project.projectDir.absolutePath,
-                destinationPackage = "${project.group}.orm.exposed.schemas"
-            )
+        generator.build(
+            url = dbUrl,
+            user = dbUsername,
+            password = dbPassword,
+            pathToDestinationModule = project.projectDir.absolutePath,
+            group = "${project.group}"
+        )
             .generate(schemaNames)
-            .forEach { println("\nGenerated: $it") }
     }
 
     private fun findDatasourceConfig(): Map<String, String> {

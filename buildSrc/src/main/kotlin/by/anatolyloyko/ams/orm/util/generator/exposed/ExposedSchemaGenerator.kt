@@ -1,4 +1,4 @@
-package by.anatolyloyko.ams.orm.exposed.util.generator
+package by.anatolyloyko.ams.orm.util.generator.exposed
 
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.Expression
@@ -21,17 +21,17 @@ import org.jetbrains.exposed.sql.transactions.transaction
  * @param user the username for database authentication.
  * @param password the password for database authentication.
  * @param pathToDestinationModule the path to the module where the Kotlin class files will be generated.
- * @param destinationPackage the package name in which the Kotlin class files will be generated.
+ * @param group the group name in which the Kotlin class files will be generated.
  */
 internal class ExposeSchemaGenerator(
     private val url: String,
     private val user: String,
     private val password: String,
     pathToDestinationModule: String,
-    destinationPackage: String,
+    group: String,
 ) : KotlinPoetSchemaGenerator(
     pathToDestinationModule = pathToDestinationModule,
-    destinationPackage = destinationPackage
+    destinationPackage = "$group.orm.exposed.schemas"
 ) {
     /**
      * Looks up schema information for the provided list of schema names using the Exposed library.
@@ -73,7 +73,7 @@ internal class ExposeSchemaGenerator(
             .where { PgNamespaceTable.name inList schemaNames}
             .toList()
 
-        ExposeSchemaInfoMapper.map(
+        ExposedSchemaInfoMapper.map(
             tablesData = tablesData,
             functionsData = functionsData
         )
@@ -87,7 +87,7 @@ fun main() {
             user = "ussportal",
             password = "ussportal",
             pathToDestinationModule = "",
-            destinationPackage = ""
+            group = ""
         ).generate(listOf("users"))
     } catch (e: Throwable) {
         println(e.message)

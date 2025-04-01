@@ -1,4 +1,4 @@
-package by.anatolyloyko.ams.orm.exposed.util.generator
+package by.anatolyloyko.ams.orm.util.generator.exposed
 
 internal data class SchemaInfo(
     val name: String,

@@ -1,4 +1,4 @@
-package by.anatolyloyko.ams.orm.exposed.util.generator
+package by.anatolyloyko.ams.orm.util.generator.exposed
 
 import com.squareup.kotlinpoet.FileSpec
 import io.mockk.every
@@ -44,9 +44,8 @@ class KotlinPoetSchemaGeneratorTest : WithAssertions {
         every { spy["buildTableFileSpec"](any<String>(), any<SchemaInfo.TableInfo>()) } returns fileSpecMockk
         every { spy["buildFunctionFileSpec"](any<String>(), any<SchemaInfo.FunctionInfo>()) } returns fileSpecMockk
 
-        val result = spy.generate(listOf("schema"))
+        spy.generate(listOf("schema"))
 
-        assertThat(result).hasSize(NUMBER_OF_OBJECTS*2)
         verifyOrder {
             spy["lookupSchemas"](any<List<String>>())
             spy["generateSchema"](schemaInfo)

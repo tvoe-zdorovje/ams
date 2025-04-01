@@ -1,8 +1,9 @@
-package by.anatolyloyko.ams.orm.exposed.util.generator
+package by.anatolyloyko.ams.orm.util.generator.exposed
 
 import by.anatolyloyko.ams.infrastructure.kotlin.alsoIf
 import by.anatolyloyko.ams.infrastructure.kotlin.lowercaseFirstChar
 import by.anatolyloyko.ams.infrastructure.kotlin.uppercaseFirstChar
+import by.anatolyloyko.ams.orm.util.generator.SchemaGenerator
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -17,9 +18,7 @@ import org.jetbrains.exposed.sql.CustomFunction
 import org.jetbrains.exposed.sql.QueryParameter
 import org.jetbrains.exposed.sql.Table
 import java.io.File
-import java.nio.file.Path
 import java.nio.file.Paths
-
 
 private const val MODULE_DESTINATION_DIRECTORY = "src/main/kotlin"
 
@@ -82,7 +81,7 @@ internal abstract class KotlinPoetSchemaGenerator(
                 .toList()
                 .ifEmpty { throw IllegalArgumentException("Parameter 'schemaNames' must not be empty!") }
         )
-            .flatMap(::generateSchema)
+            .forEach(::generateSchema)
 
     /**
      * Abstract method for looking up schema information by their names.
@@ -102,7 +101,7 @@ internal abstract class KotlinPoetSchemaGenerator(
      * @param schemaInfo an object containing the schema details.
      * @return a list of paths to the generated Kotlin files.
      */
-    private fun generateSchema(schemaInfo: SchemaInfo): List<Path> {
+    private fun generateSchema(schemaInfo: SchemaInfo) {
         val tableFileSpecs = schemaInfo.tables.map {
             buildTableFileSpec(schemaInfo.name, it)
         }
@@ -111,12 +110,9 @@ internal abstract class KotlinPoetSchemaGenerator(
             buildFunctionFileSpec(schemaInfo.name, it)
         }
 
-        return (tableFileSpecs + functionFileSpecs)
+        (tableFileSpecs + functionFileSpecs)
             .map { fileSpec ->
-                val destinationDirectory = Paths.get(pathToDestinationModule, MODULE_DESTINATION_DIRECTORY)
-                fileSpec.writeTo(destinationDirectory)
-
-                Paths.get(destinationDirectory.toString(), fileSpec.relativePath)
+                fileSpec.writeTo(Paths.get(pathToDestinationModule, MODULE_DESTINATION_DIRECTORY))
             }
     }
 

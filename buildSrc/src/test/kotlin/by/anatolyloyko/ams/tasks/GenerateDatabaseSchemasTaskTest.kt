@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.tasks
 
-import by.anatolyloyko.ams.orm.exposed.util.generator.SchemaGenerator
+import by.anatolyloyko.ams.orm.util.generator.SchemaGenerator
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -47,7 +47,7 @@ class GenerateDatabaseSchemasTaskTest : WithAssertions {
                     user = any(),
                     password = any(),
                     pathToDestinationModule = any(),
-                    destinationPackage = any()
+                    group = any()
                 )
             } returns schemaGenerator
 
@@ -61,7 +61,7 @@ class GenerateDatabaseSchemasTaskTest : WithAssertions {
                 user = dbCredentials["username"]!!,
                 password = dbCredentials["password"]!!,
                 pathToDestinationModule = projectDirectory.absolutePath,
-                destinationPackage = "$projectGroup.orm.exposed.schemas",
+                group = "$projectGroup.orm.exposed.schemas",
             )
         }
     }

@@ -1,4 +1,4 @@
-package by.anatolyloyko.ams.orm.exposed.util.generator
+package by.anatolyloyko.ams.orm.util.generator.exposed
 
 import org.jetbrains.exposed.sql.CustomStringFunction
 import org.jetbrains.exposed.sql.Table

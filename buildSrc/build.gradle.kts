@@ -14,6 +14,8 @@ val properties = file("../gradle.properties")
 
 val databaseDriver: String by properties
 
+val jooqVersion: String by properties
+
 val mockkVersion: String by properties
 val kotlinpoetVersion: String by properties
 val exposedSpringBootStarterVersion: String by properties
@@ -28,8 +30,11 @@ dependencies {
         name = "exposed-spring-boot-starter",
         version = exposedSpringBootStarterVersion
     )
+    implementation(group = "org.jooq", name = "jooq-meta", version = jooqVersion)
+    implementation(group = "org.jooq", name = "jooq-codegen", version = jooqVersion)
     implementation(group = "com.squareup", name = "kotlinpoet", version = kotlinpoetVersion)
     implementation(databaseDriver)
+
     runtimeOnly(group = "org.yaml", name = "snakeyaml", version = snakeyamlVersion)
 
     testImplementation(group = "io.mockk", name = "mockk", version = mockkVersion)

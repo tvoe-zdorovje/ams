@@ -1,3 +1,4 @@
+import by.anatolyloyko.ams.orm.util.generator.SchemaGenerator
 import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
@@ -19,7 +20,9 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":common"))
+    implementation(project(":common")) {
+        exclude(group = "org.jooq")
+    }
 
     testImplementation(testFixtures(project(":common")))
 }
@@ -44,8 +47,10 @@ tasks.register("generateDatabaseSchema") {
     description = "Generate Kotlin classes representing database tables based on a database schema."
 
     doLast {
-        GenerateDatabaseSchemasTask(project)
-            .execute("users")
+        GenerateDatabaseSchemasTask(project).execute(
+            SchemaGenerator.Generators.EXPOSED,
+            "users"
+        )
     }
 }
 

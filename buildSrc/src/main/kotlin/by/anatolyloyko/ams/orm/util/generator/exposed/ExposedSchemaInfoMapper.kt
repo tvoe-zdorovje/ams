@@ -1,4 +1,4 @@
-package by.anatolyloyko.ams.orm.exposed.util.generator
+package by.anatolyloyko.ams.orm.util.generator.exposed
 
 import org.jetbrains.exposed.sql.ResultRow
 
@@ -8,8 +8,7 @@ import org.jetbrains.exposed.sql.ResultRow
  * This object groups the input data by schema
  * and transforms it into a structured representation for further processing.
  */
-// todo implement unit tests
-internal object ExposeSchemaInfoMapper {
+internal object ExposedSchemaInfoMapper {
     /**
      * Maps a collection of Exposed `ResultRow` objects to a list of [SchemaInfo] objects.
      *
@@ -42,9 +41,9 @@ internal object ExposeSchemaInfoMapper {
         name = schemaName,
         tables = tablesData
             .groupBy { it[TableColumnInfoTable.relationName] }
-            .map(ExposeSchemaInfoMapper::mapTable),
+            .map(ExposedSchemaInfoMapper::mapTable),
         functions = functionsData
-            .map(ExposeSchemaInfoMapper::mapFunction)
+            .map(ExposedSchemaInfoMapper::mapFunction)
     )
 
     private fun mapTable(tableInfo: Map.Entry<String, List<ResultRow>>): SchemaInfo.TableInfo =
@@ -53,7 +52,7 @@ internal object ExposeSchemaInfoMapper {
             columns = tableInfo
                 .value
                 .sortedBy { it[TableColumnInfoTable.columnOrdinalPosition] }
-                .map(ExposeSchemaInfoMapper::mapColumn)
+                .map(ExposedSchemaInfoMapper::mapColumn)
         )
 
     private fun mapColumn(columnInfo: ResultRow): SchemaInfo.TableInfo.ColumnInfo =
