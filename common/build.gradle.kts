@@ -20,7 +20,6 @@ kotlin {
 }
 
 val databaseDriver: String by project
-val jooqVersion: String by project
 
 val exposedSpringBootStarterVersion: String by project
 val logbookSpringBootStarterVersion: String by project
@@ -36,6 +35,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-logging")
     api("org.springframework.boot:spring-boot-starter-graphql")
     api("org.springframework.boot:spring-boot-starter-web")
+    api("org.springframework.boot:spring-boot-starter-jooq")
 
     api(
         group = "org.jetbrains.exposed",
@@ -47,7 +47,6 @@ dependencies {
     compileOnly("org.springframework.graphql:spring-graphql-test")
 
     api(databaseDriver)
-    api(group = "org.jooq", name = "jooq", version = jooqVersion)
 
 
     testFixturesApi("org.springframework.boot:spring-boot-starter-test") {

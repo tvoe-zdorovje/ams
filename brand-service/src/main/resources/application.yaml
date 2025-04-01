@@ -10,9 +10,9 @@ spring:
             enabled: true
     datasource:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://localhost:5441/user_db
-        username: ussportal
-        password: ussportal
+        url: jdbc:postgresql://localhost:5442/brand_db
+        username: brsportal
+        password: brsportal
 
 logging:
     pattern:
@@ -23,4 +23,4 @@ logging:
         by.anatolyloyko: DEBUG
         org.zalando.logbook.Logbook: TRACE
     file:
-        name: log/user-service.log
+        name: log/brand-service.log

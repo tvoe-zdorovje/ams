@@ -21,7 +21,7 @@ kotlin {
 
 dependencies {
     implementation(project(":common")) {
-        exclude(group = "org.jooq")
+        exclude(module = "spring-boot-starter-jooq")
     }
 
     testImplementation(testFixtures(project(":common")))

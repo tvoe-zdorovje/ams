@@ -12,6 +12,10 @@ import org.jooq.meta.jaxb.Target
 import org.jooq.meta.postgres.PostgresDatabase
 import java.sql.DriverManager
 
+// This is a Java regular expression.
+// Use the pipe to separate several expressions.
+private const val EXCLUDES: String = "next_id"
+
 /**
  * JOOQ implementation of the [SchemaGenerator] that generates Kotlin classes based on database schema information.
  *
@@ -49,11 +53,18 @@ internal class JooqSchemaGenerator(
                             .apply {
                                 name = PostgresDatabase::class.qualifiedName
                                 schemata = schemaNames.map { SchemaMappingType().withInputSchema(it) }
+
+                                excludes = EXCLUDES
                             }
                         this.generate = Generate().apply {
                             isDefaultCatalog = false
                             isKeys = false
                             isSequences = false
+                            isKotlinNotNullRecordAttributes = true
+                            isRenameMethodOverrides = false
+                            isWhereMethodOverrides = false
+                            isAsMethodOverrides = false
+                            // isPojos = true
                         }
                         this.target = Target()
                             .apply {
