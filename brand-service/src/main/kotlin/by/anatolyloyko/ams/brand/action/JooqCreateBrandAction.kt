@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
-@Transactional
+@Transactional // TODO impl UT
 internal class JooqCreateBrandAction(
     private val dslContext: DSLContext
 ) : CreateBrandAction {

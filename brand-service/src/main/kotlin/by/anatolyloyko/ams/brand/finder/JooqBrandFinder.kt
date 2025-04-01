@@ -16,7 +16,7 @@ private val MAPPER: (BrandRecord) -> Brand = {
     )
 }
 
-@Component
+@Component // TODO impl UT
 @Transactional(readOnly = true)
 class JooqBrandFinder(
     private val dsl: DSLContext
