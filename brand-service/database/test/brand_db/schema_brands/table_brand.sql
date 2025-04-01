@@ -7,7 +7,7 @@ BEGIN
         'brands',
         'brand',
         ARRAY [
-            'id INT',
+            'id BIGINT',
             'name VARCHAR(100)',
             'description VARCHAR(255)'
         ],
