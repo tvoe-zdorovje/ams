@@ -1,3 +1,4 @@
+import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
@@ -18,7 +19,9 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":common"))
+    implementation(project(":common")) {
+        exclude(group = "org.jetbrains.exposed")
+    }
 
     testImplementation(testFixtures(project(":common")))
 }
@@ -38,8 +41,17 @@ sourceSets {
     }
 }
 
+tasks.register("generateDatabaseSchema") {
+    group = "generation"
+    description = "Generate Kotlin classes representing database tables based on a database schema."
+
+    doLast {
+        GenerateDatabaseSchemasTask(project).execute("brands")
+    }
+}
+
 tasks.withType<BootJar> {
-    mainClass.set("by.anatolyloyko.ams.brand.BrandServiceApplication")
+    mainClass.set("${project.group}.brand.BrandServiceApplication")
 }
 
 tasks.test {

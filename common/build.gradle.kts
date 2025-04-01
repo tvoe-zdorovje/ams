@@ -35,6 +35,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-logging")
     api("org.springframework.boot:spring-boot-starter-graphql")
     api("org.springframework.boot:spring-boot-starter-web")
+    api("org.springframework.boot:spring-boot-starter-jooq")
 
     api(
         group = "org.jetbrains.exposed",
