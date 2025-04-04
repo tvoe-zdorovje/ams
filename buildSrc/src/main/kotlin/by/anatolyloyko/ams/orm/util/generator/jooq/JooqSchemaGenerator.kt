@@ -64,6 +64,7 @@ internal class JooqSchemaGenerator(
                             isRenameMethodOverrides = false
                             isWhereMethodOverrides = false
                             isAsMethodOverrides = false
+                            isRecordsImplementingRecordN = true
                             // isPojos = true
                         }
                         this.target = Target()

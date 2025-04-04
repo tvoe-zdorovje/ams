@@ -13,7 +13,10 @@ import org.jooq.ForeignKey
 import org.jooq.InverseForeignKey
 import org.jooq.Name
 import org.jooq.Record
+import org.jooq.Records
+import org.jooq.Row3
 import org.jooq.Schema
+import org.jooq.SelectField
 import org.jooq.Table
 import org.jooq.TableField
 import org.jooq.TableOptions
@@ -95,4 +98,20 @@ open class Brand(
     constructor(): this(DSL.name("brand"), null)
     override fun getSchema(): Schema? = if (aliased()) null else Brands.BRANDS
     override fun getPrimaryKey(): UniqueKey<BrandRecord> = Internal.createUniqueKey(Brand.BRAND, DSL.name("brand_pkey"), arrayOf(Brand.BRAND.ID), true)
+
+    // -------------------------------------------------------------------------
+    // Row3 type methods
+    // -------------------------------------------------------------------------
+    override fun fieldsRow(): Row3<Long?, String?, String?> = super.fieldsRow() as Row3<Long?, String?, String?>
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    fun <U> mapping(from: (Long?, String?, String?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    fun <U> mapping(toType: Class<U>, from: (Long?, String?, String?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }
