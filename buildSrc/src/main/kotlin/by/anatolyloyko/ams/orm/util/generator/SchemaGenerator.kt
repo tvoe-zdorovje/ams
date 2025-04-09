@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.orm.util.generator
 
-import by.anatolyloyko.ams.orm.util.generator.exposed.ExposeSchemaGenerator
+import by.anatolyloyko.ams.orm.util.generator.exposed.ExposedSchemaGenerator
 import by.anatolyloyko.ams.orm.util.generator.jooq.JooqSchemaGenerator
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -26,7 +26,7 @@ interface SchemaGenerator {
     enum class Generators(
         private val kClass: KClass<out SchemaGenerator>,
     ) {
-        EXPOSED(ExposeSchemaGenerator::class),
+        EXPOSED(ExposedSchemaGenerator::class),
         JOOQ(JooqSchemaGenerator::class);
 
         /**

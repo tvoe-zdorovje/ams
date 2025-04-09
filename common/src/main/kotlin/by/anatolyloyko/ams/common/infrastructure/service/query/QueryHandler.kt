@@ -8,7 +8,6 @@ package by.anatolyloyko.ams.common.infrastructure.service.query
  * @see Query
  */
 interface QueryHandler {
-
     /**
      * Determines whether this handler can process the given query.
      *

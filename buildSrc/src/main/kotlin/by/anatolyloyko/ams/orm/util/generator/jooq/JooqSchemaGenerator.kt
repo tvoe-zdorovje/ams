@@ -36,7 +36,7 @@ internal class JooqSchemaGenerator(
     group: String,
 ) : SchemaGenerator {
     private val destinationDirectory = "$pathToDestinationModule/src/main/kotlin"
-    private val destinationPackage = "$group.orm.jooq"
+    private val destinationPackage = "$group.orm.jooq.schemas"
 
     override fun generate(schemaNames: Iterable<String>) = DriverManager.getConnection(
         url,

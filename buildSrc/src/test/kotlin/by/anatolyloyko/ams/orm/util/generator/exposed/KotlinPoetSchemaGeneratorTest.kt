@@ -50,7 +50,6 @@ class KotlinPoetSchemaGeneratorTest : WithAssertions {
             spy["lookupSchemas"](any<List<String>>())
             spy["generateSchema"](schemaInfo)
 
-
             repeat(NUMBER_OF_OBJECTS) {
                 spy["buildTableFileSpec"](any<String>(), any<SchemaInfo.TableInfo>())
             }

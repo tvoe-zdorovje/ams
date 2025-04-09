@@ -1,0 +1,8 @@
+#!/bin/bash
+function join { local IFS="$1"; shift; echo "$*"; }
+
+kotlinDiff=$(git diff --cached --name-only \*.kt*)
+
+if [ -n "kotlinDiff" ]; then
+  exec ./gradlew :buildSrc:detekt --parallel
+fi

@@ -1,8 +1,8 @@
 package by.anatolyloyko.ams.brand.finder
 
 import by.anatolyloyko.ams.brand.model.Brand
-import by.anatolyloyko.ams.orm.jooq.tables.records.BrandRecord
-import by.anatolyloyko.ams.orm.jooq.tables.references.BRAND
+import by.anatolyloyko.ams.orm.jooq.schemas.tables.records.BrandRecord
+import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.BRAND
 import by.anatolyloyko.ams.orm.jooq.util.eq
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
