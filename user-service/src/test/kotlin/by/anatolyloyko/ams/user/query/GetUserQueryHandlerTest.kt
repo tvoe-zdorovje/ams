@@ -22,6 +22,6 @@ class GetUserQueryHandlerTest : WithAssertions {
         val result = handler.handle(query)
 
         assertThat(result).isEqualTo(USER)
-        verify(exactly = 1) { userFinder.findById(query.input)  }
+        verify(exactly = 1) { userFinder.findById(query.input) }
     }
 }

@@ -23,7 +23,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
  * @param pathToDestinationModule the path to the module where the Kotlin class files will be generated.
  * @param group the group name in which the Kotlin class files will be generated.
  */
-internal class ExposeSchemaGenerator(
+internal class ExposedSchemaGenerator(
     private val url: String,
     private val user: String,
     private val password: String,
@@ -70,7 +70,7 @@ internal class ExposeSchemaGenerator(
 
                 PgNamespaceTable.name
             )
-            .where { PgNamespaceTable.name inList schemaNames}
+            .where { PgNamespaceTable.name inList schemaNames }
             .toList()
 
         ExposedSchemaInfoMapper.map(
@@ -82,7 +82,7 @@ internal class ExposeSchemaGenerator(
 
 fun main() {
     try {
-        ExposeSchemaGenerator(
+        ExposedSchemaGenerator(
             url = "jdbc:postgresql://localhost:5441/user_db",
             user = "ussportal",
             password = "ussportal",

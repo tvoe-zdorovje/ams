@@ -2,7 +2,7 @@ package by.anatolyloyko.ams.brand.finder
 
 import by.anatolyloyko.ams.brand.BRAND
 import by.anatolyloyko.ams.brand.JooqTest
-import by.anatolyloyko.ams.orm.jooq.tables.records.BrandRecord
+import by.anatolyloyko.ams.orm.jooq.schemas.tables.records.BrandRecord
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

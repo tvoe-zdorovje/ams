@@ -38,7 +38,7 @@ internal abstract class ExposedTest : WithAssertions {
 
         SchemaUtils.create(UserTable)
 
-        exec("CREATE ALIAS users.save_user FOR 'by.anatolyloyko.ams.user.ExposedTest.insertUser'")
+        exec("CREATE ALIAS IF NOT EXISTS users.save_user FOR 'by.anatolyloyko.ams.user.ExposedTest.insertUser'")
     }
 
     companion object {
@@ -69,7 +69,7 @@ internal abstract class ExposedTest : WithAssertions {
             script()
         } catch (e: ExposedSQLException) {
             val isIntegrityConstraintViolation = JdbcSQLIntegrityConstraintViolationException::class.isInstance(e.cause)
-            if (ignoreIntegrityConstraintViolation && isIntegrityConstraintViolation) {} else throw e
+            if (ignoreIntegrityConstraintViolation && isIntegrityConstraintViolation) Unit else throw e
         }.let {
             SimpleResultSet().apply {
                 addColumn("col1", 0, resultType.sqlType(), 8, 0)

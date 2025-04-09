@@ -1,7 +1,7 @@
 package by.anatolyloyko.ams.brand
 
-import by.anatolyloyko.ams.orm.jooq.Brands
-import by.anatolyloyko.ams.orm.jooq.tables.references.BRAND
+import by.anatolyloyko.ams.orm.jooq.schemas.Brands
+import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.BRAND
 import by.anatolyloyko.ams.orm.jooq.util.executeBatch
 import org.assertj.core.api.WithAssertions
 import org.jooq.DSLContext

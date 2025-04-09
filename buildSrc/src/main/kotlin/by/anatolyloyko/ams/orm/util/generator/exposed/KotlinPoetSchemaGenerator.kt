@@ -44,7 +44,6 @@ private const val NULLABLE_INITIALIZER = "\n.nullable()"
 
 private const val NAME_DELIMITER = "_"
 
-
 /**
  * Abstract implementation of [SchemaGenerator] for generating Kotlin classes using the KotlinPoet library.
  *
@@ -154,7 +153,6 @@ internal abstract class KotlinPoetSchemaGenerator(
         val functionType = functionInfo.type
         val className = "${functionInfo.name.normalize(true)}${functionType.uppercaseFirstChar()}"
 
-
         return FileSpec
             .builder(
                 packageName = "$destinationPackage.$schemaName.$functionType",
@@ -190,7 +188,7 @@ internal abstract class KotlinPoetSchemaGenerator(
                                 "apply { nullable = true }"
                             )
                         }
-                            addSuperclassConstructorParameter("\n")
+                        addSuperclassConstructorParameter("\n")
                     }
                     .addKdoc(objectType = functionType)
                     .suppress("MagicNumber", "ConstructorParameterNaming")

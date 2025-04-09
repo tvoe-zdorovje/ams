@@ -1,9 +1,9 @@
 package by.anatolyloyko.ams.user.command
 
+import by.anatolyloyko.ams.user.NEW_USER
 import by.anatolyloyko.ams.user.USER_ID
 import by.anatolyloyko.ams.user.action.CreateUserAction
 import by.anatolyloyko.ams.user.model.User
-import by.anatolyloyko.ams.user.NEW_USER
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -25,6 +25,6 @@ class CreateUserCommandHandlerTest : WithAssertions {
         val result = handler.handle(command)
 
         assertThat(result).isEqualTo(USER_ID)
-        verify(exactly = 1) { createUserAction(command.input)  }
+        verify(exactly = 1) { createUserAction(command.input) }
     }
 }
