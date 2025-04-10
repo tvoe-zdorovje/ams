@@ -1,14 +1,65 @@
 plugins {
     kotlin("jvm")
+    jacoco
 }
 
-tasks {
-    register<Copy>("installGitHook") {
-        from(file("$rootDir/.git-hooks/pre-commit"))
-        into(file("$rootDir/.git/hooks/"))
-    }
+subprojects {
+    apply(plugin = "jacoco")
+    apply(plugin = "java")
 
-    named("build") {
-        dependsOn("installGitHook")
+    tasks {
+        // === GIT hooks === //
+
+        register<Copy>("installGitHook") {
+            from(file("$rootDir/.git-hooks/pre-commit"))
+            into(file("$rootDir/.git/hooks/"))
+        }
+        named("build") {
+            dependsOn("installGitHook")
+        }
+
+        // === JaCoCo === //
+
+        withType<Test> {
+            finalizedBy(jacocoTestReport, jacocoTestCoverageVerification)
+        }
+
+        fun JacocoReportBase.afterEvaluateExcludes() = afterEvaluate {
+            classDirectories.setFrom(
+                files(
+                    classDirectories.files.map {
+                        fileTree(it) {
+                            exclude(
+                                "**/orm/*/schemas/**",
+                                "**/*ApplicationKt*"
+                            )
+                        }
+                    }
+                )
+            )
+        }
+
+        withType<JacocoReport> {
+            dependsOn(test)
+
+            afterEvaluateExcludes()
+
+            doLast {
+                println("View code coverage at:")
+                println("file://${layout.buildDirectory.get()}/reports/jacoco/test/html/index.html")
+            }
+        }
+
+        withType<JacocoCoverageVerification> {
+            violationRules {
+                rule {
+                    limit {
+                        minimum = BigDecimal.valueOf(0.9)
+                    }
+                }
+            }
+
+            afterEvaluateExcludes()
+        }
     }
 }
