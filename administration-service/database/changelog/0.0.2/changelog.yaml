@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0.0.2
+      author: anatolyloyko
+      changes:
+        - sqlFile:
+            path: changelog/0.0.2/01_create_save-role_function.sql
+        - sqlFile:
+            path: changelog/0.0.2/02_create_set-role-permissions_function.sql
+        - sqlFile:
+            path: changelog/0.0.2/03_create_set-brand-roles_function.sql
+        - sqlFile:
+            path: changelog/0.0.2/04_create_create-brand-role_function.sql
+        - sqlFile:
+            path: changelog/0.0.2/05_create_set-studio-roles_function.sql
+        - sqlFile:
+            path: changelog/0.0.2/06_create_create-studio-role_function.sql
+        - sqlFile:
+            path: changelog/0.0.2/07_create_add-user-roles_function.sql
+        - sqlFile:
+            path: changelog/0.0.2/08_create_delete-user-roles_function.sql
+        - sqlFile:
+            path: changelog/0.0.2/09_create_add-brand-studios_function.sql
+        - sqlFile:
+            path: changelog/0.0.2/10_create_triggers_that_refreshes_caches.sql
