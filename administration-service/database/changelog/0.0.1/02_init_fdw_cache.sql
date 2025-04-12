@@ -1,5 +1,5 @@
 CREATE TABLE administration.user(
-    id INT PRIMARY KEY
+    id BIGINT PRIMARY KEY
 );
 
 CREATE OR REPLACE PROCEDURE administration.refresh_fdw_user()
@@ -15,7 +15,7 @@ END;
 
 
 CREATE TABLE administration.brand(
-    id INT PRIMARY KEY
+    id BIGINT PRIMARY KEY
 );
 
 CREATE OR REPLACE PROCEDURE administration.refresh_fdw_brand()
@@ -31,7 +31,7 @@ END;
 
 
 CREATE TABLE administration.studio(
-    id INT PRIMARY KEY
+    id BIGINT PRIMARY KEY
 );
 
 CREATE OR REPLACE PROCEDURE administration.refresh_fdw_studio()

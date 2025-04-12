@@ -7,7 +7,7 @@ BEGIN
         schema_name := 'administration',
         table_name := 'brand',
         columns_with_type := ARRAY[
-            'id INT'
+            'id BIGINT'
         ],
         primary_key := 'id'
     );

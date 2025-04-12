@@ -7,7 +7,7 @@ BEGIN
         schema_name := 'administration',
         table_name := 'studio',
         columns_with_type := ARRAY[
-            'id INT'
+            'id BIGINT'
         ],
         primary_key := 'id'
     );

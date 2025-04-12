@@ -7,7 +7,7 @@ BEGIN
         schema_name := 'fdw',
         table_name := 'studio',
         columns_with_type := ARRAY[
-            'id INT'
+            'id BIGINT'
         ],
         server_name := 'studio_fdw_db',
         schema_name_option := 'studios',

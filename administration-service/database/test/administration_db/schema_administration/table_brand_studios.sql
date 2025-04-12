@@ -7,8 +7,8 @@ BEGIN
         schema_name := 'administration',
         table_name := 'brand_studios',
         columns_with_type := ARRAY[
-            'brand_id INT',
-            'studio_id INT'
+            'brand_id BIGINT',
+            'studio_id BIGINT'
         ],
         foreign_keys := ARRAY[
             'brand_id',
