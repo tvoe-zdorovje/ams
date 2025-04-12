@@ -1,18 +1,18 @@
 CREATE TABLE IF NOT EXISTS administration.role(
-    id INT PRIMARY KEY NOT NULL,
+    id BIGINT PRIMARY KEY NOT NULL,
     name VARCHAR(100) NOT NULL,
     description VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS administration.permission(
-    id INT PRIMARY KEY NOT NULL,
+    id BIGINT PRIMARY KEY NOT NULL,
     name VARCHAR(100) NOT NULL,
     description VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS administration.role_permissions(
-    role_id INT,
-    permission_id INT,
+    role_id BIGINT,
+    permission_id BIGINT,
     CONSTRAINT fk_role_permissions_role_id
         FOREIGN KEY (role_id)
         REFERENCES administration.role (id)
@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS administration.role_permissions(
 );
 
 CREATE TABLE IF NOT EXISTS administration.brand_roles(
-    brand_id INT,
-    role_id INT,
+    brand_id BIGINT,
+    role_id BIGINT,
     CONSTRAINT fk_brand_roles_brand_id
         FOREIGN KEY (brand_id)
             REFERENCES administration.brand (id)
@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS administration.brand_roles(
 );
 
 CREATE TABLE IF NOT EXISTS administration.studio_roles(
-    studio_id INT,
-    role_id INT,
+    studio_id BIGINT,
+    role_id BIGINT,
     CONSTRAINT fk_studio_roles_studio_id
       FOREIGN KEY (studio_id)
           REFERENCES administration.studio (id)
@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS administration.studio_roles(
 );
 
 CREATE TABLE IF NOT EXISTS administration.user_roles(
-    user_id INT,
-    role_id INT,
+    user_id BIGINT,
+    role_id BIGINT,
     CONSTRAINT fk_user_roles_user_id
         FOREIGN KEY (user_id)
             REFERENCES administration.user (id)
@@ -67,8 +67,8 @@ CREATE TABLE IF NOT EXISTS administration.user_roles(
 );
 
 CREATE TABLE IF NOT EXISTS administration.brand_studios(
-    brand_id INT,
-    studio_id INT UNIQUE,
+    brand_id BIGINT,
+    studio_id BIGINT UNIQUE,
     CONSTRAINT fk_brand_studios_brand_id
        FOREIGN KEY (brand_id)
            REFERENCES administration.brand (id)

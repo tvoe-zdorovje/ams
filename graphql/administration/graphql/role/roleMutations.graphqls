@@ -1,0 +1,10 @@
+extend type RoleMutations {
+    saveRole(request: SaveRoleRequest!): ID!
+}
+
+input SaveRoleRequest {
+    id: ID,
+    name: String!
+    description: String!
+    permissions: [ID!]
+}

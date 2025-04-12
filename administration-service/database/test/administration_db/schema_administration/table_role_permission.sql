@@ -7,8 +7,8 @@ BEGIN
         schema_name := 'administration',
         table_name := 'role_permissions',
         columns_with_type := ARRAY[
-            'role_id INT',
-            'permission_id INT'
+            'role_id BIGINT',
+            'permission_id BIGINT'
         ],
         foreign_keys := ARRAY[
             'role_id',

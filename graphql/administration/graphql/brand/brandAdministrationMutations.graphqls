@@ -1,0 +1,11 @@
+extend type BrandAdministrationMutations {
+    createRole(request: CreateBrandRoleRequest!): ID!
+    assignStudios(brandId: ID! studios: [ID!]!): Boolean!
+}
+
+input CreateBrandRoleRequest {
+    brandId: ID!
+    name: String!
+    description: String!
+    permissions: [ID!]
+}

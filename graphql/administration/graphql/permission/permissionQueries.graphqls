@@ -1,0 +1,9 @@
+extend type PermissionQueries {
+    permissions: [Permission!]!
+}
+
+type Permission {
+    id: ID!
+    name: String!
+    description: String!
+}

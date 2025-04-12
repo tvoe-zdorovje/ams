@@ -1,0 +1,11 @@
+extend type Mutation {
+    roles: RoleMutations!
+}
+
+extend type Query {
+    roles: RoleQueries!
+}
+
+type RoleMutations
+
+type RoleQueries

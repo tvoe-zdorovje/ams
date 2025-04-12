@@ -3,7 +3,7 @@ extend type Mutation {
 }
 
 extend type Query {
-    users: UserQueries
+    users: UserQueries!
 }
 
 type UserMutations

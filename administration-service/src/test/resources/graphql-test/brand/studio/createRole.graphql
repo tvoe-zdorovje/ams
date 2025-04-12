@@ -1,0 +1,17 @@
+mutation CreateRole(
+    $studioId: ID!
+    $name: String!
+    $description: String!
+    $permissions: [ID!]
+) {
+    studioAdm {
+        createRole(
+            request: {
+                studioId: $studioId
+                name: $name
+                description: $description
+                permissions: $permissions
+            }
+        )
+    }
+}

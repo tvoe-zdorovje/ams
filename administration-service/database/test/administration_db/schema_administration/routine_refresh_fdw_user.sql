@@ -12,10 +12,10 @@ BEGIN
         format('routine "%s" must exist', UPPER(routine_name))
     );
 
-    RETURN NEXT is_procedure(
+    RETURN NEXT is_normal_function(
         schema_name,
         routine_name,
-        format('routine "%s" must be a procedure', UPPER(routine_name))
+        format('routine "%s" must be a function', UPPER(routine_name))
     );
 END;
 $$ LANGUAGE plpgsql;

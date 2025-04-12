@@ -1,0 +1,11 @@
+mutation UnassignRoles(
+    $userId: ID!
+    $roles: [ID!]!
+) {
+    userAdm {
+        unassignRoles(
+            userId: $userId
+            roles: $roles
+        )
+    }
+}

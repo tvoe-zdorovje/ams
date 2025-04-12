@@ -1,0 +1,10 @@
+extend type RoleQueries {
+    role(id: ID!): Role
+}
+
+type Role {
+    id: ID!
+    name: String!
+    description: String!
+    permissions: [Permission!]!
+}

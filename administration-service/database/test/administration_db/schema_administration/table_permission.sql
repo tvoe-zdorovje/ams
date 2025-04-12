@@ -7,7 +7,7 @@ BEGIN
         schema_name := 'administration',
         table_name := 'permission',
         columns_with_type := ARRAY[
-            'id INT',
+            'id BIGINT',
             'name VARCHAR(100)',
             'description VARCHAR(255)'
         ]

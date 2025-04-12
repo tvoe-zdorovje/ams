@@ -1,0 +1,11 @@
+mutation AssignRoles(
+    $userId: ID!
+    $roles: [ID!]!
+) {
+    userAdm {
+        assignRoles(
+            userId: $userId
+            roles: $roles
+        )
+    }
+}

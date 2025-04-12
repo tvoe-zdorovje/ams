@@ -3,7 +3,7 @@ extend type Mutation {
 }
 
 extend type Query {
-    studios: StudioQueries
+    studios: StudioQueries!
 }
 
 type StudioMutations
