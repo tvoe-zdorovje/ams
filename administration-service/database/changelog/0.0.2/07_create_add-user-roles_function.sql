@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION administration.save_user_roles(
+CREATE OR REPLACE FUNCTION administration.add_user_roles(
     i_user_id BIGINT,
     i_roles BIGINT[]
 ) RETURNS BIGINT AS $$
