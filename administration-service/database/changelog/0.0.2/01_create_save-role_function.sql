@@ -36,7 +36,7 @@ BEGIN
         RETURN o_id;
     END IF;
 
-    PERFORM administration.save_role_permissions(o_id, i_permissions);
+    PERFORM administration.set_role_permissions(o_id, i_permissions);
 
     RETURN o_id;
 END;

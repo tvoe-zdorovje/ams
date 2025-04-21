@@ -7,5 +7,6 @@ databaseChangeLog:
             path: changelog/0.0.1/01_init_fdw_tables.sql
         - sqlFile:
             path: changelog/0.0.1/02_init_fdw_cache.sql
+            endDelimiter: "$$"
         - sqlFile:
             path: changelog/0.0.1/03_init_administration_tables.sql
