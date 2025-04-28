@@ -6,6 +6,11 @@ query GetRole(
             id
             name
             description
+            permissions {
+                id
+                name
+                description
+            }
         }
     }
 }

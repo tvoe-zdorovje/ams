@@ -1,10 +1,7 @@
-package by.anatolyloyko.ams.administration.role.graphql.resolver
+package by.anatolyloyko.ams.administration.permission.graphql.resolver
 
 import by.anatolyloyko.ams.administration.PERMISSION
-import by.anatolyloyko.ams.administration.ROLE
 import by.anatolyloyko.ams.administration.permission.finder.PermissionFinder
-import by.anatolyloyko.ams.administration.role.query.GetRoleQuery
-import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
 import by.anatolyloyko.ams.common.infrastructure.testing.get
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import com.ninjasquad.springmockk.MockkBean
@@ -17,32 +14,23 @@ import org.springframework.graphql.test.tester.WebGraphQlTester
 
 @SpringBootTest
 @AutoConfigureHttpGraphQlTester
-class RoleQueriesResolverTest {
+class PermissionQueriesResolverTest {
     @Autowired
     lateinit var graphQlTester: WebGraphQlTester
-
-    @MockkBean
-    lateinit var queryGateway: QueryGateway
 
     @MockkBean
     lateinit var permissionFinder: PermissionFinder
 
     @Test
-    fun `must return role with permissions`() {
-        every { queryGateway.handle(any<GetRoleQuery>()) } returns ROLE
-        every { permissionFinder.findByRoleId(any()) } returns listOf(PERMISSION)
+    fun `must find all permissions`() {
+        every { permissionFinder.findAll() } returns listOf(PERMISSION)
 
         val result = graphQlTester
-            .documentName("role/getRole")
-            .variable("id", ROLE.id)
+            .documentName("permission/getAllPermissions")
             .execute()
 
         result.errors().verify()
-        val rolePath = "roles.role"
-        result["$rolePath.id"] matches ROLE.id
-        result["$rolePath.name"] matches ROLE.name
-        result["$rolePath.description"] matches ROLE.description
-        val permissionPath = "$rolePath.permissions[0]"
+        val permissionPath = "permissions.permissions[0]"
         result["$permissionPath.id"] matches PERMISSION.id
         result["$permissionPath.name"] matches PERMISSION.name
         result["$permissionPath.description"] matches PERMISSION.description

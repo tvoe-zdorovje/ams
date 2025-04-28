@@ -1,5 +1,7 @@
 package by.anatolyloyko.ams.administration.role.graphql.resolver
 
+import by.anatolyloyko.ams.administration.permission.finder.PermissionFinder
+import by.anatolyloyko.ams.administration.role.model.Role
 import by.anatolyloyko.ams.administration.role.query.GetRoleQuery
 import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
 import org.springframework.graphql.data.method.annotation.Argument
@@ -16,7 +18,8 @@ import org.springframework.stereotype.Controller
  */
 @Controller
 class RoleQueriesResolver(
-    private val queryGateway: QueryGateway
+    private val queryGateway: QueryGateway,
+    private val permissionFinder: PermissionFinder
 ) {
     /**
      * Resolver for finding a role by ID.
@@ -30,4 +33,15 @@ class RoleQueriesResolver(
     fun role(
         @Argument id: Long
     ) = queryGateway.handle(GetRoleQuery(id))
+
+    /**
+     * Resolver for finding role permissions.
+     *
+     * @param role the role which permissions should be found for.
+     * @return list of permissions related to the role.
+     *
+     * @see PermissionFinder
+     */
+    @SchemaMapping(typeName = "Role")
+    fun permissions(role: Role) = permissionFinder.findByRoleId(checkNotNull(role.id))
 }

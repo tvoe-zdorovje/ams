@@ -6,4 +6,5 @@ type Role {
     id: ID!
     name: String!
     description: String!
+    permissions: [Permission!]!
 }

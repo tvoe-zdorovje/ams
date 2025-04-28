@@ -1,7 +1,9 @@
 package by.anatolyloyko.ams.administration
 
 import by.anatolyloyko.ams.orm.jooq.schemas.Administration
+import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.PERMISSION
 import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.ROLE
+import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.ROLE_PERMISSIONS
 import by.anatolyloyko.ams.orm.jooq.util.executeBatch
 import org.assertj.core.api.WithAssertions
 import org.jooq.DSLContext
@@ -33,10 +35,16 @@ abstract class JooqTest : WithAssertions {
 
     private fun setUpDatabase() = with(dslContext) {
         executeBatch(
-            createSchema(Administration()),
+            createSchemaIfNotExists(Administration()),
 
-            createTable(ROLE)
+            createTableIfNotExists(ROLE)
                 .columns(*ROLE.fields()),
+
+            createTableIfNotExists(PERMISSION)
+                .columns(*PERMISSION.fields()),
+
+            createTableIfNotExists(ROLE_PERMISSIONS)
+                .columns(*ROLE_PERMISSIONS.fields())
         )
     }
 }
