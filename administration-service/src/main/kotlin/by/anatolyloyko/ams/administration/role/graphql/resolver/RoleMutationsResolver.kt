@@ -36,6 +36,7 @@ class RoleMutationsResolver(
         SaveRoleCommand(
             input = SaveRoleInput(
                 role = Role(
+                    id = request.id,
                     name = request.name,
                     description = request.description,
                 ),

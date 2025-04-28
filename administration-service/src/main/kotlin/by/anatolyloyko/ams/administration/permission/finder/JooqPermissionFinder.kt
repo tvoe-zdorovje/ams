@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 
 private val MAPPER: (Record3<Long?, String?, String?>) -> Permission = {
     Permission(
-        id = checkNotNull(it[PERMISSION.ID]),
-        name = checkNotNull(it[PERMISSION.NAME]),
-        description = checkNotNull(it[PERMISSION.DESCRIPTION])
+        id = it[PERMISSION.ID]!!,
+        name = it[PERMISSION.NAME]!!,
+        description = it[PERMISSION.DESCRIPTION]!!
     )
 }
 

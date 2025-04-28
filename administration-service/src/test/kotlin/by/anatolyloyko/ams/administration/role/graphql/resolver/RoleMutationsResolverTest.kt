@@ -1,7 +1,6 @@
 package by.anatolyloyko.ams.administration.role.graphql.resolver
 
-import by.anatolyloyko.ams.administration.NEW_ROLE
-import by.anatolyloyko.ams.administration.ROLE_ID
+import by.anatolyloyko.ams.administration.ROLE
 import by.anatolyloyko.ams.administration.role.command.SaveRoleCommand
 import by.anatolyloyko.ams.administration.role.command.input.SaveRoleInput
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
@@ -28,24 +27,24 @@ class RoleMutationsResolverTest {
     @Test
     fun `must create role`() {
         val permissions = listOf(1L, 2L, 3L)
-        every { commandGateway.handle(any<SaveRoleCommand>()) } returns ROLE_ID
+        every { commandGateway.handle(any<SaveRoleCommand>()) } returns ROLE.id!!
 
         val result = graphQlTester
             .documentName("role/saveRole")
-            .variable("id", NEW_ROLE.id)
-            .variable("name", NEW_ROLE.name)
-            .variable("description", NEW_ROLE.description)
+            .variable("id", ROLE.id)
+            .variable("name", ROLE.name)
+            .variable("description", ROLE.description)
             .variable("permissions", permissions)
             .execute()
 
         result.errors().verify()
-        result["roles.saveRole"] matches ROLE_ID
+        result["roles.saveRole"] matches ROLE.id
 
         verify(exactly = 1) {
             commandGateway.handle(
                 match<SaveRoleCommand> {
                     it.input == SaveRoleInput(
-                        role = NEW_ROLE,
+                        role = ROLE,
                         permissions = permissions
                     )
                 }

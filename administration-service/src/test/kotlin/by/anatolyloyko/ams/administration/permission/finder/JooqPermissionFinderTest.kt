@@ -6,7 +6,6 @@ import by.anatolyloyko.ams.administration.ROLE
 import by.anatolyloyko.ams.administration.permission.model.Permission
 import by.anatolyloyko.ams.orm.jooq.schemas.tables.records.PermissionRecord
 import by.anatolyloyko.ams.orm.jooq.schemas.tables.records.RolePermissionsRecord
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.records.RoleRecord
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

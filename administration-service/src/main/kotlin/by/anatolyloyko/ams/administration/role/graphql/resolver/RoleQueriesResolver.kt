@@ -43,5 +43,5 @@ class RoleQueriesResolver(
      * @see PermissionFinder
      */
     @SchemaMapping(typeName = "Role")
-    fun permissions(role: Role) = permissionFinder.findByRoleId(checkNotNull(role.id))
+    fun permissions(role: Role) = permissionFinder.findByRoleId(role.id!!)
 }

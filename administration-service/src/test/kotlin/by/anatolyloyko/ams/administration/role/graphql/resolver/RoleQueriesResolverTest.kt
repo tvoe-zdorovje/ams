@@ -9,6 +9,7 @@ import by.anatolyloyko.ams.common.infrastructure.testing.get
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.verifyOrder
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester
@@ -46,5 +47,13 @@ class RoleQueriesResolverTest {
         result["$permissionPath.id"] matches PERMISSION.id
         result["$permissionPath.name"] matches PERMISSION.name
         result["$permissionPath.description"] matches PERMISSION.description
+
+        verifyOrder {
+            queryGateway.handle(
+                match<GetRoleQuery> { it.input == ROLE.id }
+            )
+
+            permissionFinder.findByRoleId(ROLE.id!!)
+        }
     }
 }

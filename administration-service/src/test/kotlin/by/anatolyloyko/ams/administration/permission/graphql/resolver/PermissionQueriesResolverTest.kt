@@ -6,6 +6,7 @@ import by.anatolyloyko.ams.common.infrastructure.testing.get
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester
@@ -34,5 +35,9 @@ class PermissionQueriesResolverTest {
         result["$permissionPath.id"] matches PERMISSION.id
         result["$permissionPath.name"] matches PERMISSION.name
         result["$permissionPath.description"] matches PERMISSION.description
+
+        verify(exactly = 1) {
+            permissionFinder.findAll()
+        }
     }
 }
