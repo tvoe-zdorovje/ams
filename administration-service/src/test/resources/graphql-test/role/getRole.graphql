@@ -1,0 +1,11 @@
+query GetRole(
+    $id: ID!
+) {
+    roles {
+        role(id: $id) {
+            id
+            name
+            description
+        }
+    }
+}

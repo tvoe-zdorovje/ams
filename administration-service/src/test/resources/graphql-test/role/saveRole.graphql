@@ -1,0 +1,17 @@
+mutation SaveRole(
+    $id: ID
+    $name: String!
+    $description: String!
+    $permissions: [ID!]
+) {
+    roles {
+        saveRole(
+            request: {
+                id: $id
+                name: $name
+                description: $description
+                permissions: $permissions
+            }
+        )
+    }
+}
