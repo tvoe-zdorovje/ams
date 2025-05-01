@@ -1,0 +1,11 @@
+mutation AssignStudios(
+    $brandId: ID!
+    $studios: [ID!]!
+) {
+    brandAdm {
+        assignStudios(
+            brandId: $brandId
+            studios: $studios
+        )
+    }
+}

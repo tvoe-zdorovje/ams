@@ -3,6 +3,10 @@ package by.anatolyloyko.ams.administration
 import by.anatolyloyko.ams.administration.permission.model.Permission
 import by.anatolyloyko.ams.administration.role.model.Role
 
+const val BRAND_ID = 1000000001513221100
+
+const val STUDIO_ID = 1000000000171342100
+
 const val ROLE_ID = 1000000001613321100
 
 val NEW_ROLE = Role(

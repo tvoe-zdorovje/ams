@@ -1,0 +1,17 @@
+mutation CreateRole(
+    $brandId: ID!
+    $name: String!
+    $description: String!
+    $permissions: [ID!]
+) {
+    brandAdm {
+        createRole(
+            request: {
+                brandId: $brandId
+                name: $name
+                description: $description
+                permissions: $permissions
+            }
+        )
+    }
+}
