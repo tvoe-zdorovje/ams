@@ -2,7 +2,7 @@ package by.anatolyloyko.ams.administration.brand.studio.graphql.resolver
 
 import by.anatolyloyko.ams.administration.brand.studio.command.CreateStudioRoleCommand
 import by.anatolyloyko.ams.administration.brand.studio.command.input.CreateStudioRoleInput
-import by.anatolyloyko.ams.administration.brand.studio.graphql.resolver.dto.CreateStudioRoleRequest
+import by.anatolyloyko.ams.administration.brand.studio.graphql.dto.CreateStudioRoleRequest
 import by.anatolyloyko.ams.administration.role.model.Role
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
 import org.springframework.graphql.data.method.annotation.Argument

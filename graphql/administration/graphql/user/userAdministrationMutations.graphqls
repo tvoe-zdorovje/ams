@@ -1,0 +1,4 @@
+extend type UserAdministrationMutations {
+    assignRoles(userId: ID!, roles: [ID!]!): ID!
+    unassignRoles(userId: ID!, roles: [ID!]!): ID!
+}

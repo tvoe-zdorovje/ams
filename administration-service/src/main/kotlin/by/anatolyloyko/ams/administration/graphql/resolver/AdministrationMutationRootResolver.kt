@@ -3,6 +3,7 @@ package by.anatolyloyko.ams.administration.graphql.resolver
 import by.anatolyloyko.ams.administration.brand.graphql.resolver.BrandMutationsResolver
 import by.anatolyloyko.ams.administration.brand.studio.graphql.resolver.StudioMutationsResolver
 import by.anatolyloyko.ams.administration.role.graphql.resolver.RoleMutationsResolver
+import by.anatolyloyko.ams.administration.user.graphql.resolver.UserMutationsResolver
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.stereotype.Controller
 
@@ -21,6 +22,7 @@ class AdministrationMutationRootResolver(
     private val roleMutationsResolver: RoleMutationsResolver,
     private val brandMutationsResolver: BrandMutationsResolver,
     private val studioMutationsResolver: StudioMutationsResolver,
+    private val userMutationsResolver: UserMutationsResolver
 ) {
     @MutationMapping
     fun roles() = roleMutationsResolver
@@ -30,4 +32,7 @@ class AdministrationMutationRootResolver(
 
     @MutationMapping
     fun studioAdm() = studioMutationsResolver
+
+    @MutationMapping
+    fun userAdm() = userMutationsResolver
 }

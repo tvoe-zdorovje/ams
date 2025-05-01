@@ -1,4 +1,4 @@
-package by.anatolyloyko.ams.administration.brand.studio.graphql.resolver.dto
+package by.anatolyloyko.ams.administration.brand.studio.graphql.dto
 
 data class CreateStudioRoleRequest(
     val studioId: Long,
