@@ -1,0 +1,10 @@
+extend type StudioAdministrationMutations {
+    createRole(request: CreateStudioRoleRequest!): ID!
+}
+
+input CreateStudioRoleRequest {
+    studioId: ID!
+    name: String!
+    description: String!
+    permissions: [ID!]
+}
