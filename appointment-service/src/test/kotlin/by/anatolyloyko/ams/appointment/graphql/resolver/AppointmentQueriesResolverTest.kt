@@ -34,7 +34,12 @@ class AppointmentQueriesResolverTest {
         result.errors().verify()
         val appointmentPath = "appointments.appointment"
         result["$appointmentPath.id"] matches APPOINTMENT.id
-        result["$appointmentPath.name"] matches APPOINTMENT.name
         result["$appointmentPath.description"] matches APPOINTMENT.description
+        result["$appointmentPath.clientUserId"] matches APPOINTMENT.clientUserId
+        result["$appointmentPath.masterUserId"] matches APPOINTMENT.masterUserId
+        result["$appointmentPath.managerUserId"] matches APPOINTMENT.managerUserId
+        result["$appointmentPath.studioId"] matches APPOINTMENT.studioId
+        result["$appointmentPath.status"] matches APPOINTMENT.status
+        result["$appointmentPath.comment"] matches APPOINTMENT.comment
     }
 }

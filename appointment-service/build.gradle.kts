@@ -1,3 +1,4 @@
+import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
@@ -35,6 +36,15 @@ sourceSets {
             srcDir("../graphql/common")
             srcDir("../graphql/appointment")
         }
+    }
+}
+
+tasks.register("generateDatabaseSchema") {
+    group = "generation"
+    description = "Generate Kotlin classes representing database tables based on a database schema."
+
+    doLast {
+        GenerateDatabaseSchemasTask(project).execute("appointments")
     }
 }
 

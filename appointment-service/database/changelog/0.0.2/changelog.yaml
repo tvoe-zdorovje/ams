@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0.0.2
+      author: anatolyloyko
+      changes:
+        - sqlFile:
+            path: changelog/0.0.2/01_create_create-appointment_function.sql
+            endDelimiter: "$$"

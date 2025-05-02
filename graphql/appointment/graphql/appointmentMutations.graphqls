@@ -3,6 +3,10 @@ extend type AppointmentMutations {
 }
 
 input CreateAppointmentRequest {
-    name: String!
     description: String!
+    clientUserId: ID!
+    masterUserId: ID!
+    managerUserId: ID!
+    studioId: ID!
+    comment: String!
 }

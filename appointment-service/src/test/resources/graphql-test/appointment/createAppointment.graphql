@@ -1,12 +1,20 @@
 mutation CreateAppointment(
-    $name: String!
     $description: String!
+    $clientUserId: ID!
+    $masterUserId: ID!
+    $managerUserId: ID!
+    $studioId: ID!
+    $comment: String!
 ) {
     appointments {
         createAppointment(
             request: {
-                name: $name
                 description: $description
+                clientUserId: $clientUserId
+                masterUserId: $masterUserId
+                managerUserId: $managerUserId
+                studioId: $studioId
+                comment: $comment
             }
         )
     }

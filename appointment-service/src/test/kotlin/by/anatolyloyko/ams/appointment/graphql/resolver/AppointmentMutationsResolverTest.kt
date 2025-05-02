@@ -29,8 +29,12 @@ class AppointmentMutationsResolverTest {
 
         val result = graphQlTester
             .documentName("appointment/createAppointment")
-            .variable("name", APPOINTMENT.name)
             .variable("description", APPOINTMENT.description)
+            .variable("clientUserId", APPOINTMENT.clientUserId)
+            .variable("masterUserId", APPOINTMENT.masterUserId)
+            .variable("managerUserId", APPOINTMENT.managerUserId)
+            .variable("studioId", APPOINTMENT.studioId)
+            .variable("comment", APPOINTMENT.comment)
             .execute()
 
         result.errors().verify()

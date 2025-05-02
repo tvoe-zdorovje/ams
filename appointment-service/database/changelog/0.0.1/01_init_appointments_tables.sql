@@ -9,10 +9,10 @@ CREATE TYPE appointments.appointment_status AS ENUM (
 CREATE TABLE IF NOT EXISTS appointments.appointment(
     id UUID PRIMARY KEY NOT NULL,
     description VARCHAR(255) NOT NULL,
-    client_user_id INT NOT NULL,
-    master_user_id INT NOT NULL,
-    manager_user_id INT NOT NULL,
-    studio_id INT NOT NULL,
-    status appointments.appointment_status NOT NULL DEFAULT 'REQUESTED',
+    client_user_id BIGINT NOT NULL,
+    master_user_id BIGINT NOT NULL,
+    manager_user_id BIGINT NOT NULL,
+    studio_id BIGINT NOT NULL,
+    status appointments.appointment_status NOT NULL,
     comment VARCHAR(255)
 );

@@ -4,6 +4,19 @@ extend type AppointmentQueries {
 
 type Appointment {
     id: ID!
-    name: String!
     description: String!
+    clientUserId: ID!
+    masterUserId: ID!
+    managerUserId: ID!
+    studioId: ID!
+    status: AppointmentStatus!
+    comment: String!
+}
+
+enum AppointmentStatus {
+    REQUESTED
+    CORRECTED
+    APPROVED
+    COMPLETED
+    CANCELLED
 }

@@ -4,8 +4,13 @@ query GetAppointment(
     appointments {
         appointment(id: $id) {
             id
-            name
             description
+            clientUserId
+            masterUserId
+            managerUserId
+            studioId
+            status
+            comment
         }
     }
 }

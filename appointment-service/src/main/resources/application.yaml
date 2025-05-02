@@ -1,0 +1,26 @@
+debug: false
+spring:
+    main:
+        allow-bean-definition-overriding: false
+    output:
+        ansi:
+            enabled: always
+    graphql:
+        graphiql:
+            enabled: true
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://localhost:5444/appointment_db
+        username: apsportal
+        password: apsportal
+
+logging:
+    pattern:
+        console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){cyan} - %clr(%-5level){yellow} %clr(%logger{36}){green} - %msg%n"
+    level:
+        org.jooq: DEBUG
+        org.springframework: INFO
+        by.anatolyloyko: DEBUG
+        org.zalando.logbook.Logbook: TRACE
+    file:
+        name: log/appointment-service.log

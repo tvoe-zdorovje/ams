@@ -2,6 +2,7 @@ package by.anatolyloyko.ams.appointment.query
 
 import by.anatolyloyko.ams.appointment.model.Appointment
 import by.anatolyloyko.ams.common.infrastructure.service.query.BaseQuery
+import java.util.UUID
 
 /**
  * A query to retrieve a appointment {@link Appointment} by ID {@link Long}.
@@ -9,5 +10,5 @@ import by.anatolyloyko.ams.common.infrastructure.service.query.BaseQuery
  * @param input the ID of the appointment to retrieve.
  */
 class GetAppointmentQuery(
-    input: Long
-) : BaseQuery<Long, Appointment?>(input)
+    input: UUID
+) : BaseQuery<UUID, Appointment?>(input)

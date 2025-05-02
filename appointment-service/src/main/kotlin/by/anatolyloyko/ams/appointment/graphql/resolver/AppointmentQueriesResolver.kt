@@ -5,6 +5,7 @@ import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
+import java.util.UUID
 
 /**
  * Resolver for appointment-related queries in the GraphQL API.
@@ -19,7 +20,7 @@ class AppointmentQueriesResolver(
     private val queryGateway: QueryGateway
 ) {
     /**
-     * Resolver for finding a appointment by ID.
+     * Resolver for finding an appointment by ID.
      *
      * @param id the identifier of the appointment to retrieve.
      * @return the appointment data, or `null` if the appointment is not found.
@@ -28,6 +29,6 @@ class AppointmentQueriesResolver(
      */
     @SchemaMapping(typeName = "AppointmentQueries")
     fun appointment(
-        @Argument id: Long
+        @Argument id: UUID
     ) = queryGateway.handle(GetAppointmentQuery(id))
 }

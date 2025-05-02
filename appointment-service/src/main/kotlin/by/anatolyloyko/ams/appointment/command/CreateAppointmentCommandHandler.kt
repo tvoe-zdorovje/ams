@@ -3,6 +3,7 @@ package by.anatolyloyko.ams.appointment.command
 import by.anatolyloyko.ams.appointment.action.CreateAppointmentAction
 import by.anatolyloyko.ams.common.infrastructure.service.command.BaseCommandHandler
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 /**
  * Handles {@link CreateAppointmentCommand}.
@@ -12,6 +13,6 @@ import org.springframework.stereotype.Component
 @Component
 class CreateAppointmentCommandHandler(
     private val createAppointmentAction: CreateAppointmentAction
-) : BaseCommandHandler<CreateAppointmentCommand, Long>() {
-    override fun handleInternal(command: CreateAppointmentCommand): Long = createAppointmentAction(command.input)
+) : BaseCommandHandler<CreateAppointmentCommand, UUID>() {
+    override fun handleInternal(command: CreateAppointmentCommand): UUID = createAppointmentAction(command.input)
 }

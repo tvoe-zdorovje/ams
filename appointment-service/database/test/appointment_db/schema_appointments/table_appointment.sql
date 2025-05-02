@@ -9,10 +9,10 @@ BEGIN
         columns_with_type := ARRAY [
             'id UUID',
             'description VARCHAR(255)',
-            'client_user_id INT',
-            'master_user_id INT',
-            'manager_user_id INT',
-            'studio_id INT',
+            'client_user_id BIGINT',
+            'master_user_id BIGINT',
+            'manager_user_id BIGINT',
+            'studio_id BIGINT',
             'status appointments.appointment_status',
             'comment VARCHAR(255)'
         ],
