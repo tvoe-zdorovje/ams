@@ -7,7 +7,7 @@ BEGIN
         'studios',
         'studio',
         ARRAY [
-            'id INT',
+            'id BIGINT',
             'name VARCHAR(100)',
             'description VARCHAR(255)'
         ],
@@ -21,7 +21,7 @@ CREATE OR REPLACE FUNCTION tests.test_studios_table_behavior() RETURNS SETOF TEX
     DECLARE
         table_name NAME := 'studio';
         table_owner TEXT := _get_rel_owner(table_name);
-        studio_id INT := 1;
+        studio_id BIGINT := 1;
         name TEXT := 'Mini-Mash Nail Studio';
         description TEXT := 'From Salihorsk onto your hands';
 BEGIN
