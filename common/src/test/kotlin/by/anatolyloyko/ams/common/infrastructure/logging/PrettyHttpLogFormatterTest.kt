@@ -45,7 +45,7 @@ class PrettyHttpLogFormatterTest : WithAssertions {
 
         val result = formatterSpy.format(precorrelation, request)
 
-        val expectedResult =  """
+        val expectedResult = """
             |Incoming Request: $METHOD $URI
             |$CONTENT
         """.trimMargin()
@@ -75,7 +75,7 @@ class PrettyHttpLogFormatterTest : WithAssertions {
 
         val result = formatterSpy.format(corelation, response)
 
-        val expectedResult =  """
+        val expectedResult = """
             |Outgoing Response: $STATUS $REASON_PHRASE [0 ms]
             |$CONTENT
         """.trimMargin()
@@ -93,7 +93,7 @@ class PrettyHttpLogFormatterTest : WithAssertions {
             "param1" to "value1",
             "param2" to "value2"
         )
-        val expectedResult =  """{
+        val expectedResult = """{
             |  "param1" : "value1",
             |  "param2" : "value2"
         |}""".trimMargin()
@@ -107,7 +107,7 @@ class PrettyHttpLogFormatterTest : WithAssertions {
     fun `prepareBody - must parse message to map`() {
         val expectedResult = mapOf("parameter" to "value")
         val message = "{\"parameter\": \"value\"}"
-        val httpMessage = mockk<HttpMessage>() {
+        val httpMessage = mockk<HttpMessage> {
             every { bodyAsString } returns message
         }
 
