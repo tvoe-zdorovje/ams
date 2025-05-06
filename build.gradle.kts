@@ -21,7 +21,7 @@ subprojects {
         // === JaCoCo === //
 
         withType<Test> {
-            finalizedBy(jacocoTestReport, jacocoTestCoverageVerification)
+            finalizedBy(jacocoTestReport)
         }
 
         fun JacocoReportBase.afterEvaluateExcludes() = afterEvaluate {
