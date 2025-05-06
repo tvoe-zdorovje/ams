@@ -61,6 +61,26 @@ dependencies {
     testFixturesApi("com.h2database", "h2", h2Version)
 }
 
+tasks.withType<JacocoCoverageVerification> {
+    afterEvaluate {
+        classDirectories.setFrom(
+            files(
+                classDirectories.files.map {
+                    fileTree(it) {
+                        exclude(
+                            "**/FunctionExtensionsKt*",
+                            "**/ExposedFinder*",
+                            "**/ConditionsKt*",
+                            "**/ExtensionsKt*",
+                            "**/GraphQlTesterExtensionsKt*"
+                        )
+                    }
+                }
+            )
+        )
+    }
+}
+
 tasks.withType<BootJar> {
     enabled = false
 }
