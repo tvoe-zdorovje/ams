@@ -7,7 +7,8 @@ rootProject.name = "ams"
 
 include(
     "common",
-    "graphql",
+    "graphql", // just for nice ico
+    "gateway", // just for nice ico
     "user-service",
     "brand-service",
     "studio-service",

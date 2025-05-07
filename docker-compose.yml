@@ -1,4 +1,19 @@
 services:
+  gateway:
+    build:
+      context: gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    restart: no
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./gateway/router.yaml:/dist/router.yaml
+      - ./gateway/supergraph-config.yaml:/tmp/app/supergraph-config.yaml
+      - ./graphql:/tmp/app/schemas/service
+    env_file:
+      - user-service/.env
+
   user_db:
     build:
       context: postgres

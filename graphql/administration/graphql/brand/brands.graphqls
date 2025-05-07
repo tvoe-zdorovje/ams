@@ -1,0 +1,11 @@
+extend type Mutation {
+    brands: BrandMutations!
+}
+
+extend type Query {
+    brands: BrandQueries!
+}
+
+type BrandMutations
+
+type BrandQueries

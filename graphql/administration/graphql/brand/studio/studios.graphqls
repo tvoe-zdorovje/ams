@@ -1,0 +1,11 @@
+extend type Mutation {
+    studios: StudioMutations!
+}
+
+extend type Query {
+    studios: StudioQueries!
+}
+
+type StudioMutations
+
+type StudioQueries
