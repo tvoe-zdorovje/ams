@@ -2,7 +2,7 @@ mutation AssignStudios(
     $brandId: ID!
     $studios: [ID!]!
 ) {
-    brandAdm {
+    brands {
         assignStudios(
             brandId: $brandId
             studios: $studios

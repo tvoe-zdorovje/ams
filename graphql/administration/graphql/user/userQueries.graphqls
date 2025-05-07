@@ -1,0 +1,4 @@
+# /graphql/user/graphql/users.graphqls
+extend type UserQueries {
+    _empty: String @deprecated(reason: "Temporary placeholder")
+}

@@ -2,7 +2,7 @@ mutation AssignRoles(
     $userId: ID!
     $roles: [ID!]!
 ) {
-    userAdm {
+    users {
         assignRoles(
             userId: $userId
             roles: $roles

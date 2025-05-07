@@ -1,4 +1,5 @@
-extend type BrandAdministrationMutations {
+# /graphql/brand/graphql/brands.graphqls
+extend type BrandMutations {
     createRole(request: CreateBrandRoleRequest!): ID!
     assignStudios(brandId: ID! studios: [ID!]!): Boolean!
 }

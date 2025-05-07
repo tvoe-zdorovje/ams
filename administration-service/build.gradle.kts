@@ -32,12 +32,26 @@ sourceSets {
             srcDir("../graphql/common")
             srcDir("../graphql/administration")
         }
+        resources {
+        }
     }
     test {
         resources {
             srcDir("../graphql/common")
             srcDir("../graphql/administration")
         }
+    }
+}
+
+tasks.withType<ProcessResources> {
+    from("../graphql/brand/graphql") {
+        include("**/brands.*").into("graphql/brand")
+    }
+    from("../graphql/studio/graphql") {
+        include("**/studios.*").into("graphql/brand/studio")
+    }
+    from("../graphql/user/graphql") {
+        include("**/users.*").into("graphql/user")
     }
 }
 

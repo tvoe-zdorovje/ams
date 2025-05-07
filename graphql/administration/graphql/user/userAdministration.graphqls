@@ -1,5 +1,0 @@
-extend type Mutation {
-    userAdm: UserAdministrationMutations!
-}
-
-type UserAdministrationMutations

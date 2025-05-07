@@ -1,4 +1,5 @@
-extend type UserAdministrationMutations {
+# /graphql/user/graphql/users.graphqls
+extend type UserMutations {
     assignRoles(userId: ID!, roles: [ID!]!): ID!
     unassignRoles(userId: ID!, roles: [ID!]!): ID!
 }

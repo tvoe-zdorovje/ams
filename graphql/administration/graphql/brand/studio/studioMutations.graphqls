@@ -1,4 +1,5 @@
-extend type StudioAdministrationMutations {
+# /graphql/studio/graphql/studios.graphqls
+extend type StudioMutations {
     createRole(request: CreateStudioRoleRequest!): ID!
 }
 

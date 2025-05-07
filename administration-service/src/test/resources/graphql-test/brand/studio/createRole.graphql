@@ -4,7 +4,7 @@ mutation CreateRole(
     $description: String!
     $permissions: [ID!]
 ) {
-    studioAdm {
+    studios {
         createRole(
             request: {
                 studioId: $studioId

@@ -1,0 +1,4 @@
+# /graphql/brand/graphql/brands.graphqls
+extend type BrandQueries {
+    _empty: String @deprecated(reason: "Temporary placeholder")
+}

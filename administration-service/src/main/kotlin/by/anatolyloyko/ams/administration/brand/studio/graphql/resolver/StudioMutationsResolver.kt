@@ -29,7 +29,7 @@ class StudioMutationsResolver(
      *
      * @see CreateStudioRoleCommand
      */
-    @SchemaMapping(typeName = "StudioAdministrationMutations")
+    @SchemaMapping(typeName = "StudioMutations")
     fun createRole(
         @Argument request: CreateStudioRoleRequest
     ): Long = commandGateway.handle(

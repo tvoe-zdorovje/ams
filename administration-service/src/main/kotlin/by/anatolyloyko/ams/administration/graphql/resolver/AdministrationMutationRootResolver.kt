@@ -28,11 +28,11 @@ class AdministrationMutationRootResolver(
     fun roles() = roleMutationsResolver
 
     @MutationMapping
-    fun brandAdm() = brandMutationsResolver
+    fun brands() = brandMutationsResolver
 
     @MutationMapping
-    fun studioAdm() = studioMutationsResolver
+    fun studios() = studioMutationsResolver
 
     @MutationMapping
-    fun userAdm() = userMutationsResolver
+    fun users() = userMutationsResolver
 }
