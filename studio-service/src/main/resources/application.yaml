@@ -10,9 +10,9 @@ spring:
             enabled: true
     datasource:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://localhost:5443/studio_db
-        username: stsportal
-        password: stsportal
+        url: jdbc:postgresql://${DBHOST:localhost}:${DBPORT:5443}/${DBNAME:studio_db}
+        username: ${DBUSER:stsportal}
+        password: ${DBPASS:stsportal}
 
 logging:
     pattern:

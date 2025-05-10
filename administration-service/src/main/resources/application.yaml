@@ -10,9 +10,9 @@ spring:
             enabled: true
     datasource:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://localhost:5444/administration_db
-        username: adsportal
-        password: adsportal
+        url: jdbc:postgresql://${DBHOST:localhost}:${DBPORT:5444}/${DBNAME:administration_db}
+        username: ${DBUSER:adsportal}
+        password: ${DBPASS:adsportal}
 
 logging:
     pattern:

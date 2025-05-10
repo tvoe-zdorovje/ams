@@ -10,9 +10,9 @@ spring:
             enabled: true
     datasource:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://localhost:5442/brand_db
-        username: brsportal
-        password: brsportal
+        url: jdbc:postgresql://${DBHOST:localhost}:${DBPORT:5442}/${DBNAME:brand_db}
+        username: ${DBUSER:brsportal}
+        password: ${DBPASS:brsportal}
 
 logging:
     pattern:
