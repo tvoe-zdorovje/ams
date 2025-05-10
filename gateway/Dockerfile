@@ -11,7 +11,7 @@ RUN mkdir -p /tmp/app/schemas
 COPY --from=builder --chmod=755 /root/.rover/bin/rover /rover
 COPY --chmod=755 compose.sh /tmp/app/schemas/compose.sh
 
-ENTRYPOINT exec sh -c "\
+CMD exec sh -xc "\
   /tmp/app/schemas/compose.sh && \
   ./router --supergraph /tmp/app/supergraph.graphql"
 

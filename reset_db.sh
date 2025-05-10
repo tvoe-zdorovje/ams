@@ -1,6 +1,6 @@
 sudo docker compose down
 #sudo docker image rm ams-user_db ams-brand_db ams-studio_db ams-appointment_db ams-administration_db
-#sudo docker image rm    ams-liquibase_user_db \
+sudo docker image rm    ams-liquibase_user_db \
 #                        ams-liquibase_brand_db \
 #                        ams-liquibase_studio_db \
 #                        ams-liquibase_appointment_db \
