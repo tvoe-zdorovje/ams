@@ -1,3 +1,5 @@
+# Configuration of the router's HTTP server
+# Default configuration for container
 supergraph:
-  introspection: true
-  schema: supergraph.graphql
+  # The socket address and port to listen on
+  listen: 0.0.0.0:4000
