@@ -10,6 +10,8 @@ plugins {
 
     id("org.springframework.boot")
     id("io.spring.dependency-management")
+
+    war
 }
 
 val jdkVersion: Int = (project.findProperty("jdkVersion") as String).toInt()
@@ -22,6 +24,8 @@ dependencies {
     implementation(project(":common")) {
         exclude(group = "org.jetbrains.exposed")
     }
+
+    testAndDevelopmentOnly("org.springframework.boot:spring-boot-starter-jetty")
 
     testImplementation(testFixtures(project(":common")))
 }
@@ -51,7 +55,7 @@ tasks.register("generateDatabaseSchema") {
 }
 
 tasks.withType<BootJar> {
-    mainClass.set("${project.group}.brand.BrandServiceApplication")
+    enabled = false
 }
 
 tasks.test {

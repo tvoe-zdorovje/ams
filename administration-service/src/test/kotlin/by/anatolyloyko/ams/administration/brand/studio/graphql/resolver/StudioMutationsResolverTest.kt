@@ -46,7 +46,7 @@ class StudioMutationsResolverTest {
                 .execute()
 
             result.errors().verify()
-            result["studioAdm.createRole"] matches roleId
+            result["studios.createRole"] matches roleId
 
             verify(exactly = 1) {
                 commandGateway.handle(
@@ -76,7 +76,7 @@ class StudioMutationsResolverTest {
                 .execute()
 
             result.errors().verify()
-            result["studioAdm.createRole"] matches roleId
+            result["studios.createRole"] matches roleId
 
             verify(exactly = 1) {
                 commandGateway.handle(

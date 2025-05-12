@@ -31,7 +31,7 @@ class BrandMutationsResolver(
      *
      * @see CreateBrandRoleCommand
      */
-    @SchemaMapping(typeName = "BrandAdministrationMutations")
+    @SchemaMapping(typeName = "BrandMutations")
     fun createRole(
         @Argument request: CreateBrandRoleRequest
     ): Long = commandGateway.handle(
@@ -56,7 +56,7 @@ class BrandMutationsResolver(
      *
      * @see AssignStudiosCommand
      */
-    @SchemaMapping(typeName = "BrandAdministrationMutations")
+    @SchemaMapping(typeName = "BrandMutations")
     fun assignStudios(
         @Argument brandId: Long,
         @Argument studios: List<Long>,

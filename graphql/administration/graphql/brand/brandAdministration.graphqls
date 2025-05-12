@@ -1,5 +1,0 @@
-extend type Mutation {
-    brandAdm: BrandAdministrationMutations!
-}
-
-type BrandAdministrationMutations

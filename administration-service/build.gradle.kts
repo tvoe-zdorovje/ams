@@ -10,6 +10,8 @@ plugins {
 
     id("org.springframework.boot")
     id("io.spring.dependency-management")
+
+    war
 }
 
 val jdkVersion: Int = (project.findProperty("jdkVersion") as String).toInt()
@@ -23,6 +25,8 @@ dependencies {
         exclude(group = "org.jetbrains.exposed")
     }
 
+    testAndDevelopmentOnly("org.springframework.boot:spring-boot-starter-jetty")
+
     testImplementation(testFixtures(project(":common")))
 }
 
@@ -32,12 +36,32 @@ sourceSets {
             srcDir("../graphql/common")
             srcDir("../graphql/administration")
         }
+        resources {
+        }
     }
     test {
         resources {
             srcDir("../graphql/common")
             srcDir("../graphql/administration")
         }
+    }
+}
+
+tasks.withType<ProcessResources> {
+    from("../graphql/brand/graphql") {
+        include("**/brands.*")
+        into("graphql/brand")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+    from("../graphql/studio/graphql") {
+        include("**/studios.*")
+        into("graphql/brand/studio")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+    from("../graphql/user/graphql") {
+        include("**/users.*")
+        into("graphql/user")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 }
 
@@ -51,7 +75,7 @@ tasks.register("generateDatabaseSchema") {
 }
 
 tasks.withType<BootJar> {
-    mainClass.set("${project.group}.administration.AdministrationServiceApplication")
+    enabled = false
 }
 
 tasks.test {

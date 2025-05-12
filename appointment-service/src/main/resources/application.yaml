@@ -10,9 +10,9 @@ spring:
             enabled: true
     datasource:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://localhost:5444/appointment_db
-        username: apsportal
-        password: apsportal
+        url: jdbc:postgresql://${DBHOST:localhost}:${DBPORT:5444}/${DBNAME:appointment_db}
+        username: ${DBUSER:apsportal}
+        password: ${DBPASS:apsportal}
 
 logging:
     pattern:

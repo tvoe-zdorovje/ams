@@ -1,0 +1,27 @@
+federation_version: =2.5.1
+
+subgraphs:
+  administration:
+    routing_url: http://administration-service:8080/graphql
+    schema:
+      file: ./schemas/administration.graphqls
+
+  appointments:
+    routing_url: http://appointment-service:8080/graphql
+    schema:
+      file: ./schemas/appointment.graphqls
+
+  brands:
+    routing_url: http://brand-service:8080/graphql
+    schema:
+      file: ./schemas/brand.graphqls
+
+  studios:
+    routing_url: http://studio-service:8080/graphql
+    schema:
+      file: ./schemas/studio.graphqls
+
+  users:
+    routing_url: http://user-service:8080/graphql
+    schema:
+      file: ./schemas/user.graphqls

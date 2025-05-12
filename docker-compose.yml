@@ -1,4 +1,19 @@
 services:
+  gateway:
+    build:
+      context: gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    restart: no
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./gateway/router.yaml:/dist/config/router.yaml
+      - ./gateway/supergraph-config.yaml:/tmp/app/supergraph-config.yaml
+      - ./graphql:/tmp/app/schemas/service
+    env_file:
+      - user-service/.env
+
   user_db:
     build:
       context: postgres
@@ -27,7 +42,18 @@ services:
       - ./user-service/database/changelog:/liquibase/changelog
       - ./user-service/database/test:/liquibase/tests
       - ./postgres/test/_util:/liquibase/tests/_util
-    command: sh -c "liquibase update && ./run_tests.sh"
+
+  user-service:
+    image: jetty:11-jdk17-alpine-eclipse-temurin
+    container_name: user-service
+    depends_on:
+      - liquibase_user_db
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./user-service/build/libs/user-service.war:/var/lib/jetty/webapps/ROOT.war
+    env_file:
+      - user-service/.env
 
   brand_db:
     build:
@@ -57,7 +83,18 @@ services:
       - ./brand-service/database/changelog:/liquibase/changelog
       - ./brand-service/database/test:/liquibase/tests
       - ./postgres/test/_util:/liquibase/tests/_util
-    command: sh -c "liquibase update && ./run_tests.sh"
+
+  brand-service:
+    image: jetty:11-jdk17-alpine-eclipse-temurin
+    container_name: brand-service
+    depends_on:
+      - liquibase_brand_db
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./brand-service/build/libs/brand-service.war:/var/lib/jetty/webapps/ROOT.war
+    env_file:
+      - brand-service/.env
 
   studio_db:
     build:
@@ -87,7 +124,18 @@ services:
       - ./studio-service/database/changelog:/liquibase/changelog
       - ./studio-service/database/test:/liquibase/tests
       - ./postgres/test/_util:/liquibase/tests/_util
-    command: sh -c "liquibase update && ./run_tests.sh"
+  
+  studio-service:
+    image: jetty:11-jdk17-alpine-eclipse-temurin
+    container_name: studio-service
+    depends_on:
+      - liquibase_studio_db
+    ports:
+      - "8083:8080"
+    volumes:
+      - ./studio-service/build/libs/studio-service.war:/var/lib/jetty/webapps/ROOT.war
+    env_file:
+      - studio-service/.env
 
   administration_db:
     build:
@@ -125,7 +173,6 @@ services:
       - ./administration-service/database/changelog:/liquibase/changelog
       - ./administration-service/database/test:/liquibase/tests
       - ./postgres/test/_util:/liquibase/tests/_util
-    command: sh -c "liquibase update && ./run_tests.sh"
 
   liquibase_appointment_db:
     build:
@@ -141,7 +188,30 @@ services:
       - ./appointment-service/database/changelog:/liquibase/changelog
       - ./appointment-service/database/test:/liquibase/tests
       - ./postgres/test/_util:/liquibase/tests/_util
-    command: sh -c "liquibase update && ./run_tests.sh"
+
+  administration-service:
+    image: jetty:11-jdk17-alpine-eclipse-temurin
+    container_name: administration-service
+    depends_on:
+      - liquibase_administration_db
+    ports:
+      - "8084:8080"
+    volumes:
+      - ./administration-service/build/libs/administration-service.war:/var/lib/jetty/webapps/ROOT.war
+    env_file:
+      - administration-service/.env
+  
+  appointment-service:
+    image: jetty:11-jdk17-alpine-eclipse-temurin
+    container_name: appointment-service
+    depends_on:
+      - liquibase_appointment_db
+    ports:
+      - "8085:8080"
+    volumes:
+      - ./appointment-service/build/libs/appointment-service.war:/var/lib/jetty/webapps/ROOT.war
+    env_file:
+      - appointment-service/.env
 
 volumes:
   user_db_volume:

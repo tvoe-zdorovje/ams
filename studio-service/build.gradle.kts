@@ -10,6 +10,8 @@ plugins {
 
     id("org.springframework.boot")
     id("io.spring.dependency-management")
+
+    war
 }
 
 val jdkVersion: Int = (project.findProperty("jdkVersion") as String).toInt()
@@ -19,7 +21,11 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":common"))
+    implementation(project(":common")) {
+        exclude(group = "org.jetbrains.exposed")
+    }
+
+    testAndDevelopmentOnly("org.springframework.boot:spring-boot-starter-jetty")
 
     testImplementation(testFixtures(project(":common")))
 }
@@ -49,7 +55,7 @@ tasks.register("generateDatabaseSchema") {
 }
 
 tasks.withType<BootJar> {
-    mainClass.set("by.anatolyloyko.ams.studio.StudioServiceApplication")
+    enabled = false
 }
 
 tasks.test {

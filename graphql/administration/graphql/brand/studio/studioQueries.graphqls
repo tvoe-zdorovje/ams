@@ -1,0 +1,4 @@
+# /graphql/studio/graphql/studios.graphqls
+extend type StudioQueries {
+    _empty: String @deprecated(reason: "Temporary placeholder")
+}

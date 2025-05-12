@@ -1,0 +1,11 @@
+extend type Mutation {
+    users: UserMutations!
+}
+
+extend type Query {
+    users: UserQueries!
+}
+
+type UserMutations
+
+type UserQueries

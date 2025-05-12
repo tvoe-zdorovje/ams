@@ -40,7 +40,7 @@ class UserMutationsResolverTest {
                 .execute()
 
             result.errors().verify()
-            result["userAdm.assignRoles"] matches true
+            result["users.assignRoles"] matches true
 
             verify(exactly = 1) {
                 commandGateway.handle(
@@ -84,7 +84,7 @@ class UserMutationsResolverTest {
                 .execute()
 
             result.errors().verify()
-            result["userAdm.unassignRoles"] matches true
+            result["users.unassignRoles"] matches true
 
             verify(exactly = 1) {
                 commandGateway.handle(

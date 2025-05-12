@@ -1,5 +1,0 @@
-extend type Mutation {
-    studioAdm: StudioAdministrationMutations!
-}
-
-type StudioAdministrationMutations

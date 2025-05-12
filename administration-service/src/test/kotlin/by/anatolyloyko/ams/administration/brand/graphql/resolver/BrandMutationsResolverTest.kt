@@ -49,7 +49,7 @@ class BrandMutationsResolverTest {
                 .execute()
 
             result.errors().verify()
-            result["brandAdm.createRole"] matches roleId
+            result["brands.createRole"] matches roleId
 
             verify(exactly = 1) {
                 commandGateway.handle(
@@ -79,7 +79,7 @@ class BrandMutationsResolverTest {
                 .execute()
 
             result.errors().verify()
-            result["brandAdm.createRole"] matches roleId
+            result["brands.createRole"] matches roleId
 
             verify(exactly = 1) {
                 commandGateway.handle(
@@ -110,7 +110,7 @@ class BrandMutationsResolverTest {
                 .execute()
 
             result.errors().verify()
-            result["brandAdm.assignStudios"] matches true
+            result["brands.assignStudios"] matches true
 
             verify(exactly = 1) {
                 commandGateway.handle(

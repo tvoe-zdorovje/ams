@@ -29,7 +29,7 @@ class UserMutationsResolver(
      *
      * @see AssignRolesCommand
      */
-    @SchemaMapping(typeName = "UserAdministrationMutations")
+    @SchemaMapping(typeName = "UserMutations")
     fun assignRoles(
         @Argument userId: Long,
         @Argument roles: List<Long>
@@ -53,7 +53,7 @@ class UserMutationsResolver(
      *
      * @see UnassignRolesCommand
      */
-    @SchemaMapping(typeName = "UserAdministrationMutations")
+    @SchemaMapping(typeName = "UserMutations")
     fun unassignRoles(
         @Argument userId: Long,
         @Argument roles: List<Long>
