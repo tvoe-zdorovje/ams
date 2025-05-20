@@ -1,9 +1,9 @@
 extend type Mutation {
-    users: UserMutations!
+    users: UserMutations! @shareable
 }
 
 extend type Query {
-    users: UserQueries!
+    users: UserQueries! @shareable
 }
 
 type UserMutations

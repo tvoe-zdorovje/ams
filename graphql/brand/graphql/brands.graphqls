@@ -1,9 +1,9 @@
 extend type Mutation {
-    brands: BrandMutations!
+    brands: BrandMutations! @shareable
 }
 
 extend type Query {
-    brands: BrandQueries!
+    brands: BrandQueries! @shareable
 }
 
 type BrandMutations
