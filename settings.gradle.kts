@@ -9,6 +9,7 @@ include(
     "common",
     "graphql", // just for nice ico
     "gateway", // just for nice ico
+    "auth-service",
     "user-service",
     "brand-service",
     "studio-service",
