@@ -1,0 +1,13 @@
+extend type AuthMutations {
+    login(request: LoginRequest!): LoginResponse!
+}
+
+input LoginRequest {
+    email: String
+    phoneNumber: String
+    password: String
+}
+
+type LoginResponse {
+    jwt: String
+}
