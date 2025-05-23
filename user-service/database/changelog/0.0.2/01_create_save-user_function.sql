@@ -15,7 +15,8 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION users.save_user(
     i_id BIGINT,
     i_first_name VARCHAR(50),
-    i_last_name VARCHAR(50)
+    i_last_name VARCHAR(50),
+    i_phone_number VARCHAR(15)
 ) RETURNS BIGINT AS $$
 DECLARE
     id_seq_name REGCLASS := 'users.user_id_seq';
@@ -25,18 +26,21 @@ BEGIN
         INSERT INTO users."user"(
             id,
             first_name,
-            last_name
+            last_name,
+            phone_number
         ) VALUES (
             users.next_id(id_seq_name),
             i_first_name,
-            i_last_name
+            i_last_name,
+            i_phone_number
         )
         RETURNING id INTO o_id;
     ELSE
         UPDATE users."user"
             SET
                 first_name = i_first_name,
-                last_name = i_last_name
+                last_name = i_last_name,
+                phone_number = i_phone_number
             WHERE id = i_id;
     END IF;
 
