@@ -3,11 +3,11 @@ extend type AuthMutations {
 }
 
 input LoginRequest {
-    email: String
-    phoneNumber: String
-    password: String
+    userId: ID!
+    password: String!
 }
 
 type LoginResponse {
-    accessToken: String
+    userId: ID!
+    accessToken: String!
 }

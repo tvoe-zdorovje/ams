@@ -1,3 +1,4 @@
+import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
@@ -26,9 +27,34 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
     }
+    testAndDevelopmentOnly("org.springframework.boot:spring-boot-starter-jetty")
     implementation("org.springframework.boot:spring-boot-starter-jooq")
 
     implementation(databaseDriver)
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir("../graphql/common")
+            srcDir("../graphql/auth")
+        }
+    }
+    test {
+        resources {
+            srcDir("../graphql/common")
+            srcDir("../graphql/auth")
+        }
+    }
+}
+
+tasks.register("generateDatabaseSchema") {
+    group = "generation"
+    description = "Generate Kotlin classes representing database tables based on a database schema."
+
+    doLast {
+        GenerateDatabaseSchemasTask(project).execute("administration")
+    }
 }
 
 tasks.withType<BootJar> {

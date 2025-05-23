@@ -1,6 +1,5 @@
 package by.anatolyloyko.ams.auth.graphql.resolver
 
-import by.anatolyloyko.ams.auth.jwt.graphql.resolver.AuthMutationsResolver
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.stereotype.Controller
 
