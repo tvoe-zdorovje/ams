@@ -9,8 +9,9 @@ interface CreateUserAction {
     /**
      * Creates a new user and returns the generated ID.
      *
-     * @param user the user data.
+     * @param user user data.
+     * @param password hashed user password.
      * @return the ID of the newly created user.
      */
-    operator fun invoke(user: User): Long
+    operator fun invoke(user: User, password: String): Long
 }

@@ -500,6 +500,7 @@ style:
     maxDestructuringEntries: 3
   EqualsNullCall:
     active: true
+    excludes: [ '**/test/**' ]
   EqualsOnSignatureLine:
     active: true
   ExplicitCollectionElementAccessMethod:
@@ -618,7 +619,7 @@ style:
   TrailingWhitespace:
     active: true
   UnderscoresInNumericLiterals:
-    active: true
+    active: false
     excludes: [ '**/test/**' ]
   UnnecessaryAbstractClass:
     active: true

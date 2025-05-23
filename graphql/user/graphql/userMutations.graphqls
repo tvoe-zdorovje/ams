@@ -3,6 +3,8 @@ extend type UserMutations {
 }
 
 input CreateUserRequest {
+    password: String!
     firstName: String!
     lastName: String!
+    phoneNumber: String!
 }

@@ -1,5 +1,6 @@
 sudo docker compose down
-sudo docker image rm    ams-gateway
+sudo docker image rm    ams-gateway \
+                        ams-user-service
 sudo docker image rm    ams-user_db \
                         ams-brand_db \
                         ams-studio_db \

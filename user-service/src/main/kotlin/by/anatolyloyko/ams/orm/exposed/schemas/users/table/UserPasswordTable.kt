@@ -16,19 +16,15 @@ import org.jetbrains.exposed.sql.Table
  *  *  █
  *  *  ███████████████████████████████████████████████████████████████████
  *
- *  Represents the "users.user" table in the database.
+ *  Represents the "users.user_password" table in the database.
  *  
  *  Defines the structure to facilitate database operations using the Exposed library.
  */
 @Suppress("MagicNumber")
-internal object UserTable : Table("users.user") {
-  public val id: Column<Long> = long("id")
+internal object UserPasswordTable : Table("users.user_password") {
+  public val userId: Column<Long> = long("user_id")
 
-  public val firstName: Column<String> = varchar("first_name", 50)
+  public val password: Column<String> = text("password")
 
-  public val lastName: Column<String> = varchar("last_name", 50)
-
-  public val phoneNumber: Column<String> = varchar("phone_number", 15)
-
-  override val primaryKey: Table.PrimaryKey = PrimaryKey(id)
+  override val primaryKey: Table.PrimaryKey = PrimaryKey(userId)
 }

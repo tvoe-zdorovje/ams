@@ -4,6 +4,7 @@ import by.anatolyloyko.ams.orm.exposed.schemas.users.table.UserTable
 import by.anatolyloyko.ams.user.ExposedTest
 import by.anatolyloyko.ams.user.NEW_USER
 import by.anatolyloyko.ams.user.USER
+import by.anatolyloyko.ams.user.USER_PASSWORD
 import by.anatolyloyko.ams.user.model.User
 import io.mockk.every
 import io.mockk.mockkObject
@@ -23,7 +24,7 @@ internal class ExposedCreateUserActionTest @Autowired constructor(
             val expectedUserId = USER.id!!
             every { Random.Default.nextLong() } returns expectedUserId
 
-            val actualUserId = createUserAction(NEW_USER)
+            val actualUserId = createUserAction(NEW_USER, USER_PASSWORD)
 
             assertThat(actualUserId).isEqualTo(expectedUserId)
 
@@ -35,6 +36,7 @@ internal class ExposedCreateUserActionTest @Autowired constructor(
                         id = it[UserTable.id],
                         firstName = it[UserTable.firstName],
                         lastName = it[UserTable.lastName],
+                        phoneNumber = it[UserTable.phoneNumber],
                     )
                 }
                 .singleOrNull()

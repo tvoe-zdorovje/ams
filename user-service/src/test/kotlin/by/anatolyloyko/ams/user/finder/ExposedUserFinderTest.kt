@@ -21,6 +21,7 @@ internal class ExposedUserFinderTest @Autowired constructor(
                 it[id] = USER.id!!
                 it[firstName] = USER.firstName
                 it[lastName] = USER.lastName
+                it[phoneNumber] = USER.phoneNumber
             }
         }
     }

@@ -38,23 +38,20 @@ internal abstract class ExposedTest : WithAssertions {
 
         SchemaUtils.create(UserTable)
 
-        exec("CREATE ALIAS IF NOT EXISTS users.save_user FOR 'by.anatolyloyko.ams.user.ExposedTest.insertUser'")
+        exec("CREATE ALIAS IF NOT EXISTS users.create_user FOR 'by.anatolyloyko.ams.user.ExposedTest.insertUser'")
     }
 
     companion object {
         @JvmStatic
-        fun insertUser(id: Long?, firstName: String, lastName: String): ResultSet {
-            val userId = id ?: Random.nextLong()
+        fun insertUser(password: String, firstName: String, lastName: String, phoneNumber: String): ResultSet {
+            val userId = Random.nextLong()
 
-            return function(
-                LongColumnType(),
-                userId,
-                id == null
-            ) {
+            return function(LongColumnType(), userId) {
                 UserTable.insert {
                     it[UserTable.id] = userId
                     it[UserTable.firstName] = firstName
                     it[UserTable.lastName] = lastName
+                    it[UserTable.phoneNumber] = phoneNumber
                 }
             }
         }

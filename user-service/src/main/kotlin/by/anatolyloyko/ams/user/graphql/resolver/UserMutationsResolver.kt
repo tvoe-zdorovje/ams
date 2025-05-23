@@ -2,6 +2,7 @@ package by.anatolyloyko.ams.user.graphql.resolver
 
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
 import by.anatolyloyko.ams.user.command.CreateUserCommand
+import by.anatolyloyko.ams.user.command.input.CreateUserCommandInput
 import by.anatolyloyko.ams.user.graphql.dto.CreateUserRequest
 import by.anatolyloyko.ams.user.model.User
 import org.springframework.graphql.data.method.annotation.Argument
@@ -33,9 +34,13 @@ class UserMutationsResolver(
         @Argument request: CreateUserRequest
     ): Long = commandGateway.handle(
         CreateUserCommand(
-            input = User(
-                firstName = request.firstName,
-                lastName = request.lastName
+            input = CreateUserCommandInput(
+                user = User(
+                    firstName = request.firstName,
+                    lastName = request.lastName,
+                    phoneNumber = request.phoneNumber
+                ),
+                password = request.password
             )
         )
     )

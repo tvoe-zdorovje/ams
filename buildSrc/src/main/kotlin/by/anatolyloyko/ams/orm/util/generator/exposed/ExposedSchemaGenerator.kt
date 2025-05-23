@@ -23,6 +23,11 @@ import org.jetbrains.exposed.sql.transactions.transaction
  * @param pathToDestinationModule the path to the module where the Kotlin class files will be generated.
  * @param group the group name in which the Kotlin class files will be generated.
  */
+@Deprecated(
+    message = "Exposed functionality is no longer suppoerted",
+    replaceWith = ReplaceWith(" JooqSchemaGenerator"),
+    level = DeprecationLevel.WARNING
+)
 internal class ExposedSchemaGenerator(
     private val url: String,
     private val user: String,

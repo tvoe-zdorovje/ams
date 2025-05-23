@@ -36,5 +36,6 @@ class UserQueriesResolverTest {
         result["$userPath.id"] matches USER.id
         result["$userPath.firstName"] matches USER.firstName
         result["$userPath.lastName"] matches USER.lastName
+        result["$userPath.phoneNumber"] matches USER.phoneNumber
     }
 }
