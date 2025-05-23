@@ -9,5 +9,5 @@ input LoginRequest {
 }
 
 type LoginResponse {
-    jwt: String
+    accessToken: String
 }
