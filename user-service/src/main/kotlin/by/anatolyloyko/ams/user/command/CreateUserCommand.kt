@@ -1,6 +1,7 @@
 package by.anatolyloyko.ams.user.command
 
 import by.anatolyloyko.ams.common.infrastructure.service.command.BaseCommand
+import by.anatolyloyko.ams.user.command.input.CreateUserCommandInput
 import by.anatolyloyko.ams.user.model.User
 
 /**
@@ -9,5 +10,5 @@ import by.anatolyloyko.ams.user.model.User
  * @param input the user data for creation.
  */
 class CreateUserCommand(
-    input: User
-) : BaseCommand<User, Long>(input)
+    input: CreateUserCommandInput
+) : BaseCommand<CreateUserCommandInput, Long>(input)

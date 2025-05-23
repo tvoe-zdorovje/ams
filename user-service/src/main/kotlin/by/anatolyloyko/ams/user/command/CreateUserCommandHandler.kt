@@ -2,6 +2,7 @@ package by.anatolyloyko.ams.user.command
 
 import by.anatolyloyko.ams.common.infrastructure.service.command.BaseCommandHandler
 import by.anatolyloyko.ams.user.action.CreateUserAction
+import by.anatolyloyko.ams.user.password.action.HashPasswordAction
 import org.springframework.stereotype.Component
 
 /**
@@ -11,7 +12,11 @@ import org.springframework.stereotype.Component
  */
 @Component
 class CreateUserCommandHandler(
-    private val createUserAction: CreateUserAction
+    private val createUserAction: CreateUserAction,
+    private val hashPasswordAction: HashPasswordAction
 ) : BaseCommandHandler<CreateUserCommand, Long>() {
-    override fun handleInternal(command: CreateUserCommand): Long = createUserAction(command.input)
+    override fun handleInternal(command: CreateUserCommand): Long = createUserAction(
+        user = command.input.user,
+        password = hashPasswordAction(command.input.password)
+    )
 }

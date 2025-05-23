@@ -12,6 +12,7 @@ private val USER_MAPPER: (ResultRow) -> User = {
         id = it[UserTable.id],
         firstName = it[UserTable.firstName],
         lastName = it[UserTable.lastName],
+        phoneNumber = it[UserTable.phoneNumber],
     )
 }
 

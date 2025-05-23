@@ -9,6 +9,8 @@ private const val SOURCE_DIRECTORY = "src/main/resources"
 
 private const val CONFIG_FILE_NAME = "application.yaml"
 
+private val parameterPlaceholderRegex = Regex("\\\$\\{\\w+:(.+?)}")
+
 /**
  * Task that generates Kotlin files representing database schemas.
  *
@@ -47,9 +49,9 @@ class GenerateDatabaseSchemasTask(
 
         val datasourceConfig = findDatasourceConfig()
 
-        val dbUrl = datasourceConfig["url"] ?: error("The database URL not found")
-        val dbUsername = datasourceConfig["username"] ?: error("The database username not found")
-        val dbPassword = datasourceConfig["password"] ?: error("The database password not found")
+        val dbUrl = normalize(datasourceConfig["url"]) ?: error("The database URL not found")
+        val dbUsername = normalize(datasourceConfig["username"]) ?: error("The database username not found")
+        val dbPassword = normalize(datasourceConfig["password"]) ?: error("The database password not found")
 
         println("Using database URL: $dbUrl")
 
@@ -81,5 +83,9 @@ class GenerateDatabaseSchemasTask(
             ?: error("The datasource configuration not found")
 
         return datasourceConfig
+    }
+
+    private fun normalize(string: String?) = if (string == null ) null else parameterPlaceholderRegex.replace(string) {
+        it.groupValues[1]
     }
 }

@@ -1,12 +1,16 @@
 mutation CreateUser(
+    $password: String!
     $firstName: String!
     $lastName: String!
+    $phoneNumber: String!
 ) {
     users {
         createUser(
             request: {
+                password: $password
                 firstName: $firstName
                 lastName: $lastName
+                phoneNumber: $phoneNumber
             }
         )
     }
