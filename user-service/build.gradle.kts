@@ -28,7 +28,7 @@ dependencies {
         exclude(module = "spring-boot-starter-jooq")
     }
 
-    implementation(group = "de.mkammerer", name = "argon2-jvm", version = argon2JvmVersion)
+    implementation(group = "de.mkammerer", name = "argon2-jvm-nolibs", version = argon2JvmVersion)
 
     testAndDevelopmentOnly("org.springframework.boot:spring-boot-starter-jetty")
 
