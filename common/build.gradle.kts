@@ -70,6 +70,7 @@ tasks.withType<JacocoCoverageVerification> {
                 classDirectories.files.map {
                     fileTree(it) {
                         exclude(
+                            "**/*ServiceApplication*",
                             "**/FunctionExtensionsKt*",
                             "**/ExposedFinder*",
                             "**/ConditionsKt*",

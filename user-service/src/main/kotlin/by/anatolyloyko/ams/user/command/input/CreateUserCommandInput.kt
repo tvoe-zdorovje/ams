@@ -15,11 +15,7 @@ data class CreateUserCommandInput(
         return user == other.user
     }
 
-    override fun hashCode(): Int {
-        return user.hashCode()
-    }
+    override fun hashCode(): Int = user.hashCode()
 
-    override fun toString(): String {
-        return "CreateUserCommandInput(user=$user)"
-    }
+    override fun toString(): String = "CreateUserCommandInput(user=$user)"
 }
