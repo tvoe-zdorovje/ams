@@ -2,4 +2,10 @@ extend type Mutation {
     auth: AuthMutations!
 }
 
+extend type Query {
+    auth: AuthQueries
+}
+
 type AuthMutations
+
+type AuthQueries
