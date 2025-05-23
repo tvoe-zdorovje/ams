@@ -1,7 +1,6 @@
 package by.anatolyloyko.ams.user.action
 
 import by.anatolyloyko.ams.orm.exposed.schemas.users.function.CreateUserFunction
-import by.anatolyloyko.ams.orm.exposed.schemas.users.function.SaveUserFunction
 import by.anatolyloyko.ams.orm.exposed.util.select
 import by.anatolyloyko.ams.user.model.User
 import org.springframework.stereotype.Component

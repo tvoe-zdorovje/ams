@@ -16,6 +16,5 @@ class Argon2HashPasswordAction : HashPasswordAction {
 
     private val iterations = Argon2Helper.findIterations(argon2, TIME_LIMIT, MEMORY, PARALLELISM)
 
-
     override fun invoke(rawPassword: CharArray): String = argon2.hash(iterations, MEMORY, PARALLELISM, rawPassword)
 }

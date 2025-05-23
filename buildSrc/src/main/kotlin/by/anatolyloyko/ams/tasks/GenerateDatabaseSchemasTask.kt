@@ -78,6 +78,7 @@ class GenerateDatabaseSchemasTask(
 
         val springConfig = springConfigFile.reader(Charsets.UTF_8).use { Yaml().load<Map<String, Any>>(it) }
 
+        @Suppress("UNCHECKED_CAST")
         val datasourceConfig = (springConfig["spring"] as? Map<String, Map<String, String>>)
             ?.get("datasource")
             ?: error("The datasource configuration not found")
@@ -85,7 +86,11 @@ class GenerateDatabaseSchemasTask(
         return datasourceConfig
     }
 
-    private fun normalize(string: String?) = if (string == null ) null else parameterPlaceholderRegex.replace(string) {
-        it.groupValues[1]
+    private fun normalize(string: String?) = if (string == null) {
+        null
+    } else {
+        parameterPlaceholderRegex.replace(string) {
+            it.groupValues[1]
+        }
     }
 }
