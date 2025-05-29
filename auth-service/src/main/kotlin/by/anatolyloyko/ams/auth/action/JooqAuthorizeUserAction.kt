@@ -6,8 +6,10 @@ import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.references.USER
 import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.references.USER_PASSWORD
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
+@Transactional(readOnly = true)
 class JooqAuthorizeUserAction(
     private val dslContext: DSLContext,
     private val passwordVerifier: PasswordVerifier

@@ -12,6 +12,7 @@ import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.Result
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 val PERMISSION_MAPPER: (Result<out Record>) -> Map<Long, List<Permission>> = { result ->
     result
@@ -36,6 +37,7 @@ val PERMISSION_MAPPER: (Result<out Record>) -> Map<Long, List<Permission>> = { r
 }
 
 @Component
+@Transactional(readOnly = true)
 class JooqTokenDataFinder(
     private val dslContext: DSLContext
 ) : TokenDataFinder {
