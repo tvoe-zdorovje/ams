@@ -166,6 +166,29 @@ ALTER DEFAULT PRIVILEGES
     ON TABLES TO apsportal_fdw;
 
 
+-- ausportal (read only)
+
+
+CREATE USER ausportal WITH PASSWORD 'ausportal';
+
+
+GRANT CONNECT
+    ON DATABASE administration_db
+    TO ausportal;
+GRANT SELECT
+    ON ALL TABLES IN SCHEMA administration
+    TO ausportal;
+GRANT USAGE
+    ON SCHEMA administration
+    TO ausportal;
+
+ALTER DEFAULT PRIVILEGES
+    FOR USER adsliquibase
+    IN SCHEMA administration
+    GRANT SELECT
+    ON TABLES TO ausportal;
+
+
  -- change owner trigger
  -- Foreign keys work on behalf of the table owner.
  -- To avoid granting additional privileges to the liquibase user,

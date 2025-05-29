@@ -11,12 +11,12 @@ spring:
     datasource:
         user-db:
             driver-class-name: org.postgresql.Driver
-            jdbcUrl: jdbc:postgresql://${DBHOST:localhost}:${DBPORT:5441}/${DBNAME:user_db}
+            jdbcUrl: jdbc:postgresql://${USSDBHOST:localhost}:${USSDBPORT:5441}/${USSDBNAME:user_db}
             username: ${DBUSER:ussportal}
             password: ${DBPASS:ussportal}
         administration-db:
             driver-class-name: org.postgresql.Driver
-            jdbcUrl: jdbc:postgresql://${DBHOST:localhost}:${DBPORT:5444}/${DBNAME:administration_db}
+            jdbcUrl: jdbc:postgresql://${ADSDBHOST:localhost}:${ADSDBPORT:5444}/${ADSDBNAME:administration_db}
             username: ${DBUSER:adsportal}
             password: ${DBPASS:adsportal}
 
