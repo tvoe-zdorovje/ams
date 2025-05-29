@@ -3,7 +3,7 @@ extend type AuthMutations {
 }
 
 input LoginRequest {
-    userId: ID!
+    phoneNumber: String!
     password: String!
 }
 

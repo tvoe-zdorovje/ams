@@ -25,14 +25,16 @@ class AuthMutationsResolver(
     @SchemaMapping(typeName = "AuthMutations")
     fun login(
         @Argument request: LoginRequest,
-    ): LoginResponse = LoginResponse(
-        userId = request.userId, // todo,
-        accessToken = tokenCommandHandler.handle(
-            GenerateTokenCommand(
-                input = GenerateTokenCommandInput(
-                    userId = request.userId
+    ): LoginResponse {
+        val userId = TODO()
+
+        return LoginResponse(
+            userId = userId, // todo,
+            accessToken = tokenCommandHandler.handle(
+                GenerateTokenCommand(
+                    input = GenerateTokenCommandInput(userId)
                 )
             )
         )
-    )
+    }
 }
