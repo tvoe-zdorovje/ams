@@ -1,5 +1,6 @@
 package by.anatolyloyko.ams.auth.graphql.resolver
 
+import by.anatolyloyko.ams.auth.action.AuthorizeUserAction
 import by.anatolyloyko.ams.auth.graphql.dto.LoginRequest
 import by.anatolyloyko.ams.auth.graphql.dto.LoginResponse
 import by.anatolyloyko.ams.auth.token.command.GenerateTokenCommand
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Controller
  */
 @Controller
 class AuthMutationsResolver(
-    private val tokenCommandHandler: TokenCommandHandler
+    private val tokenCommandHandler: TokenCommandHandler,
+    private val authorizeUserAction: AuthorizeUserAction
 ) {
     /**
      * Resolves the login mutation for authorization and receiving a JWT by provided credentials.
@@ -26,10 +28,13 @@ class AuthMutationsResolver(
     fun login(
         @Argument request: LoginRequest,
     ): LoginResponse {
-        val userId = TODO()
+        val userId = authorizeUserAction(
+            phoneNumber = request.phoneNumber,
+            password = request.password
+        )
 
         return LoginResponse(
-            userId = userId, // todo,
+            userId = userId,
             accessToken = tokenCommandHandler.handle(
                 GenerateTokenCommand(
                     input = GenerateTokenCommandInput(userId)

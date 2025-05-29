@@ -2,20 +2,27 @@ package by.anatolyloyko.ams.auth.action
 
 import by.anatolyloyko.ams.auth.action.util.PasswordVerifier
 import by.anatolyloyko.ams.auth.exception.ForbiddenException
+import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.references.USER
+import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.references.USER_PASSWORD
 import org.jooq.DSLContext
+import org.springframework.stereotype.Component
 
+@Component
 class JooqAuthorizeUserAction(
     private val dslContext: DSLContext,
     private val passwordVerifier: PasswordVerifier
 ) : AuthorizeUserAction {
 
     override fun invoke(phoneNumber: String, password: CharArray): Long {
-        val userId = -1L
-        val hash = "pass"
-        TODO()
-        if (userId == null) {
-            throw ForbiddenException("Unknown phone number")
-        }
+        val (userId, hash) = dslContext
+            .select(USER.ID, USER_PASSWORD.PASSWORD)
+            .from(USER)
+            .leftJoin(USER_PASSWORD)
+            .on(USER.ID.eq(USER_PASSWORD.USER_ID))
+            .where(USER.PHONE_NUMBER.eq(phoneNumber))
+            .fetchOne()
+            ?.map { it[USER.ID]!! to it[USER_PASSWORD.PASSWORD]!! }
+            ?: throw ForbiddenException("No user found for phone number $phoneNumber")
 
         val matches = passwordVerifier.verify(password, hash)
         if (matches) {
