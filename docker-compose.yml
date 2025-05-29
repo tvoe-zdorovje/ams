@@ -44,7 +44,9 @@ services:
       - ./postgres/test/_util:/liquibase/tests/_util
 
   user-service:
-    image: jetty:11-jdk17-alpine-eclipse-temurin
+    build:
+      context: user-service
+      dockerfile: Dockerfile
     container_name: user-service
     depends_on:
       - liquibase_user_db
