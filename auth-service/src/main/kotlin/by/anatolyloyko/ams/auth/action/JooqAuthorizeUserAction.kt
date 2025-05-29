@@ -5,12 +5,14 @@ import by.anatolyloyko.ams.auth.exception.ForbiddenException
 import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.references.USER
 import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.references.USER_PASSWORD
 import org.jooq.DSLContext
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
-@Transactional(readOnly = true)
+@Transactional("userTransactionManager", readOnly = true)
 class JooqAuthorizeUserAction(
+    @Qualifier("userDslContext")
     private val dslContext: DSLContext,
     private val passwordVerifier: PasswordVerifier
 ) : AuthorizeUserAction {
