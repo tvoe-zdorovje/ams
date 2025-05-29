@@ -45,38 +45,46 @@ internal class JooqSchemaGenerator(
     ).use { connection ->
         GenerationTool().run {
             setConnection(connection)
-            run(
-                Configuration().withGenerator(
-                    Generator().apply {
-                        this.name = KotlinGenerator::class.qualifiedName
-                        this.database = Database()
-                            .apply {
-                                name = PostgresDatabase::class.qualifiedName
-                                schemata = schemaNames.map { SchemaMappingType().withInputSchema(it) }
+            val configuration = configuration()
+            schemaNames.forEach { schemaName ->
+                configuration.generator.apply {
+                    val schema = SchemaMappingType().withInputSchema(schemaName)
+                    database.schemata = listOf(schema)
+                    target.packageName = "${target.packageName}.$schemaName"
+                }
 
-                                excludes = EXCLUDES
-                            }
-                        this.generate = Generate().apply {
-                            isDefaultCatalog = false
-                            isKeys = false
-                            isSequences = false
-                            isKotlinNotNullRecordAttributes = true
-                            isRenameMethodOverrides = false
-                            isWhereMethodOverrides = false
-                            isAsMethodOverrides = false
-                            isRecordsImplementingRecordN = true
-                            // isPojos = true
-                        }
-                        this.target = Target()
-                            .apply {
-                                packageName = destinationPackage
-                                directory = destinationDirectory
-
-                                isClean = false
-                            }
-                    }
-                )
-            )
+                run(configuration)
+            }
         }
     }
+
+    private fun configuration(): Configuration = Configuration().withGenerator(
+        Generator().apply {
+            this.name = KotlinGenerator::class.qualifiedName
+            this.database = Database()
+                .apply {
+                    name = PostgresDatabase::class.qualifiedName
+
+                    excludes = EXCLUDES
+                }
+            this.generate = Generate().apply {
+                isDefaultCatalog = false
+                isKeys = false
+                isSequences = false
+                isKotlinNotNullRecordAttributes = true
+                isRenameMethodOverrides = false
+                isWhereMethodOverrides = false
+                isAsMethodOverrides = false
+                isRecordsImplementingRecordN = true
+                // isPojos = true
+            }
+            this.target = Target()
+                .apply {
+                    packageName = destinationPackage
+                    directory = destinationDirectory
+
+                    isClean = false
+                }
+        }
+    )
 }

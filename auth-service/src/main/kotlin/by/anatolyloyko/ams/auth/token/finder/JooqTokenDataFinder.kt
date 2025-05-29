@@ -2,12 +2,12 @@ package by.anatolyloyko.ams.auth.token.finder
 
 import by.anatolyloyko.ams.auth.token.model.Permission
 import by.anatolyloyko.ams.auth.token.model.TokenData
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.BRAND_ROLES
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.PERMISSION
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.ROLE_PERMISSIONS
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.STUDIO_ROLES
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.USER
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.USER_ROLES
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.BRAND_ROLES
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.PERMISSION
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.ROLE_PERMISSIONS
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.STUDIO_ROLES
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.USER
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.USER_ROLES
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.Result
