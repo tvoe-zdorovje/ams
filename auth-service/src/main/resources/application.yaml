@@ -20,6 +20,15 @@ spring:
             username: ${DBUSER:adsportal}
             password: ${DBPASS:adsportal}
 
+jwt:
+    time-of-life: 300000 # 5 minutes
+    algorithm: RS256
+    private-key:
+        kid-format: "kid-%d"
+        rotation:
+            vault-size: 2
+            period: 3600000 # 60 minutes
+
 logging:
     pattern:
         console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){cyan} - %clr(%-5level){yellow} %clr(%logger{36}){green} - %msg%n"

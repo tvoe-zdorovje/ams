@@ -6,7 +6,6 @@ import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.BRA
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.PERMISSION
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.ROLE_PERMISSIONS
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.STUDIO_ROLES
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.USER
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.USER_ROLES
 import org.jooq.DSLContext
 import org.jooq.Record
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional
 
 val PERMISSION_MAPPER: (Result<out Record>) -> Map<Long, List<Permission>> = { result ->
     result
-        .ifEmpty { throw NoSuchElementException("No user found") }
         .flatMap {
             val permissionId = it[PERMISSION.ID]
             val permissionName = it[PERMISSION.NAME]
@@ -41,7 +39,7 @@ val PERMISSION_MAPPER: (Result<out Record>) -> Map<Long, List<Permission>> = { r
 class JooqTokenDataFinder(
     private val dslContext: DSLContext
 ) : TokenDataFinder {
-    override fun findByUserId(userId: Long): TokenData? = TokenData(
+    override fun findByUserId(userId: Long): TokenData = TokenData(
         userId = userId,
         permissions = findPermissionsByUserId(userId)
     )
@@ -54,18 +52,16 @@ class JooqTokenDataFinder(
                 BRAND_ROLES.BRAND_ID,
                 STUDIO_ROLES.STUDIO_ID
             )
-            .from(USER)
-            .leftOuterJoin(USER_ROLES)
-            .on(USER.ID.eq(USER_ROLES.USER_ID))
+            .from(USER_ROLES)
             .leftOuterJoin(BRAND_ROLES)
-            .on(USER_ROLES.ROLE_ID.eq(USER_ROLES.ROLE_ID))
+            .on(BRAND_ROLES.ROLE_ID.eq(USER_ROLES.ROLE_ID))
             .leftOuterJoin(STUDIO_ROLES)
             .on(STUDIO_ROLES.ROLE_ID.eq(USER_ROLES.ROLE_ID))
             .leftOuterJoin(ROLE_PERMISSIONS)
             .on(ROLE_PERMISSIONS.ROLE_ID.eq(USER_ROLES.ROLE_ID))
             .leftOuterJoin(PERMISSION)
             .on(PERMISSION.ID.eq(ROLE_PERMISSIONS.PERMISSION_ID))
-            .where(USER.ID.eq(userId))
+            .where(USER_ROLES.USER_ID.eq(userId))
             .fetch()
 
         return PERMISSION_MAPPER(result)

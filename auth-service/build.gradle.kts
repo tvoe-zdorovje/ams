@@ -20,6 +20,7 @@ kotlin {
 
 val databaseDriver: String by project
 val argon2JvmVersion: String by project
+val nimbusJoseJwtVersion: String by project
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter") // TODO do not use spring
@@ -33,6 +34,7 @@ dependencies {
 
     implementation(databaseDriver)
     implementation(group = "de.mkammerer", name = "argon2-jvm-nolibs", version = argon2JvmVersion)
+    implementation(group = "com.nimbusds", name = "nimbus-jose-jwt", version = nimbusJoseJwtVersion)
 }
 
 sourceSets {
