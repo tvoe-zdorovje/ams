@@ -34,11 +34,19 @@ val PERMISSION_MAPPER: (Result<out Record>) -> Map<Long, List<Permission>> = { r
         .groupBy({ it.first!! }, { it.second })
 }
 
+/**
+ * {@inheritDoc}
+ *
+ * This implementation is based on the jOOQ library.
+ */
 @Component
 @Transactional(readOnly = true)
 class JooqTokenDataFinder(
     private val dslContext: DSLContext
 ) : TokenDataFinder {
+    /**
+     * {@inheritDoc}
+     */
     override fun findByUserId(userId: Long): TokenData = TokenData(
         userId = userId,
         permissions = findPermissionsByUserId(userId)

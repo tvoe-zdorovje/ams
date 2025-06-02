@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
+/**
+ * {@inheritDoc}
+ *
+ * This implementation is based on the jOOQ library.
+ */
 @Component
 @Transactional("userTransactionManager", readOnly = true)
 class JooqAuthorizeUserAction(
@@ -16,7 +21,9 @@ class JooqAuthorizeUserAction(
     private val dslContext: DSLContext,
     private val passwordVerifier: PasswordVerifier
 ) : AuthorizeUserAction {
-
+    /**
+     * {@inheritDoc}
+     */
     override fun invoke(phoneNumber: String, password: CharArray): Long {
         val (userId, hash) = dslContext
             .select(USER.ID, USER_PASSWORD.PASSWORD)

@@ -16,6 +16,11 @@ import java.util.UUID
 
 private const val CLAIM_DATA = "data"
 
+/**
+ * {@inheritDoc}
+ *
+ * This implementation is intended to generate JWT.
+ */
 @Component
 class JwtGenerateTokenAction(
     private val keyManager: KeyManager,

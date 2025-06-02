@@ -1,7 +1,7 @@
 package by.anatolyloyko.ams.auth.action.util
 
 /**
- * Util encapsulates the password verification process.
+ * Interface intended to encapsulate specific implementation of password verification.
  */
 interface PasswordVerifier {
     /**
