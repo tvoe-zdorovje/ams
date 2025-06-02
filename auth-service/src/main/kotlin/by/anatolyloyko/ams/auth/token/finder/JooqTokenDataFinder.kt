@@ -10,10 +10,11 @@ import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.USE
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.Result
+import org.jooq.impl.DSL
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
-val PERMISSION_MAPPER: (Result<out Record>) -> Map<Long, List<Permission>> = { result ->
+internal val PERMISSION_MAPPER: (Result<out Record>) -> Map<Long, List<Permission>> = { result ->
     result
         .flatMap {
             val permissionId = it[PERMISSION.ID]
@@ -34,6 +35,23 @@ val PERMISSION_MAPPER: (Result<out Record>) -> Map<Long, List<Permission>> = { r
         .groupBy({ it.first!! }, { it.second })
 }
 
+internal fun selectQuery() = DSL
+    .select(
+        PERMISSION.ID,
+        PERMISSION.NAME,
+        BRAND_ROLES.BRAND_ID,
+        STUDIO_ROLES.STUDIO_ID
+    )
+    .from(USER_ROLES)
+    .leftOuterJoin(BRAND_ROLES)
+    .on(BRAND_ROLES.ROLE_ID.eq(USER_ROLES.ROLE_ID))
+    .leftOuterJoin(STUDIO_ROLES)
+    .on(STUDIO_ROLES.ROLE_ID.eq(USER_ROLES.ROLE_ID))
+    .leftOuterJoin(ROLE_PERMISSIONS)
+    .on(ROLE_PERMISSIONS.ROLE_ID.eq(USER_ROLES.ROLE_ID))
+    .leftOuterJoin(PERMISSION)
+    .on(PERMISSION.ID.eq(ROLE_PERMISSIONS.PERMISSION_ID))
+
 /**
  * {@inheritDoc}
  *
@@ -53,24 +71,8 @@ class JooqTokenDataFinder(
     )
 
     private fun findPermissionsByUserId(userId: Long): Map<Long, List<Permission>> {
-        val result = dslContext
-            .select(
-                PERMISSION.ID,
-                PERMISSION.NAME,
-                BRAND_ROLES.BRAND_ID,
-                STUDIO_ROLES.STUDIO_ID
-            )
-            .from(USER_ROLES)
-            .leftOuterJoin(BRAND_ROLES)
-            .on(BRAND_ROLES.ROLE_ID.eq(USER_ROLES.ROLE_ID))
-            .leftOuterJoin(STUDIO_ROLES)
-            .on(STUDIO_ROLES.ROLE_ID.eq(USER_ROLES.ROLE_ID))
-            .leftOuterJoin(ROLE_PERMISSIONS)
-            .on(ROLE_PERMISSIONS.ROLE_ID.eq(USER_ROLES.ROLE_ID))
-            .leftOuterJoin(PERMISSION)
-            .on(PERMISSION.ID.eq(ROLE_PERMISSIONS.PERMISSION_ID))
-            .where(USER_ROLES.USER_ID.eq(userId))
-            .fetch()
+        val query = selectQuery().where(USER_ROLES.USER_ID.eq(userId))
+        val result = dslContext.fetch(query)
 
         return PERMISSION_MAPPER(result)
     }

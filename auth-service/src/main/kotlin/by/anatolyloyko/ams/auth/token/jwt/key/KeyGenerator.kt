@@ -13,7 +13,7 @@ class KeyGenerator(
     private val generator: RSAKeyGenerator = RSAKeyGenerator(keySize)
 
     /**
-     * Generates RSA Key.
+     * Generates RSA Key with ID matching to the {@property kidFormat}.
      *
      * @return generated {@link RSAKey}
      */

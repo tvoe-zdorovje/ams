@@ -30,15 +30,15 @@ class JwtGenerateTokenAction(
     private val algorithm: String,
 ) : GenerateTokenAction {
     override fun invoke(tokenData: TokenData): String {
+        val rsaKey = keyManager.getKey()
         val claims = JWTClaimsSet
             .Builder()
             .issueTime(Date())
             .expirationTime(Date(System.currentTimeMillis() + timeOfLife))
-            .jwtID("${tokenData.userId}-${UUID.randomUUID()}")
+            .jwtID("${rsaKey.keyID}-${tokenData.userId}-${UUID.randomUUID()}")
             .claim(CLAIM_DATA, tokenData)
             .build()
 
-        val rsaKey = keyManager.getKey()
         val header = JWSHeader.Builder(JWSAlgorithm.parse(algorithm))
             .keyID(rsaKey.keyID)
             .type(JOSEObjectType.JWT)
