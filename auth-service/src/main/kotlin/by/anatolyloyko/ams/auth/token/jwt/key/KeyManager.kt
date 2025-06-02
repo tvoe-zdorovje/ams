@@ -1,5 +1,7 @@
 package by.anatolyloyko.ams.auth.token.jwt.key
 
+import com.nimbusds.jose.jwk.JWKSet
+import com.nimbusds.jose.jwk.RSAKey
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
@@ -19,7 +21,13 @@ class KeyManager(
 
     private val vault: Vault = Vault(vaultSize)
 
-    fun get() = vault.get()
+    fun getKey() = vault.get()
+
+    fun getJwkSet() = JWKSet(
+        vault
+            .getAll()
+            .map(RSAKey::toPublicJWK)
+    )
 
     @Scheduled(fixedDelayString = "\${jwt.private-key.rotation.period}")
     fun rotateKeys() {

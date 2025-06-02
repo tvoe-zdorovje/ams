@@ -22,4 +22,6 @@ class Vault(
     fun get(): RSAKey = lock.withLock {
         keys.first()
     }
+
+    fun getAll(): List<RSAKey> = keys.toList()
 }

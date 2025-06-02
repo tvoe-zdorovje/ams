@@ -33,7 +33,7 @@ class JwtGenerateTokenAction(
             .claim(CLAIM_DATA, tokenData)
             .build()
 
-        val rsaKey = keyManager.get()
+        val rsaKey = keyManager.getKey()
         val header = JWSHeader.Builder(JWSAlgorithm.parse(algorithm))
             .keyID(rsaKey.keyID)
             .type(JOSEObjectType.JWT)
