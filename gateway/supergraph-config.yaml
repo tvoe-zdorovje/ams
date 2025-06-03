@@ -25,3 +25,8 @@ subgraphs:
     routing_url: http://user-service:8080/graphql
     schema:
       file: ./schemas/user.graphqls
+
+  auth:
+    routing_url: http://auth-service:8080/graphql
+    schema:
+      file: ./schemas/auth.graphqls

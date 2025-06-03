@@ -18,9 +18,3 @@ class AuthServiceApplication : SpringBootServletInitializer() {
 fun main(args: Array<String>) {
     runApplication<AuthServiceApplication>(*args)
 }
-
-
-// TODO cover with KDOCs & UTs
-// TODO: impl docker container
-// TODO: google how to route REST requests through the router
-// TODO: describe in the router

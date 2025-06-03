@@ -10,6 +10,8 @@ plugins {
 
     id("org.springframework.boot")
     id("io.spring.dependency-management")
+
+    war
 }
 
 val jdkVersion: Int = (project.findProperty("jdkVersion") as String).toInt()
