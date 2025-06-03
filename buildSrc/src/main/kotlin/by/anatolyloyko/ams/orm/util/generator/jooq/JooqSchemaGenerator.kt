@@ -45,17 +45,22 @@ internal class JooqSchemaGenerator(
     ).use { connection ->
         GenerationTool().run {
             setConnection(connection)
-            val configuration = configuration()
-            schemaNames.forEach { schemaName ->
-                configuration.generator.apply {
-                    val schema = SchemaMappingType().withInputSchema(schemaName)
-                    database.schemata = listOf(schema)
-                    target.packageName = "${target.packageName}.$schemaName"
-                }
 
-                run(configuration)
-            }
+            generate(configuration(), schemaNames)
         }
+    }
+
+    private fun GenerationTool.generate(
+        configuration: Configuration,
+        schemaNames: Iterable<String>
+    ) = schemaNames.forEach { schemaName ->
+        configuration.generator.apply {
+            val schema = SchemaMappingType().withInputSchema(schemaName)
+            database.schemata = listOf(schema)
+            target.packageName = "${target.packageName}.$schemaName"
+        }
+
+        run(configuration)
     }
 
     private fun configuration(): Configuration = Configuration().withGenerator(
