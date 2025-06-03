@@ -1,0 +1,13 @@
+extend type AuthMutations {
+    login(request: LoginRequest!): LoginResponse!
+}
+
+input LoginRequest {
+    phoneNumber: String!
+    password: String!
+}
+
+type LoginResponse {
+    userId: ID!
+    accessToken: String!
+}

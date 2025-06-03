@@ -215,6 +215,21 @@ services:
     env_file:
       - appointment-service/.env
 
+  auth-service:
+    build:
+      context: user-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    depends_on:
+      - liquibase_user_db
+      - liquibase_administration_db
+    ports:
+      - "8086:8080"
+    volumes:
+      - ./auth-service/build/libs/auth-service.war:/var/lib/jetty/webapps/ROOT.war
+    env_file:
+      - auth-service/.env
+
 volumes:
   user_db_volume:
   brand_db_volume:

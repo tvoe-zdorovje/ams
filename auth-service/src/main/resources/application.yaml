@@ -1,0 +1,41 @@
+debug: false
+spring:
+    main:
+        allow-bean-definition-overriding: false
+    output:
+        ansi:
+            enabled: always
+    graphql:
+        graphiql:
+            enabled: true
+    datasource:
+        user-db:
+            driver-class-name: org.postgresql.Driver
+            jdbcUrl: jdbc:postgresql://${USSDBHOST:localhost}:${USSDBPORT:5441}/${USSDBNAME:user_db}
+            username: ${DBUSER:ussportal}
+            password: ${DBPASS:ussportal}
+        administration-db:
+            driver-class-name: org.postgresql.Driver
+            jdbcUrl: jdbc:postgresql://${ADSDBHOST:localhost}:${ADSDBPORT:5444}/${ADSDBNAME:administration_db}
+            username: ${DBUSER:adsportal}
+            password: ${DBPASS:adsportal}
+
+jwt:
+    time-of-life: 300000 # 5 minutes
+    algorithm: RS256
+    private-key:
+        kid-format: "kid-%d"
+        rotation:
+            vault-size: 2
+            period: 3600000 # 60 minutes
+
+logging:
+    pattern:
+        console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){cyan} - %clr(%-5level){yellow} %clr(%logger{36}){green} - %msg%n"
+    level:
+        org.jooq: DEBUG
+        org.springframework: INFO
+        by.anatolyloyko: DEBUG
+        org.zalando.logbook.Logbook: TRACE
+    file:
+        name: log/auth-service.log
