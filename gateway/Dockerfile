@@ -9,7 +9,7 @@ ENV ROVER_ELV2_LICENSE=accept
 
 RUN mkdir -p /tmp/app/schemas
 COPY --from=builder --chmod=755 /root/.rover/bin/rover /rover
-COPY --chmod=755 compose.sh /tmp/app/schemas/compose.sh
+COPY --chmod=755 apollo/router/compose.sh /tmp/app/schemas/compose.sh
 
 ENTRYPOINT exec sh -c "\
   /tmp/app/schemas/compose.sh && \
