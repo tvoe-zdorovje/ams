@@ -3,3 +3,34 @@
 supergraph:
   # The socket address and port to listen on
   listen: 0.0.0.0:4000
+
+# This is a top-level key. It MUST define at least one of the two
+# sub-keys shown, even if you use that subkey's default value.
+rhai:
+  # Specify a different Rhai script directory path with this key.
+  # The path can be relative or absolute.
+  scripts: "/tmp/app/plugin/rhai/"
+
+  # Specify a different name for your "main" Rhai file with this key.
+  # The router looks for this filename in your Rhai script directory.
+  main: "main.rhai"
+
+authentication:
+  router:
+    jwt:
+      jwks: # This key is required.
+        - url: http://auth-service:8080/.well-known/jwks
+          headers: # optional list of static headers added to the HTTP request to the JWKS URL
+            - name: User-Agent
+              value: router
+      # These keys are optional. Default values are shown.
+      header_name: Authorization
+      header_value_prefix: Bearer
+      on_error: Error
+      # array of alternative token sources
+      sources:
+        - type: header
+          name: X-Authorization
+          value_prefix: Bearer
+        - type: cookie
+          name: authz

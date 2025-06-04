@@ -10,6 +10,7 @@ services:
     volumes:
       - ./gateway/router.yaml:/dist/config/router.yaml
       - ./gateway/supergraph-config.yaml:/tmp/app/supergraph-config.yaml
+      - ./gateway/plugin/:/tmp/app/plugin/
       - ./graphql:/tmp/app/schemas/service
     env_file:
       - user-service/.env
