@@ -6,14 +6,14 @@ services:
     container_name: gateway
     restart: no
     ports:
-      - "4000:4000"
+      - "4000:8080"
     volumes:
       - ./gateway/apollo/router/router.yaml:/dist/config/router.yaml
       - ./gateway/apollo/router/supergraph-config.yaml:/tmp/app/supergraph-config.yaml
       - ./gateway/apollo/router/plugin/:/tmp/app/plugin/
       - ./graphql:/tmp/app/schemas/service
     env_file:
-      - user-service/.env
+      - gateway/.env
 
   user_db:
     build:
