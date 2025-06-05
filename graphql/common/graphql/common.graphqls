@@ -2,8 +2,7 @@ type Mutation
 
 type Query
 
-extend schema
-@link(
+extend schema @link(
     url: "https://specs.apollo.dev/federation/v2.10",
-    import: ["@shareable", "@policy"]
+    import: ["@shareable"]
 )

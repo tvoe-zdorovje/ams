@@ -3,7 +3,7 @@ extend type Mutation {
 }
 
 extend type Query {
-    users: UserQueries! @shareable @policy(policies: [["permission:view"]])
+    users: UserQueries! @shareable
 }
 
 type UserMutations
