@@ -1,0 +1,26 @@
+# Configuration of the router's HTTP server
+# Default configuration for container
+supergraph:
+  # The socket address and port to listen on
+  listen: 0.0.0.0:4000
+
+# Paid feature. Use proxy workaround
+#authentication:
+#  router:
+#    jwt:
+#      jwks: # This key is required.
+#        - url: http://auth-service:8080/.well-known/jwks
+#          headers: # optional list of static headers added to the HTTP request to the JWKS URL
+#            - name: User-Agent
+#              value: router
+#      # These keys are optional. Default values are shown.
+#      header_name: Authorization
+#      header_value_prefix: Bearer
+#      on_error: Error
+#      # array of alternative token sources
+#      sources:
+#        - type: header
+#          name: X-Authorization
+#          value_prefix: Bearer
+#        - type: cookie
+#          name: authz
