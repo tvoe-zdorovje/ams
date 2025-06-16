@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"log"
 	"time"
 
 	"github.com/MicahParks/keyfunc"
@@ -11,11 +12,12 @@ type JWTVerifier struct {
 	keyFunc jwt.Keyfunc
 }
 
-func NewJWTVerifier(jwksURL string) (*JWTVerifier, error) {
+func NewJWTVerifier(jwksURL string, jwksRefreshInterval int) (*JWTVerifier, error) {
 	jwks, err := keyfunc.Get(jwksURL, keyfunc.Options{
-		RefreshInterval: time.Hour, // TODO move to env settings
+		RefreshInterval: time.Duration(jwksRefreshInterval) * time.Minute,
 		RefreshErrorHandler: func(err error) {
-			// TODO
+			log.Printf("Error refreshing JWKS: %v", err)
+			panic(err)
 		},
 	})
 	if err != nil {

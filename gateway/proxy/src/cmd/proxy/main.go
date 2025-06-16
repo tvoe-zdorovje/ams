@@ -12,7 +12,7 @@ import (
 func main() {
 	_config := config.Load()
 
-	verifier, err := auth.NewJWTVerifier(_config.JwksUrl)
+	verifier, err := auth.NewJWTVerifier(_config.JwksUrl, _config.JwksRefreshInterval)
 	if err != nil {
 		log.Fatalf("Failed to create JWT verifier: %v", err)
 	}
