@@ -1,9 +1,9 @@
 extend type Mutation {
-    studios: StudioMutations! @shareable
+    studios: StudioMutations!
 }
 
 extend type Query {
-    studios: StudioQueries! @shareable
+    studios: StudioQueries!
 }
 
 type StudioMutations
