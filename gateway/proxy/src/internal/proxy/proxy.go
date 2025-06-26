@@ -19,15 +19,12 @@ func NewProxy(target string, verifier *auth.JWTVerifier) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		tokenStr := auth.ExtractToken(r)
-		if tokenStr == "" {
-			http.Error(w, "Missing token", http.StatusUnauthorized)
-			return
-		}
-
-		_, err := verifier.Verify(tokenStr)
-		if err != nil {
-			http.Error(w, "Invalid token", http.StatusForbidden)
-			return
+		if tokenStr != "" {
+			_, err := verifier.Verify(tokenStr)
+			if err != nil {
+				http.Error(w, "Invalid token", http.StatusForbidden)
+				return
+			}
 		}
 
 		proxy.ServeHTTP(w, r)
