@@ -1,5 +1,8 @@
 package `by`.anatolyloyko.ams.orm.exposed.schemas.users.table
 
+import kotlin.Long
+import kotlin.String
+import kotlin.Suppress
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
@@ -24,6 +27,8 @@ internal object UserTable : Table("users.user") {
   public val firstName: Column<String> = varchar("first_name", 50)
 
   public val lastName: Column<String> = varchar("last_name", 50)
+
+  public val phoneNumber: Column<String> = varchar("phone_number", 15)
 
   override val primaryKey: Table.PrimaryKey = PrimaryKey(id)
 }

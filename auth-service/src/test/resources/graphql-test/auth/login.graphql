@@ -1,0 +1,16 @@
+mutation Login(
+    $phoneNumber: String!
+    $password: String!
+) {
+    auth {
+        login(
+            request: {
+                phoneNumber: $phoneNumber
+                password: $password
+            }
+        ) {
+            userId
+            accessToken
+        }
+    }
+}

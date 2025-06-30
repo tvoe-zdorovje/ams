@@ -4,6 +4,7 @@ import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
 import by.anatolyloyko.ams.common.infrastructure.testing.get
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import by.anatolyloyko.ams.user.USER_ID
+import by.anatolyloyko.ams.user.USER_PASSWORD
 import by.anatolyloyko.ams.user.command.CreateUserCommand
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -28,8 +29,10 @@ class UserMutationsResolverTest {
 
         val result = graphQlTester
             .documentName("user/createUser")
+            .variable("password", USER_PASSWORD)
             .variable("firstName", "Alexey")
             .variable("lastName", "Kasimov")
+            .variable("phoneNumber", "+375297671245")
             .execute()
 
         result.errors().verify()

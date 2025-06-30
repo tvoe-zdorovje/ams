@@ -31,37 +31,32 @@ CREATE OR REPLACE FUNCTION tests.test_save_user_routine_behavior() RETURNS SETOF
 DECLARE
     routine_name TEXT := 'users.save_user';
 
-    actual_generated_id BIGINT;
-    expected_generated_id BIGINT;
+    user_id BIGINT := -1234567890;
 
     initial_first_name VARCHAR(50) := 'initial_first_name';
     initial_last_name VARCHAR(50) := 'initial_last_name';
+    initial_phone_number VARCHAR(50) := '+375297671245';
 
     updated_first_name VARCHAR(50) := 'updated_first_name';
     updated_last_name VARCHAR(50) := 'updated_last_name';
+    updated_phone_number VARCHAR(50) := '+375291484148';
 
     isUserUpdated BOOLEAN;
 BEGIN
     EXECUTE format('SET ROLE %I', _get_schema_owner('users'));
 
-    SELECT users.save_user(null, initial_first_name, initial_last_name) INTO actual_generated_id;
-    SELECT users.next_id('users.user_id_seq') - 1000000000 INTO expected_generated_id;
+    INSERT INTO users."user"(id, first_name, last_name, phone_number) VALUES
+        (user_id, initial_first_name, initial_last_name, initial_phone_number);
 
 
-    RETURN NEXT is(
-        actual_generated_id,
-        expected_generated_id,
-        format('Routine "%s" must create a new user with a correctly generated ID', routine_name)
-    );
-
-
-    PERFORM users.save_user(actual_generated_id, updated_first_name, updated_last_name);
+    PERFORM users.save_user(user_id, updated_first_name, updated_last_name, updated_phone_number);
 
 
     SELECT count(*)::INT::BOOLEAN INTO isUserUpdated FROM users."user" WHERE
-        id = actual_generated_id AND
+        id = user_id AND
         first_name = updated_first_name AND
-        last_name = updated_last_name;
+        last_name = updated_last_name AND
+        phone_number = updated_phone_number;
 
     RETURN NEXT ok(
         isUserUpdated,

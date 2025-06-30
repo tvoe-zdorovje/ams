@@ -6,13 +6,14 @@ services:
     container_name: gateway
     restart: no
     ports:
-      - "4000:4000"
+      - "4000:8080"
     volumes:
-      - ./gateway/router.yaml:/dist/config/router.yaml
-      - ./gateway/supergraph-config.yaml:/tmp/app/supergraph-config.yaml
+      - ./gateway/apollo/router/router.yaml:/dist/config/router.yaml
+      - ./gateway/apollo/router/supergraph-config.yaml:/tmp/app/supergraph-config.yaml
+      - ./gateway/apollo/router/plugin/:/tmp/app/plugin/
       - ./graphql:/tmp/app/schemas/service
     env_file:
-      - user-service/.env
+      - gateway/.env
 
   user_db:
     build:
@@ -44,7 +45,9 @@ services:
       - ./postgres/test/_util:/liquibase/tests/_util
 
   user-service:
-    image: jetty:11-jdk17-alpine-eclipse-temurin
+    build:
+      context: user-service
+      dockerfile: Dockerfile
     container_name: user-service
     depends_on:
       - liquibase_user_db
@@ -212,6 +215,21 @@ services:
       - ./appointment-service/build/libs/appointment-service.war:/var/lib/jetty/webapps/ROOT.war
     env_file:
       - appointment-service/.env
+
+  auth-service:
+    build:
+      context: user-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    depends_on:
+      - liquibase_user_db
+      - liquibase_administration_db
+    ports:
+      - "8086:8080"
+    volumes:
+      - ./auth-service/build/libs/auth-service.war:/var/lib/jetty/webapps/ROOT.war
+    env_file:
+      - auth-service/.env
 
 volumes:
   user_db_volume:

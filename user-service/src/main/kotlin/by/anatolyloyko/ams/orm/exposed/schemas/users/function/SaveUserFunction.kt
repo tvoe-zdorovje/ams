@@ -18,7 +18,8 @@ import org.jetbrains.exposed.sql.VarCharColumnType
  *  *  █
  *  *  ███████████████████████████████████████████████████████████████████
  *
- *  Represents the "users.save_user" function in the database.
+ *  Represents the 
+ * 	"users.save_user" function in the database.
  *  
  *  Defines the structure to facilitate database operations using the Exposed library.
  */
@@ -27,10 +28,12 @@ internal class SaveUserFunction(
   iId: Long?,
   iFirstName: String?,
   iLastName: String?,
+  iPhoneNumber: String?,
 ) : CustomFunction<Long>(
 	"users.save_user", 
 	LongColumnType(), 
 	QueryParameter(iId, LongColumnType().apply { nullable = true }), 
 	QueryParameter(iFirstName, VarCharColumnType().apply { nullable = true }), 
 	QueryParameter(iLastName, VarCharColumnType().apply { nullable = true }), 
+	QueryParameter(iPhoneNumber, VarCharColumnType().apply { nullable = true }), 
 )
