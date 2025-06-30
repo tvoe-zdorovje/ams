@@ -6,6 +6,7 @@ import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import by.anatolyloyko.ams.user.USER_ID
 import by.anatolyloyko.ams.user.USER_PASSWORD
 import by.anatolyloyko.ams.user.command.CreateUserCommand
+import by.anatolyloyko.ams.user.command.UpdateUserCommand
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.junit.jupiter.api.Test
@@ -37,5 +38,21 @@ class UserMutationsResolverTest {
 
         result.errors().verify()
         result["users.createUser"] matches USER_ID
+    }
+
+    @Test
+    fun `must update user`() {
+        every { commandGateway.handle(any<UpdateUserCommand>()) } returns USER_ID
+
+        val result = graphQlTester
+            .documentName("user/updateUser")
+            .variable("id", USER_ID)
+            .variable("firstName", "Alexey")
+            .variable("lastName", "Kasimov")
+            .variable("phoneNumber", "+375297671245")
+            .execute()
+
+        result.errors().verify()
+        result["users.updateUser"] matches USER_ID
     }
 }

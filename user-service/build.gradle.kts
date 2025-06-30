@@ -24,9 +24,7 @@ kotlin {
 val argon2JvmVersion: String by project
 
 dependencies {
-    implementation(project(":common")) {
-        exclude(module = "spring-boot-starter-jooq")
-    }
+    implementation(project(":common"))
 
     implementation(group = "de.mkammerer", name = "argon2-jvm-nolibs", version = argon2JvmVersion)
 
@@ -56,7 +54,7 @@ tasks.register("generateDatabaseSchema") {
 
     doLast {
         GenerateDatabaseSchemasTask(project).execute(
-            SchemaGenerator.Generators.EXPOSED,
+            SchemaGenerator.Generators.JOOQ,
             "users"
         )
     }
