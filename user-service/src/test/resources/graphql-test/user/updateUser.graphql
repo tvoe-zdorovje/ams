@@ -1,0 +1,15 @@
+mutation UpdateUser(
+    $firstName: String!
+    $lastName: String!
+    $phoneNumber: String!
+) {
+    users {
+        updateUser(
+            request: {
+                firstName: $firstName
+                lastName: $lastName
+                phoneNumber: $phoneNumber
+            }
+        )
+    }
+}

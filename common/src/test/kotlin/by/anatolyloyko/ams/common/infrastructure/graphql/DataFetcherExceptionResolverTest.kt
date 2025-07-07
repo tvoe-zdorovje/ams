@@ -1,10 +1,12 @@
 package by.anatolyloyko.ams.common.infrastructure.graphql
 
-import graphql.ErrorType
+import by.anatolyloyko.ams.common.infrastructure.exception.AuthenticationException
+import graphql.ErrorType.ValidationError
 import graphql.schema.DataFetchingEnvironment
 import io.mockk.mockk
 import org.assertj.core.api.WithAssertions
 import org.junit.jupiter.api.Test
+import org.springframework.graphql.execution.ErrorType.UNAUTHORIZED
 
 class DataFetcherExceptionResolverTest : DataFetcherExceptionResolver(), WithAssertions {
     private val dataFetchingEnvironment = mockk<DataFetchingEnvironment>(relaxed = true)
@@ -15,7 +17,17 @@ class DataFetcherExceptionResolverTest : DataFetcherExceptionResolver(), WithAss
 
         val result = resolveToSingleError(exception, dataFetchingEnvironment)!!
 
-        assertThat(result.errorType).isEqualTo(ErrorType.ValidationError)
+        assertThat(result.errorType).isEqualTo(ValidationError)
+        assertThat(result.message).isEqualTo(exception.localizedMessage)
+    }
+
+    @Test
+    fun `must handle AuthenticationException`() {
+        val exception = AuthenticationException("message")
+
+        val result = resolveToSingleError(exception, dataFetchingEnvironment)!!
+
+        assertThat(result.errorType).isEqualTo(UNAUTHORIZED)
         assertThat(result.message).isEqualTo(exception.localizedMessage)
     }
 

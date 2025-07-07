@@ -1,6 +1,8 @@
 package by.anatolyloyko.ams.common.infrastructure.testing
 
+import by.anatolyloyko.ams.common.infrastructure.graphql.HEADER_USER_ID
 import org.springframework.graphql.test.tester.GraphQlTester
+import org.springframework.graphql.test.tester.WebGraphQlTester
 
 /**
  * Provides a more convenient way to access a specific path in the GraphQL response.
@@ -45,3 +47,26 @@ operator fun GraphQlTester.Traversable.get(path: String): GraphQlTester.Path = p
 infix fun <T> GraphQlTester.Path.matches(expected: T) {
     entity(String::class.java).isEqualTo(expected.toString())
 }
+
+/**
+ * Provides a more convenient way to specify authentication headers.
+ *
+ * Example usage:
+ * ```
+ * val result = graphQlTester
+ *             .loginAs(USER_ID)
+ *             .documentName("user/updateUser")
+ *             .variable("firstName", "Alexey")
+ *             .variable("lastName", "Kasimov")
+ *             .variable("phoneNumber", "+375297671245")
+ *             .execute()
+ * ```
+ *
+ * @param userId value for {@code HEADER_USER_ID}
+ * @return WebGraphQlTester instance
+ */
+infix fun WebGraphQlTester.loginAs(userId: Long): WebGraphQlTester = mutate()
+    .headers {
+        it[HEADER_USER_ID] = "$userId"
+    }
+    .build()

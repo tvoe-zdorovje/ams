@@ -1,9 +1,16 @@
 extend type UserMutations {
     createUser(request: CreateUserRequest!): ID!
+    updateUser(request: UpdateUserRequest!): ID!
 }
 
 input CreateUserRequest {
     password: String!
+    firstName: String!
+    lastName: String!
+    phoneNumber: String!
+}
+
+input UpdateUserRequest {
     firstName: String!
     lastName: String!
     phoneNumber: String!
