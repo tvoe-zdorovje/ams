@@ -1,5 +1,7 @@
 package by.anatolyloyko.ams.user.graphql.resolver
 
+import by.anatolyloyko.ams.common.infrastructure.graphql.Principal
+import by.anatolyloyko.ams.common.infrastructure.model.LoggedUser
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
 import by.anatolyloyko.ams.user.command.CreateUserCommand
 import by.anatolyloyko.ams.user.command.UpdateUserCommand
@@ -58,12 +60,13 @@ class UserMutationsResolver(
      */
     @SchemaMapping(typeName = "UserMutations")
     fun updateUser(
-        @Argument request: UpdateUserRequest
+        @Argument request: UpdateUserRequest,
+        @Principal loggedUser: LoggedUser
     ): Long = commandGateway.handle(
         UpdateUserCommand(
             input = UpdateUserCommandInput(
                 user = User(
-                    id = request.id,
+                    id = loggedUser.id,
                     firstName = request.firstName,
                     lastName = request.lastName,
                     phoneNumber = request.phoneNumber

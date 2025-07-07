@@ -11,7 +11,6 @@ package by.anatolyloyko.ams.common.infrastructure.kotlin
  * @param block the block of code to execute if the condition is met.
  * @return the original receiver object.
  */
-// todo implement unit tests
 inline fun <T> T.alsoIf(condition: Boolean, block: (T) -> Unit): T {
     if (condition) {
         block(this)

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class UpdateUserCommandHandler(
-    private val upateUserAction: UpdateUserAction
+    private val updateUserAction: UpdateUserAction
 ) : BaseCommandHandler<UpdateUserCommand, Long>() {
-    override fun handleInternal(command: UpdateUserCommand): Long = upateUserAction(command.input.user)
+    override fun handleInternal(command: UpdateUserCommand): Long = updateUserAction(command.input.user)
 }

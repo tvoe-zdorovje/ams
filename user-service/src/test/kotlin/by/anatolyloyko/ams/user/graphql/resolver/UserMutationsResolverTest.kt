@@ -2,6 +2,7 @@ package by.anatolyloyko.ams.user.graphql.resolver
 
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
 import by.anatolyloyko.ams.common.infrastructure.testing.get
+import by.anatolyloyko.ams.common.infrastructure.testing.loginAs
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import by.anatolyloyko.ams.user.USER_ID
 import by.anatolyloyko.ams.user.USER_PASSWORD
@@ -45,8 +46,8 @@ class UserMutationsResolverTest {
         every { commandGateway.handle(any<UpdateUserCommand>()) } returns USER_ID
 
         val result = graphQlTester
+            .loginAs(USER_ID)
             .documentName("user/updateUser")
-            .variable("id", USER_ID)
             .variable("firstName", "Alexey")
             .variable("lastName", "Kasimov")
             .variable("phoneNumber", "+375297671245")

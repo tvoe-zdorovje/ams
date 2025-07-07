@@ -1,5 +1,4 @@
 mutation UpdateUser(
-    $id: ID!
     $firstName: String!
     $lastName: String!
     $phoneNumber: String!
@@ -7,7 +6,6 @@ mutation UpdateUser(
     users {
         updateUser(
             request: {
-                id: $id
                 firstName: $firstName
                 lastName: $lastName
                 phoneNumber: $phoneNumber
