@@ -1,7 +1,6 @@
 package by.anatolyloyko.ams.common.infrastructure.graphql
 
 import by.anatolyloyko.ams.common.infrastructure.exception.AuthenticationException
-import graphql.ErrorType
 import graphql.ErrorType.ValidationError
 import graphql.schema.DataFetchingEnvironment
 import io.mockk.mockk
