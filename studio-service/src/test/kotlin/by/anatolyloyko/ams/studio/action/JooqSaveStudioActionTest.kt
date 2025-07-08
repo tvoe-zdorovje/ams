@@ -12,10 +12,10 @@ import org.assertj.core.api.WithAssertions
 import org.jooq.DSLContext
 import org.junit.jupiter.api.Test
 
-class JooqCreateStudioActionTest : WithAssertions {
+class JooqSaveStudioActionTest : WithAssertions {
     private val dslContext = mockk<DSLContext>(relaxed = true)
 
-    private val action = JooqCreateStudioAction(dslContext)
+    private val action = JooqSaveStudioAction(dslContext)
 
     @Test
     fun `must call save studio routine and return ID`() = mockkStatic(ROUTINES_REFERENCE) {
@@ -33,7 +33,7 @@ class JooqCreateStudioActionTest : WithAssertions {
 
         assertThatThrownBy { action(NEW_STUDIO) }
             .isOfAnyClassIn(IllegalStateException::class.java)
-            .hasMessage("Could not create a new studio $NEW_STUDIO")
+            .hasMessage("Could not save the studio $NEW_STUDIO")
 
         verify(exactly = 1) { saveStudio(any(), NEW_STUDIO.id, NEW_STUDIO.name, NEW_STUDIO.description) }
     }

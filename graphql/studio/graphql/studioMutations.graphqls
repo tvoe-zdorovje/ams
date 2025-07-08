@@ -1,8 +1,15 @@
 extend type StudioMutations {
     createStudio(request: CreateStudioRequest!): ID!
+    updateStudio(request: UpdateStudioRequest!): ID! # TODO: auth & permissions control
 }
 
 input CreateStudioRequest {
+    name: String!
+    description: String!
+}
+
+input UpdateStudioRequest {
+    organizationId: ID!
     name: String!
     description: String!
 }

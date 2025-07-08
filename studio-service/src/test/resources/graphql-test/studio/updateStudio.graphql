@@ -1,0 +1,15 @@
+mutation UpdateStudio(
+    $organizationId: ID!
+    $name: String!
+    $description: String!
+) {
+    studios {
+        updateStudio(
+            request: {
+                organizationId: $organizationId
+                name: $name
+                description: $description
+            }
+        )
+    }
+}
