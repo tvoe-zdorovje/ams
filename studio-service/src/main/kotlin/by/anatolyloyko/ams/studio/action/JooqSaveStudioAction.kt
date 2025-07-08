@@ -8,13 +8,13 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 @Transactional
-class JooqCreateStudioAction(
+class JooqSaveStudioAction(
     private val dslContext: DSLContext,
-) : CreateStudioAction {
+) : SaveStudioAction {
     override fun invoke(studio: Studio): Long = saveStudio(
         configuration = dslContext.configuration(),
-        iId = null,
+        iId = studio.id,
         iName = studio.name,
         iDescription = studio.description
-    ) ?: error("Could not create a new studio $studio")
+    ) ?: error("Could not save the studio $studio")
 }

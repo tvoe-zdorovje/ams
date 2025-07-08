@@ -5,7 +5,7 @@ import by.anatolyloyko.ams.studio.model.Studio
 /**
  * Action responsible for creating a new studio.
  */
-interface CreateStudioAction {
+interface SaveStudioAction {
     /**
      * Creates a new studio and returns the generated ID.
      *
