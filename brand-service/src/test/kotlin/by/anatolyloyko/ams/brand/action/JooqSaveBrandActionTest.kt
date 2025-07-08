@@ -12,10 +12,10 @@ import org.assertj.core.api.WithAssertions
 import org.jooq.DSLContext
 import org.junit.jupiter.api.Test
 
-class JooqCreateBrandActionTest : WithAssertions {
+class JooqSaveBrandActionTest : WithAssertions {
     private val dslContext = mockk<DSLContext>(relaxed = true)
 
-    private val action = JooqCreateBrandAction(dslContext)
+    private val action = JooqSaveBrandAction(dslContext)
 
     @Test
     fun `must call save brand routine and return ID`() = mockkStatic(ROUTINES_REFERENCE) {
@@ -33,7 +33,7 @@ class JooqCreateBrandActionTest : WithAssertions {
 
         assertThatThrownBy { action(NEW_BRAND) }
             .isOfAnyClassIn(IllegalStateException::class.java)
-            .hasMessage("Could not create a new brand $NEW_BRAND")
+            .hasMessage("Could not save the brand $NEW_BRAND")
 
         verify(exactly = 1) { saveBrand(any(), NEW_BRAND.id, NEW_BRAND.name, NEW_BRAND.description) }
     }

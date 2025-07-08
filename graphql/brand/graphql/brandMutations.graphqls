@@ -1,8 +1,15 @@
 extend type BrandMutations {
     createBrand(request: CreateBrandRequest!): ID!
+    updateBrand(request: UpdateBrandRequest!): ID! # TODO: auth & permissions control
 }
 
 input CreateBrandRequest {
+    name: String!
+    description: String!
+}
+
+input UpdateBrandRequest {
+    organizationId: ID!
     name: String!
     description: String!
 }

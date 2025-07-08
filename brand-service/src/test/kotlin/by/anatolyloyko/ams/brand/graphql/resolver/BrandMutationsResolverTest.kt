@@ -2,7 +2,7 @@ package by.anatolyloyko.ams.brand.graphql.resolver
 
 import by.anatolyloyko.ams.brand.BRAND
 import by.anatolyloyko.ams.brand.BRAND_ID
-import by.anatolyloyko.ams.brand.command.CreateBrandCommand
+import by.anatolyloyko.ams.brand.command.SaveBrandCommand
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
 import by.anatolyloyko.ams.common.infrastructure.testing.get
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
@@ -25,7 +25,7 @@ class BrandMutationsResolverTest {
 
     @Test
     fun `must create brand`() {
-        every { commandGateway.handle(any<CreateBrandCommand>()) } returns BRAND_ID
+        every { commandGateway.handle(any<SaveBrandCommand>()) } returns BRAND_ID
 
         val result = graphQlTester
             .documentName("brand/createBrand")
@@ -35,5 +35,20 @@ class BrandMutationsResolverTest {
 
         result.errors().verify()
         result["brands.createBrand"] matches BRAND_ID
+    }
+
+    @Test
+    fun `must update brand`() {
+        every { commandGateway.handle(any<SaveBrandCommand>()) } returns BRAND_ID
+
+        val result = graphQlTester
+            .documentName("brand/updateBrand")
+            .variable("organizationId", BRAND.id)
+            .variable("name", BRAND.name)
+            .variable("description", BRAND.description)
+            .execute()
+
+        result.errors().verify()
+        result["brands.updateBrand"] matches BRAND_ID
     }
 }
