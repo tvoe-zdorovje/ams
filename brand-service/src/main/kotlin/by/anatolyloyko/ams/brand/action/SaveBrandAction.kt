@@ -3,14 +3,14 @@ package by.anatolyloyko.ams.brand.action
 import by.anatolyloyko.ams.brand.model.Brand
 
 /**
- * Action responsible for creating a new brand.
+ * Action responsible for creating a new brand or updating an existing one.
  */
-interface CreateBrandAction {
+interface SaveBrandAction {
     /**
-     * Creates a new brand and returns the generated ID.
+     * Saves a brand and returns its ID.
      *
      * @param brand the brand data.
-     * @return the ID of the newly created brand.
+     * @return the ID of the saved brand.
      */
     operator fun invoke(brand: Brand): Long
 }

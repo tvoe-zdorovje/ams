@@ -8,13 +8,13 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 @Transactional
-internal class JooqCreateBrandAction(
+internal class JooqSaveBrandAction(
     private val dslContext: DSLContext
-) : CreateBrandAction {
+) : SaveBrandAction {
     override fun invoke(brand: Brand): Long = saveBrand(
         configuration = dslContext.configuration(),
         iId = brand.id,
         iName = brand.name,
         iDescription = brand.description
-    ) ?: error("Could not create a new brand $brand")
+    ) ?: error("Could not save the brand $brand")
 }

@@ -1,0 +1,15 @@
+mutation UpdateBrand(
+    $organizationId: ID!
+    $name: String!
+    $description: String!
+) {
+    brands {
+        updateBrand(
+            request: {
+                organizationId: $organizationId
+                name: $name
+                description: $description
+            }
+        )
+    }
+}

@@ -4,10 +4,10 @@ import by.anatolyloyko.ams.brand.model.Brand
 import by.anatolyloyko.ams.common.infrastructure.service.command.BaseCommand
 
 /**
- * A command intended for creating a new brand and returning the generated ID.
+ * A command intended for creating a new brand  or updating an existing one and returning its ID.
  *
- * @param input the brand data for creation.
+ * @param input contains the brand data.
  */
-class CreateBrandCommand(
+class SaveBrandCommand(
     input: Brand
 ) : BaseCommand<Brand, Long>(input)
