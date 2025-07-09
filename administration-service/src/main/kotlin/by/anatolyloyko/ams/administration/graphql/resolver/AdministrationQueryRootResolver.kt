@@ -2,6 +2,7 @@ package by.anatolyloyko.ams.administration.graphql.resolver
 
 import by.anatolyloyko.ams.administration.permission.graphql.resolver.PermissionQueriesResolver
 import by.anatolyloyko.ams.administration.role.graphql.resolver.RoleQueriesResolver
+import by.anatolyloyko.ams.administration.user.graphql.resolver.UserQueriesResolver
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 
@@ -15,11 +16,15 @@ import org.springframework.stereotype.Controller
 @Controller
 class AdministrationQueryRootResolver(
     private val roleQueriesResolver: RoleQueriesResolver,
-    private val permissionQueriesResolver: PermissionQueriesResolver
+    private val permissionQueriesResolver: PermissionQueriesResolver,
+    private val userQueriesResolver: UserQueriesResolver
 ) {
     @QueryMapping
     fun roles() = roleQueriesResolver
 
     @QueryMapping
     fun permissions() = permissionQueriesResolver
+
+    @QueryMapping
+    fun users() = userQueriesResolver
 }
