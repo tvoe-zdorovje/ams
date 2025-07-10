@@ -1,15 +1,15 @@
 package by.anatolyloyko.ams.administration
 
-import by.anatolyloyko.ams.orm.jooq.schemas.Administration
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.BRAND
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.BRAND_ROLES
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.PERMISSION
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.ROLE
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.ROLE_PERMISSIONS
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.STUDIO
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.STUDIO_ROLES
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.USER
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.USER_ROLES
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.Administration
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.BRAND
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.BRAND_ROLES
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.PERMISSION
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.ROLE
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.ROLE_PERMISSIONS
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.STUDIO
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.STUDIO_ROLES
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.USER
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.USER_ROLES
 import by.anatolyloyko.ams.orm.jooq.util.executeBatch
 import org.assertj.core.api.WithAssertions
 import org.jooq.DSLContext

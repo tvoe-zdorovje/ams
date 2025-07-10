@@ -1,11 +1,15 @@
 mutation AssignRoles(
     $userId: ID!
+    $organizationId: ID!
     $roles: [ID!]!
 ) {
     users {
         assignRoles(
-            userId: $userId
-            roles: $roles
+            request: {
+                userId: $userId
+                organizationId: $organizationId
+                roles: $roles
+            }
         )
     }
 }

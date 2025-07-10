@@ -1,8 +1,8 @@
 package by.anatolyloyko.ams.administration.permission.finder
 
 import by.anatolyloyko.ams.administration.permission.model.Permission
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.PERMISSION
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.ROLE_PERMISSIONS
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.PERMISSION
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.ROLE_PERMISSIONS
 import by.anatolyloyko.ams.orm.jooq.util.eq
 import org.jooq.DSLContext
 import org.jooq.Record3

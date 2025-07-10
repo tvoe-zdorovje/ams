@@ -15,6 +15,7 @@ class AssignRolesCommandHandler(
 ) : BaseCommandHandler<AssignRolesCommand, Unit>() {
     override fun handleInternal(command: AssignRolesCommand) = assignRolesAction(
         userId = command.input.userId,
+        organizationId = command.input.organizationId,
         roles = command.input.roles
     )
 }

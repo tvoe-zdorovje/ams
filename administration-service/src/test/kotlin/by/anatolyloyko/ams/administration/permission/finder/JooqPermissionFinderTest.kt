@@ -4,8 +4,8 @@ import by.anatolyloyko.ams.administration.JooqTest
 import by.anatolyloyko.ams.administration.PERMISSION
 import by.anatolyloyko.ams.administration.ROLE
 import by.anatolyloyko.ams.administration.permission.model.Permission
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.records.PermissionRecord
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.records.RolePermissionsRecord
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.records.PermissionRecord
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.records.RolePermissionsRecord
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

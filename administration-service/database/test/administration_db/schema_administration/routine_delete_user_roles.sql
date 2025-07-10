@@ -32,6 +32,7 @@ DECLARE
     routine_name TEXT := 'administration.delete_user_roles';
 
     _user_id BIGINT := -1234567890;
+    organization_id BIGINT := -1234567899;
     roles BIGINT[] = ARRAY[-1234567891, -1234567890]::BIGINT[];
 
     returned_user_id BIGINT;
@@ -50,8 +51,14 @@ BEGIN
     SELECT DISTINCT _user_id, role_id
     FROM unnest(roles) AS role_id;
 
+    DROP TRIGGER IF EXISTS refresh_brand_cache_trg ON administration.brand_roles;
+    INSERT INTO administration.brand(id) VALUES (organization_id);
 
-    SELECT administration.delete_user_roles(_user_id, roles) INTO returned_user_id;
+    INSERT INTO administration.brand_roles(brand_id, role_id)
+    SELECT DISTINCT organization_id, role_id
+    FROM unnest(roles) AS role_id;
+
+    SELECT administration.delete_user_roles(_user_id, organization_id, roles) INTO returned_user_id;
 
     RETURN NEXT is(
         returned_user_id,
@@ -62,6 +69,13 @@ BEGIN
         format('SELECT role_id FROM administration.user_roles WHERE user_id = %s;', _user_id),
         ARRAY[]::BIGINT[],
         format('Routine "%s" must add provided roles', routine_name)
+    );
+
+    RETURN NEXT throws_ok(
+        format('SELECT administration.delete_user_roles(%L, %L, %L)', _user_id, -11, roles),
+        'P0001',
+        'Some of the roles do not belong to the organization',
+        format('Routine "%s" must raise exception', routine_name)
     );
 END;
 $$ LANGUAGE plpgsql;

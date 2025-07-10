@@ -1,8 +1,8 @@
 package by.anatolyloyko.ams.administration.role.finder
 
 import by.anatolyloyko.ams.administration.role.model.Role
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.records.RoleRecord
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.ROLE
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.records.RoleRecord
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.ROLE
 import by.anatolyloyko.ams.orm.jooq.util.eq
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component

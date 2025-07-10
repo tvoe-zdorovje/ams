@@ -3,7 +3,7 @@ package by.anatolyloyko.ams.administration.brand.action
 import by.anatolyloyko.ams.administration.BRAND_ID
 import by.anatolyloyko.ams.administration.ROUTINES_REFERENCE
 import by.anatolyloyko.ams.administration.STUDIO_ID
-import by.anatolyloyko.ams.orm.jooq.schemas.routines.references.addBrandStudios
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.references.addBrandStudios
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
