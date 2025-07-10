@@ -1,10 +1,10 @@
 package by.anatolyloyko.ams.administration.user.finder
 
 import by.anatolyloyko.ams.administration.role.model.Role
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.BRAND_ROLES
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.ROLE
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.STUDIO_ROLES
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.USER_ROLES
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.BRAND_ROLES
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.ROLE
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.STUDIO_ROLES
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.USER_ROLES
 import by.anatolyloyko.ams.orm.jooq.util.eq
 import by.anatolyloyko.ams.orm.jooq.util.or
 import org.jooq.DSLContext

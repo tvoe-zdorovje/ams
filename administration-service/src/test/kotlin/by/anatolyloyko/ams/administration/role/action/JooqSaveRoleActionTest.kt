@@ -3,7 +3,7 @@ package by.anatolyloyko.ams.administration.role.action
 import by.anatolyloyko.ams.administration.NEW_ROLE
 import by.anatolyloyko.ams.administration.ROLE_ID
 import by.anatolyloyko.ams.administration.ROUTINES_REFERENCE
-import by.anatolyloyko.ams.orm.jooq.schemas.routines.references.saveRole
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.references.saveRole
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic

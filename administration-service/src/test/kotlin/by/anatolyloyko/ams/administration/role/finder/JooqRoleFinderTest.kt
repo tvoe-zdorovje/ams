@@ -2,7 +2,7 @@ package by.anatolyloyko.ams.administration.role.finder
 
 import by.anatolyloyko.ams.administration.JooqTest
 import by.anatolyloyko.ams.administration.ROLE
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.records.RoleRecord
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.records.RoleRecord
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

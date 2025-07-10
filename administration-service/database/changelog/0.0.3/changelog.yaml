@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0.0.3
+      author: anatolyloyko
+      changes:
+        - sqlFile:
+            path: changelog/0.0.3/01_create_assert-roles-belong-to_function.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.3/02_replace_add-user-roles_function.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.3/03_replace_delete-user-roles_function.sql
+            endDelimiter: "$$"

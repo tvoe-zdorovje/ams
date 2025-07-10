@@ -88,7 +88,7 @@ internal class JooqSchemaGenerator(
                     packageName = destinationPackage
                     directory = destinationDirectory
 
-                    isClean = false
+                    isClean = true
                 }
         }
     )

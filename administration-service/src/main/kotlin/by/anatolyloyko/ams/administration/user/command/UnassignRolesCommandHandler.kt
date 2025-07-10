@@ -15,6 +15,7 @@ class UnassignRolesCommandHandler(
 ) : BaseCommandHandler<UnassignRolesCommand, Unit>() {
     override fun handleInternal(command: UnassignRolesCommand) = unassignRolesAction(
         userId = command.input.userId,
+        organizationId = command.input.organizationId,
         roles = command.input.roles
     )
 }
