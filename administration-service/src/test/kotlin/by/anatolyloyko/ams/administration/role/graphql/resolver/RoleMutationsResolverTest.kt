@@ -1,6 +1,7 @@
 package by.anatolyloyko.ams.administration.role.graphql.resolver
 
 import by.anatolyloyko.ams.administration.ROLE
+import by.anatolyloyko.ams.administration.STUDIO_ID
 import by.anatolyloyko.ams.administration.role.command.SaveRoleCommand
 import by.anatolyloyko.ams.administration.role.command.input.SaveRoleInput
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
@@ -31,6 +32,7 @@ class RoleMutationsResolverTest {
 
         val result = graphQlTester
             .documentName("role/saveRole")
+            .variable("organizationId", STUDIO_ID)
             .variable("id", ROLE.id)
             .variable("name", ROLE.name)
             .variable("description", ROLE.description)
@@ -44,6 +46,7 @@ class RoleMutationsResolverTest {
             commandGateway.handle(
                 match<SaveRoleCommand> {
                     it.input == SaveRoleInput(
+                        organizationId = STUDIO_ID,
                         role = ROLE,
                         permissions = permissions
                     )

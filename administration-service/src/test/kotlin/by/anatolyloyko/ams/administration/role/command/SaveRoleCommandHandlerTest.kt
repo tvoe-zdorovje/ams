@@ -2,6 +2,7 @@ package by.anatolyloyko.ams.administration.role.command
 
 import by.anatolyloyko.ams.administration.NEW_ROLE
 import by.anatolyloyko.ams.administration.ROLE_ID
+import by.anatolyloyko.ams.administration.STUDIO_ID
 import by.anatolyloyko.ams.administration.role.action.SaveRoleAction
 import by.anatolyloyko.ams.administration.role.command.input.SaveRoleInput
 import by.anatolyloyko.ams.administration.role.model.Role
@@ -13,12 +14,12 @@ import org.junit.jupiter.api.Test
 
 class SaveRoleCommandHandlerTest : WithAssertions {
     private val saveRoleAction = mockk<SaveRoleAction> {
-        every { this@mockk(any<Role>(), any()) } returns ROLE_ID
+        every { this@mockk(any(), any<Role>(), any()) } returns ROLE_ID
     }
     private val handler = SaveRoleCommandHandler(saveRoleAction)
 
     private val command = SaveRoleCommand(
-        input = SaveRoleInput(NEW_ROLE),
+        input = SaveRoleInput(STUDIO_ID, NEW_ROLE),
     )
 
     @Test
@@ -28,6 +29,7 @@ class SaveRoleCommandHandlerTest : WithAssertions {
         assertThat(result).isEqualTo(ROLE_ID)
         verify(exactly = 1) {
             saveRoleAction(
+                organizationId = command.input.organizationId,
                 role = command.input.role,
                 permissions = command.input.permissions
             )

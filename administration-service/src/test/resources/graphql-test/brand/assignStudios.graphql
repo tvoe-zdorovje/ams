@@ -1,11 +1,13 @@
 mutation AssignStudios(
-    $brandId: ID!
+    $organizationId: ID!
     $studios: [ID!]!
 ) {
     brands {
         assignStudios(
-            brandId: $brandId
-            studios: $studios
+            request: {
+                organizationId: $organizationId
+                studios: $studios
+            }
         )
     }
 }

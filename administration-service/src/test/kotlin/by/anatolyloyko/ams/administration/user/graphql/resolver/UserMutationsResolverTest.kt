@@ -1,5 +1,6 @@
 package by.anatolyloyko.ams.administration.user.graphql.resolver
 
+import by.anatolyloyko.ams.administration.BRAND_ID
 import by.anatolyloyko.ams.administration.ROLE_ID
 import by.anatolyloyko.ams.administration.USER_ID
 import by.anatolyloyko.ams.administration.user.command.AssignRolesCommand
@@ -31,11 +32,13 @@ class UserMutationsResolverTest {
         @Test
         fun `must assign role to user`() {
             val userId = USER_ID
+            val organizationId = BRAND_ID
             val roles = listOf(ROLE_ID)
 
             val result = graphQlTester
                 .documentName("user/assignRoles")
                 .variable("userId", userId)
+                .variable("organizationId", organizationId)
                 .variable("roles", roles)
                 .execute()
 
@@ -47,6 +50,7 @@ class UserMutationsResolverTest {
                     match<AssignRolesCommand> {
                         it.input == UserRolesInput(
                             userId = userId,
+                            organizationId = organizationId,
                             roles = roles,
                         )
                     }
@@ -59,6 +63,7 @@ class UserMutationsResolverTest {
             val result = graphQlTester
                 .documentName("user/assignRoles")
                 .variable("userId", USER_ID)
+                .variable("organizationId", BRAND_ID)
                 .variable("roles", emptyList<Long>())
                 .execute()
 
@@ -75,11 +80,13 @@ class UserMutationsResolverTest {
         @Test
         fun `must unassign role from user`() {
             val userId = USER_ID
+            val organizationId = BRAND_ID
             val roles = listOf(ROLE_ID)
 
             val result = graphQlTester
                 .documentName("user/unassignRoles")
                 .variable("userId", userId)
+                .variable("organizationId", organizationId)
                 .variable("roles", roles)
                 .execute()
 
@@ -91,6 +98,7 @@ class UserMutationsResolverTest {
                     match<UnassignRolesCommand> {
                         it.input == UserRolesInput(
                             userId = userId,
+                            organizationId = organizationId,
                             roles = roles
                         )
                     }
@@ -103,6 +111,7 @@ class UserMutationsResolverTest {
             val result = graphQlTester
                 .documentName("user/unassignRoles")
                 .variable("userId", USER_ID)
+                .variable("organizationId", BRAND_ID)
                 .variable("roles", emptyList<Long>())
                 .execute()
 

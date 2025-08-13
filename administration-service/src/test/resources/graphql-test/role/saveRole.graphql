@@ -1,5 +1,6 @@
 mutation SaveRole(
     $id: ID
+    $organizationId: ID!
     $name: String!
     $description: String!
     $permissions: [ID!]
@@ -8,6 +9,7 @@ mutation SaveRole(
         saveRole(
             request: {
                 id: $id
+                organizationId: $organizationId
                 name: $name
                 description: $description
                 permissions: $permissions

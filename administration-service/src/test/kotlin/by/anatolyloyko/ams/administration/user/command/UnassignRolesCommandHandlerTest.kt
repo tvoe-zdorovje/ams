@@ -1,5 +1,6 @@
 package by.anatolyloyko.ams.administration.user.command
 
+import by.anatolyloyko.ams.administration.BRAND_ID
 import by.anatolyloyko.ams.administration.ROLE_ID
 import by.anatolyloyko.ams.administration.USER_ID
 import by.anatolyloyko.ams.administration.user.action.UnassignRolesAction
@@ -17,6 +18,7 @@ class UnassignRolesCommandHandlerTest : WithAssertions {
     private val command = UnassignRolesCommand(
         input = UserRolesInput(
             userId = USER_ID,
+            organizationId = BRAND_ID,
             roles = listOf(ROLE_ID)
         )
     )
@@ -28,6 +30,7 @@ class UnassignRolesCommandHandlerTest : WithAssertions {
         verify(exactly = 1) {
             action(
                 userId = command.input.userId,
+                organizationId = command.input.organizationId,
                 roles = command.input.roles
             )
         }

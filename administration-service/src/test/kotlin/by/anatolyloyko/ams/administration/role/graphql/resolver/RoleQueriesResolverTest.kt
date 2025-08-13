@@ -2,8 +2,10 @@ package by.anatolyloyko.ams.administration.role.graphql.resolver
 
 import by.anatolyloyko.ams.administration.PERMISSION
 import by.anatolyloyko.ams.administration.ROLE
+import by.anatolyloyko.ams.administration.STUDIO_ID
 import by.anatolyloyko.ams.administration.permission.finder.PermissionFinder
 import by.anatolyloyko.ams.administration.role.query.GetRoleQuery
+import by.anatolyloyko.ams.administration.role.query.input.GetRoleQueryInput
 import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
 import by.anatolyloyko.ams.common.infrastructure.testing.get
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
@@ -35,7 +37,8 @@ class RoleQueriesResolverTest {
 
         val result = graphQlTester
             .documentName("role/getRole")
-            .variable("id", ROLE.id)
+            .variable("roleId", ROLE.id)
+            .variable("organizationId", STUDIO_ID)
             .execute()
 
         result.errors().verify()
@@ -50,7 +53,7 @@ class RoleQueriesResolverTest {
 
         verifyOrder {
             queryGateway.handle(
-                match<GetRoleQuery> { it.input == ROLE.id }
+                match<GetRoleQuery> { it.input == GetRoleQueryInput(organizationId = STUDIO_ID, roleId = ROLE.id!!) }
             )
 
             permissionFinder.findByRoleId(ROLE.id!!)

@@ -35,6 +35,7 @@ class RoleMutationsResolver(
     ): Long = commandGateway.handle(
         SaveRoleCommand(
             input = SaveRoleInput(
+                organizationId = request.organizationId,
                 role = Role(
                     id = request.id,
                     name = request.name,

@@ -1,8 +1,14 @@
 query GetRole(
-    $id: ID!
+    $organizationId: ID!
+    $roleId: ID!
 ) {
     roles {
-        role(id: $id) {
+        role(
+            request: {
+                organizationId: $organizationId
+                roleId: $roleId
+            }
+        ) {
             id
             name
             description

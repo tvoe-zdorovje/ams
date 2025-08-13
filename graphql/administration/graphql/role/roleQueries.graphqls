@@ -1,5 +1,10 @@
 extend type RoleQueries {
-    role(id: ID!): Role
+    role(request: GetOrganizationRoleRequest!): Role
+}
+
+input GetOrganizationRoleRequest {
+    organizationId: ID!
+    roleId: ID!
 }
 
 type Role {

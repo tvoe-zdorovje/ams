@@ -14,6 +14,7 @@ class SaveRoleCommandHandler(
     private val saveRoleAction: SaveRoleAction
 ) : BaseCommandHandler<SaveRoleCommand, Long>() {
     override fun handleInternal(command: SaveRoleCommand): Long = saveRoleAction(
+        organizationId = command.input.organizationId,
         role = command.input.role,
         permissions = command.input.permissions
     )

@@ -1,5 +1,5 @@
 mutation CreateRole(
-    $brandId: ID!
+    $organizationId: ID!
     $name: String!
     $description: String!
     $permissions: [ID!]
@@ -7,7 +7,7 @@ mutation CreateRole(
     brands {
         createRole(
             request: {
-                brandId: $brandId
+                organizationId: $organizationId
                 name: $name
                 description: $description
                 permissions: $permissions

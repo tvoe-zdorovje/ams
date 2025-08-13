@@ -4,7 +4,7 @@ extend type StudioMutations {
 }
 
 input CreateStudioRoleRequest {
-    studioId: ID!
+    organizationId: ID!
     name: String!
     description: String!
     permissions: [ID!]

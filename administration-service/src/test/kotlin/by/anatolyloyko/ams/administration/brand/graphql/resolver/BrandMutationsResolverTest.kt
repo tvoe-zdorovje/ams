@@ -42,7 +42,7 @@ class BrandMutationsResolverTest {
 
             val result = graphQlTester
                 .documentName("brand/createRole")
-                .variable("brandId", brandId)
+                .variable("organizationId", brandId)
                 .variable("name", role.name)
                 .variable("description", role.description)
                 .variable("permissions", permissions)
@@ -73,7 +73,7 @@ class BrandMutationsResolverTest {
 
             val result = graphQlTester
                 .documentName("brand/createRole")
-                .variable("brandId", brandId)
+                .variable("organizationId", brandId)
                 .variable("name", role.name)
                 .variable("description", role.description)
                 .execute()
@@ -105,7 +105,7 @@ class BrandMutationsResolverTest {
 
             val result = graphQlTester
                 .documentName("brand/assignStudios")
-                .variable("brandId", brandId)
+                .variable("organizationId", brandId)
                 .variable("studios", studios)
                 .execute()
 
@@ -131,7 +131,7 @@ class BrandMutationsResolverTest {
 
             val result = graphQlTester
                 .documentName("brand/assignStudios")
-                .variable("brandId", brandId)
+                .variable("organizationId", brandId)
                 .variable("studios", emptyList<Long>())
                 .execute()
 
