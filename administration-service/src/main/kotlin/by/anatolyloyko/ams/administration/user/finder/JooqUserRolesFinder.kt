@@ -37,6 +37,6 @@ class JooqUserRolesFinder(
         .leftJoin(ROLE)
         .on(ROLE.ID eq USER_ROLES.ROLE_ID)
         .where(USER_ROLES.USER_ID eq userId)
-        .and((BRAND_ROLES.BRAND_ID eq organizationId) or (STUDIO_ROLES.STUDIO_ID eq organizationId))
+        .and(BRAND_ROLES.BRAND_ID eq organizationId or (STUDIO_ROLES.STUDIO_ID eq organizationId))
         .map(MAPPER)
 }
