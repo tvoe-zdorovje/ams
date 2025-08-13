@@ -1,8 +1,10 @@
 package by.anatolyloyko.ams.administration.role.graphql.resolver
 
 import by.anatolyloyko.ams.administration.permission.finder.PermissionFinder
+import by.anatolyloyko.ams.administration.role.graphql.dto.GetOrganizationRoleRequest
 import by.anatolyloyko.ams.administration.role.model.Role
 import by.anatolyloyko.ams.administration.role.query.GetRoleQuery
+import by.anatolyloyko.ams.administration.role.query.input.GetRoleQueryInput
 import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.SchemaMapping
@@ -31,8 +33,15 @@ class RoleQueriesResolver(
      */
     @SchemaMapping(typeName = "RoleQueries")
     fun role(
-        @Argument id: Long
-    ) = queryGateway.handle(GetRoleQuery(id))
+        @Argument request: GetOrganizationRoleRequest
+    ) = queryGateway.handle(
+        query = GetRoleQuery(
+            input = GetRoleQueryInput(
+                organizationId = request.organizationId,
+                roleId = request.roleId
+            )
+        )
+    )
 
     /**
      * Resolver for finding role permissions.

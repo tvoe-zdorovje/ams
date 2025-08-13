@@ -14,5 +14,8 @@ import org.springframework.stereotype.Component
 class GetRoleQueryHandler(
     private val roleFinder: RoleFinder,
 ) : BaseQueryHandler<GetRoleQuery, Role?>() {
-    override fun handleInternal(query: GetRoleQuery): Role? = roleFinder.findById(query.input)
+    override fun handleInternal(query: GetRoleQuery): Role? = roleFinder.findById(
+        roleId = query.input.roleId,
+        organizationId = query.input.organizationId
+    )
 }

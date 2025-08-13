@@ -1,13 +1,14 @@
 package by.anatolyloyko.ams.administration.role.query
 
 import by.anatolyloyko.ams.administration.role.model.Role
+import by.anatolyloyko.ams.administration.role.query.input.GetRoleQueryInput
 import by.anatolyloyko.ams.common.infrastructure.service.query.BaseQuery
 
 /**
- * A query to retrieve a role {@link Role} by ID {@link Long}.
+ * A query to retrieve a role [Role] by criteria [GetRoleQueryInput].
  *
- * @param input the ID of the role to retrieve.
+ * @param input contains necessary data to look up a role.
  */
 class GetRoleQuery(
-    input: Long
-) : BaseQuery<Long, Role?>(input)
+    input: GetRoleQueryInput
+) : BaseQuery<GetRoleQueryInput, Role?>(input)
