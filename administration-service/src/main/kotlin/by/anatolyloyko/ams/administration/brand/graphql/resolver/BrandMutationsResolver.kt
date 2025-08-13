@@ -37,7 +37,7 @@ class BrandMutationsResolver(
     ): Long = commandGateway.handle(
         CreateBrandRoleCommand(
             input = CreateBrandRoleInput(
-                brandId = request.brandId,
+                brandId = request.organizationId,
                 role = Role(
                     name = request.name,
                     description = request.description,

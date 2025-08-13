@@ -15,7 +15,7 @@ BEGIN
         i_name,
         i_description,
         i_permissions
-               );
+   );
 
     INSERT INTO administration.studio_roles(studio_id, role_id) VALUES (i_studio_id, _role_id);
 

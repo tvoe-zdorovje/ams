@@ -39,7 +39,7 @@ class StudioMutationsResolverTest {
 
             val result = graphQlTester
                 .documentName("brand/studio/createRole")
-                .variable("studioId", studioId)
+                .variable("organizationId", studioId)
                 .variable("name", role.name)
                 .variable("description", role.description)
                 .variable("permissions", permissions)
@@ -70,7 +70,7 @@ class StudioMutationsResolverTest {
 
             val result = graphQlTester
                 .documentName("brand/studio/createRole")
-                .variable("studioId", studioId)
+                .variable("organizationId", studioId)
                 .variable("name", role.name)
                 .variable("description", role.description)
                 .execute()

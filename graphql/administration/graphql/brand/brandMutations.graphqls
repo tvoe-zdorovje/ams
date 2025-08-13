@@ -5,7 +5,7 @@ extend type BrandMutations {
 }
 
 input CreateBrandRoleRequest {
-    brandId: ID!
+    organizationId: ID!
     name: String!
     description: String!
     permissions: [ID!]

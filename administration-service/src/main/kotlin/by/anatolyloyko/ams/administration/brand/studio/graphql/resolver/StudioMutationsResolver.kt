@@ -35,7 +35,7 @@ class StudioMutationsResolver(
     ): Long = commandGateway.handle(
         CreateStudioRoleCommand(
             input = CreateStudioRoleInput(
-                studioId = request.studioId,
+                studioId = request.organizationId,
                 role = Role(
                     name = request.name,
                     description = request.description,
