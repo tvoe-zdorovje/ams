@@ -43,7 +43,7 @@ BEGIN
 
 
     SELECT nextval('administration.role_id_seq') + 1000000000 INTO expected_generated_id;
-    SELECT administration.save_role(null, role_name, role_description, permissions) INTO actual_generated_id;
+    SELECT administration.save_role(null, null, role_name, role_description, permissions) INTO actual_generated_id;
 
     RETURN NEXT is(
         actual_generated_id,
@@ -62,7 +62,7 @@ BEGIN
     SELECT DISTINCT permission_id, 'test_perm_name', 'test_perm_desc'
     FROM unnest(permissions) AS permission_id;
 
-    SELECT administration.save_role(null, role_name, role_description, permissions) INTO actual_generated_id;
+    SELECT administration.save_role(null, null, role_name, role_description, permissions) INTO actual_generated_id;
 
     RETURN NEXT results_eq(
         format('SELECT permission_id FROM administration.role_permissions WHERE role_id = %s;', actual_generated_id),
@@ -77,24 +77,29 @@ CREATE OR REPLACE FUNCTION tests.test_save_role_routine_behavior_update_role() R
 DECLARE
     routine_name TEXT := 'administration.save_role';
 
+    organizationId BIGINT := -1234567890;
+
     role_id BIGINT;
     initial_role_name VARCHAR(50) := 'test_role';
-    updated_role_name VARCHAR(50) := 'test_role updated';
-    initial_role_description VARCHAR(50) := 'test role';
-    updated_role_description VARCHAR(50) := 'test role updated';
+    updated_role_name VARCHAR(50) := 'test_role_updated';
+    initial_role_description VARCHAR(50) := 'test_role';
+    updated_role_description VARCHAR(50) := 'test_role_updated';
     permissions BIGINT[] := ARRAY[]::BIGINT[];
 BEGIN
     EXECUTE format('SET ROLE %I', _get_schema_owner('administration'));
 
-
-    SELECT administration.save_role(null, initial_role_name, initial_role_description, permissions) INTO role_id;
+    SELECT administration.save_role(organizationid, null, initial_role_name, initial_role_description, permissions) INTO role_id;
 
     permissions = ARRAY[-1234567891, -1234567890]::BIGINT[];
     INSERT INTO administration.permission(id, name, description)
     SELECT DISTINCT permission_id, 'test_perm_name', 'test_perm_desc'
     FROM unnest(permissions) AS permission_id;
 
-    SELECT administration.save_role(role_id, updated_role_name, updated_role_description, permissions) INTO role_id;
+    DROP TRIGGER refresh_studio_cache_trg ON administration.studio_roles;
+    INSERT INTO administration.studio VALUES (organizationid);
+    INSERT INTO administration.studio_roles VALUES (organizationid, role_id);
+
+    SELECT administration.save_role(organizationId, role_id, updated_role_name, updated_role_description, permissions) INTO role_id;
 
     RETURN NEXT results_eq(
         format('SELECT name || description FROM administration.role WHERE id = %s;', role_id),
@@ -105,6 +110,18 @@ BEGIN
         format('SELECT permission_id FROM administration.role_permissions WHERE role_id = %s;', role_id),
         permissions,
         format('Routine "%s" must update role permissions', routine_name)
+    );
+
+    RETURN NEXT throws_ok(
+        format(
+            'SELECT administration.save_role(-1, %s, %L, %L, null);',
+            role_id,
+            updated_role_name,
+            updated_role_description
+        ),
+        'P0001',
+        'Some of the roles do not belong to the organization',
+        format('routine "%s" must raise exception', routine_name)
     );
 END;
 $$ LANGUAGE plpgsql;

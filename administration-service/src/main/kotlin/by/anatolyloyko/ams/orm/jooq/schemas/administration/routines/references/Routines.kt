@@ -332,12 +332,14 @@ fun refreshFdwUser(
  */
 fun saveRole(
       configuration: Configuration
+    , iOrganizationId: Long?
     , iId: Long?
     , iName: String?
     , iDescription: String?
     , iPermissions: Array<Long?>?
 ): Long? {
     val f = SaveRole()
+    f.setIOrganizationId(iOrganizationId)
     f.setIId(iId)
     f.setIName(iName)
     f.setIDescription(iDescription)
@@ -351,12 +353,14 @@ fun saveRole(
  * Get <code>administration.save_role</code> as a field.
  */
 fun saveRole(
-      iId: Long?
+      iOrganizationId: Long?
+    , iId: Long?
     , iName: String?
     , iDescription: String?
     , iPermissions: Array<Long?>?
 ): Field<Long?> {
     val f = SaveRole()
+    f.setIOrganizationId(iOrganizationId)
     f.setIId(iId)
     f.setIName(iName)
     f.setIDescription(iDescription)
@@ -369,12 +373,14 @@ fun saveRole(
  * Get <code>administration.save_role</code> as a field.
  */
 fun saveRole(
-      iId: Field<Long?>
+      iOrganizationId: Field<Long?>
+    , iId: Field<Long?>
     , iName: Field<String?>
     , iDescription: Field<String?>
     , iPermissions: Field<Array<Long?>?>
 ): Field<Long?> {
     val f = SaveRole()
+    f.setIOrganizationId(iOrganizationId)
     f.setIId(iId)
     f.setIName(iName)
     f.setIDescription(iDescription)

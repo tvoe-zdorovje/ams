@@ -12,3 +12,12 @@ databaseChangeLog:
         - sqlFile:
             path: changelog/0.0.3/03_replace_delete-user-roles_function.sql
             endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.3/04_replace_save-role_function.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.3/05_replace_create-brand-role_function.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.3/06_replace_create-studio-role_function.sql
+            endDelimiter: "$$"

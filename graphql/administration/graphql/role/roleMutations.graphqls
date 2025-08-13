@@ -3,6 +3,7 @@ extend type RoleMutations {
 }
 
 input SaveRoleRequest {
+    organizationId: ID!,
     id: ID,
     name: String!
     description: String!

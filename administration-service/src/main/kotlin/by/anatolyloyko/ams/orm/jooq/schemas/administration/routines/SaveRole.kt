@@ -26,6 +26,12 @@ open class SaveRole : AbstractRoutine<Long>("save_role", Administration.ADMINIST
         val RETURN_VALUE: Parameter<Long?> = Internal.createParameter("RETURN_VALUE", SQLDataType.BIGINT, false, false)
 
         /**
+         * The parameter
+         * <code>administration.save_role.i_organization_id</code>.
+         */
+        val I_ORGANIZATION_ID: Parameter<Long?> = Internal.createParameter("i_organization_id", SQLDataType.BIGINT, false, false)
+
+        /**
          * The parameter <code>administration.save_role.i_id</code>.
          */
         val I_ID: Parameter<Long?> = Internal.createParameter("i_id", SQLDataType.BIGINT, false, false)
@@ -48,10 +54,24 @@ open class SaveRole : AbstractRoutine<Long>("save_role", Administration.ADMINIST
 
     init {
         returnParameter = SaveRole.RETURN_VALUE
+        addInParameter(SaveRole.I_ORGANIZATION_ID)
         addInParameter(SaveRole.I_ID)
         addInParameter(SaveRole.I_NAME)
         addInParameter(SaveRole.I_DESCRIPTION)
         addInParameter(SaveRole.I_PERMISSIONS)
+    }
+
+    /**
+     * Set the <code>i_organization_id</code> parameter IN value to the routine
+     */
+    fun setIOrganizationId(value: Long?): Unit = setValue(SaveRole.I_ORGANIZATION_ID, value)
+
+    /**
+     * Set the <code>i_organization_id</code> parameter to the function to be
+     * used with a {@link org.jooq.Select} statement
+     */
+    fun setIOrganizationId(field: Field<Long?>): Unit {
+        setField(SaveRole.I_ORGANIZATION_ID, field)
     }
 
     /**

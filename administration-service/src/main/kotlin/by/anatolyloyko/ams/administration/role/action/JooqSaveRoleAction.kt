@@ -11,8 +11,13 @@ import org.springframework.transaction.annotation.Transactional
 internal class JooqSaveRoleAction(
     private val dslContext: DSLContext
 ) : SaveRoleAction {
-    override fun invoke(role: Role, permissions: List<Long>): Long = saveRole(
+    override fun invoke(
+        organizationId: Long,
+        role: Role,
+        permissions: List<Long>
+    ): Long = saveRole(
         configuration = dslContext.configuration(),
+        iOrganizationId = organizationId,
         iId = role.id,
         iName = role.name,
         iDescription = role.description,

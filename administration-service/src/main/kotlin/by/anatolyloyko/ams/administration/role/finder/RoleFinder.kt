@@ -10,7 +10,7 @@ interface RoleFinder {
      * Finds a role by ID.
      *
      * @param roleId the ID of a role.
-     * @param organizationId the ID of an organization which the role belongs to.
+     * @param organizationId either a brand ID or a studio ID which the role belong to.
      * @return the found [Role], or `null` if no role is found.
      */
     fun findById(roleId: Long, organizationId: Long): Role?
