@@ -5,6 +5,7 @@ import by.anatolyloyko.ams.administration.brand.command.CreateBrandRoleCommand
 import by.anatolyloyko.ams.administration.brand.command.input.AssignStudiosInput
 import by.anatolyloyko.ams.administration.brand.command.input.CreateBrandRoleInput
 import by.anatolyloyko.ams.administration.brand.graphql.dto.CreateBrandRoleRequest
+import by.anatolyloyko.ams.administration.brand.graphql.resolver.dto.AssignStudiosRequest
 import by.anatolyloyko.ams.administration.role.model.Role
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
 import org.springframework.graphql.data.method.annotation.Argument
@@ -50,21 +51,20 @@ class BrandMutationsResolver(
     /**
      * Resolves the assignStudios mutation for assigning provided studios to a brand.
      *
-     * @param brandId the target brand ID.
-     * @param studios the list of studio IDs.
+     * @param request contains a list of studio IDs to be assigned
+     *        and an ID of a brand which studious should be assigned to.
      * @return 'true' as a successful result
      *
      * @see AssignStudiosCommand
      */
     @SchemaMapping(typeName = "BrandMutations")
     fun assignStudios(
-        @Argument brandId: Long,
-        @Argument studios: List<Long>,
+        @Argument request: AssignStudiosRequest,
     ): Boolean = commandGateway.handle(
         AssignStudiosCommand(
             input = AssignStudiosInput(
-                brandId = brandId,
-                studios = studios
+                brandId = request.organizationId,
+                studios = request.studios
                     .ifEmpty { error("Parameter 'studios' must not be empty!") }
             )
         )

@@ -105,7 +105,7 @@ class BrandMutationsResolverTest {
 
             val result = graphQlTester
                 .documentName("brand/assignStudios")
-                .variable("brandId", brandId)
+                .variable("organizationId", brandId)
                 .variable("studios", studios)
                 .execute()
 
@@ -131,7 +131,7 @@ class BrandMutationsResolverTest {
 
             val result = graphQlTester
                 .documentName("brand/assignStudios")
-                .variable("brandId", brandId)
+                .variable("organizationId", brandId)
                 .variable("studios", emptyList<Long>())
                 .execute()
 
