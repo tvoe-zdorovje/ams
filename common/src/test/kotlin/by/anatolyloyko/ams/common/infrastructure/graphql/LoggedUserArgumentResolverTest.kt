@@ -1,7 +1,10 @@
 package by.anatolyloyko.ams.common.infrastructure.graphql
 
-import by.anatolyloyko.ams.common.infrastructure.exception.AuthenticationException
-import by.anatolyloyko.ams.common.infrastructure.model.LoggedUser
+import by.anatolyloyko.ams.common.infrastructure.exception.AuthorizationException
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.CONTEXT_LOGGED_USER
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.LoggedUserArgumentResolver
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.Principal
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.model.LoggedUser
 import graphql.schema.DataFetchingEnvironment
 import io.mockk.every
 import io.mockk.mockk
@@ -29,7 +32,7 @@ class LoggedUserArgumentResolverTest : WithAssertions {
     fun `must resolve argument by graphQl Context`() {
         val loggedUser = LoggedUser(123)
         val environment = mockk<DataFetchingEnvironment> {
-            every { graphQlContext.get<Any>(ARGUMENT_LOGGED_USER) } returns loggedUser
+            every { graphQlContext.get<Any>(CONTEXT_LOGGED_USER) } returns loggedUser
         }
 
         val result = resolver.resolveArgument(methodParameter, environment)
@@ -40,11 +43,11 @@ class LoggedUserArgumentResolverTest : WithAssertions {
     @Test
     fun `must throw exception when context has no value`() {
         val environment = mockk<DataFetchingEnvironment> {
-            every { graphQlContext.get<Any>(ARGUMENT_LOGGED_USER) } returns null
+            every { graphQlContext.get<Any>(CONTEXT_LOGGED_USER) } returns null
         }
 
         assertThatThrownBy { resolver.resolveArgument(methodParameter, environment) }
-            .isInstanceOf(AuthenticationException::class.java)
+            .isInstanceOf(AuthorizationException::class.java)
             .hasMessage("Authentication required")
     }
 }

@@ -1,4 +1,4 @@
-package by.anatolyloyko.ams.common.infrastructure.model
+package by.anatolyloyko.ams.common.infrastructure.graphql.auth.model
 
 /**
  * Represents the authenticated user performing a request.
@@ -7,9 +7,9 @@ package by.anatolyloyko.ams.common.infrastructure.model
  * through the GraphQL context and into resolvers. It enables domain logic
  * to be executed on behalf of the authenticated user.
  *
- * @see LoggedUserGraphQlInterceptor
- * @see LoggedUserArgumentResolver
+ * @see [LoggedUserGraphQlInterceptor]
+ * @see [LoggedUserArgumentResolver]
  */
-data class LoggedUser(
+open class LoggedUser(
     val id: Long
 )

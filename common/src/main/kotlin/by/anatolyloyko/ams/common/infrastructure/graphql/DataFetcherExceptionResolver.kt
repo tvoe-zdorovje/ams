@@ -1,6 +1,7 @@
 package by.anatolyloyko.ams.common.infrastructure.graphql
 
-import by.anatolyloyko.ams.common.infrastructure.exception.AuthenticationException
+import by.anatolyloyko.ams.common.infrastructure.exception.AccessDeniedException
+import by.anatolyloyko.ams.common.infrastructure.exception.AuthorizationException
 import graphql.ErrorType.ValidationError
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
@@ -8,6 +9,7 @@ import graphql.schema.DataFetchingEnvironment
 import org.jooq.exception.DataAccessException
 import org.postgresql.util.PSQLException
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter
+import org.springframework.graphql.execution.ErrorType.FORBIDDEN
 import org.springframework.graphql.execution.ErrorType.UNAUTHORIZED
 import org.springframework.stereotype.Component
 
@@ -22,9 +24,14 @@ class DataFetcherExceptionResolver : DataFetcherExceptionResolverAdapter() {
             .errorType(ValidationError)
             .message(ex.localizedMessage)
             .build()
-        is AuthenticationException -> GraphqlErrorBuilder
+        is AuthorizationException -> GraphqlErrorBuilder
             .newError(env)
             .errorType(UNAUTHORIZED)
+            .message(ex.localizedMessage)
+            .build()
+        is AccessDeniedException -> GraphqlErrorBuilder
+            .newError(env)
+            .errorType(FORBIDDEN)
             .message(ex.localizedMessage)
             .build()
         is DataAccessException -> ex.resolveToSingleError(env)

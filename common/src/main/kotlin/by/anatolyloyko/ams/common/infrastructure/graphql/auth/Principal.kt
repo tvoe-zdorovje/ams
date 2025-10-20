@@ -1,4 +1,4 @@
-package by.anatolyloyko.ams.common.infrastructure.graphql
+package by.anatolyloyko.ams.common.infrastructure.graphql.auth
 
 /**
  * Marks a method parameter that should be resolved as the currently authenticated user.

@@ -24,6 +24,8 @@ val databaseDriver: String by project
 val exposedSpringBootStarterVersion: String by project
 val logbookSpringBootStarterVersion: String by project
 
+val jacksonModuleKotlinVersion: String by project
+
 val mockkVersion: String by project
 val springMockkVersion: String by project
 val h2Version: String by project
@@ -49,6 +51,8 @@ dependencies {
     compileOnly("org.springframework.graphql:spring-graphql-test")
 
     api(databaseDriver)
+
+    api(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = jacksonModuleKotlinVersion)
 
 
     testFixturesApi("org.springframework.boot:spring-boot-starter-test") {

@@ -1,3 +1,5 @@
 type Mutation
 
 type Query
+
+directive @requiresPermissions(permissions: [String!]!) on FIELD_DEFINITION

@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.common.infrastructure.testing
 
-import by.anatolyloyko.ams.common.infrastructure.graphql.HEADER_USER_ID
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_USER_ID
 import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.graphql.test.tester.WebGraphQlTester
 
