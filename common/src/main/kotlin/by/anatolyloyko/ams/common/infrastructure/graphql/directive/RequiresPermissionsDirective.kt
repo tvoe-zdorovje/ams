@@ -1,6 +1,7 @@
 package by.anatolyloyko.ams.common.infrastructure.graphql.directive
 
 import by.anatolyloyko.ams.common.infrastructure.exception.AccessDeniedException
+import by.anatolyloyko.ams.common.infrastructure.exception.AuthorizationException
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.CONTEXT_LOGGED_USER
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.model.LoggedUserTokenData
 import graphql.language.ArrayValue
@@ -55,12 +56,11 @@ class RequiresPermissionsDirective : SchemaDirectiveWiring {
                 ?.toLongOrNull()
                 ?: throw AccessDeniedException("'organizationId' argument is missed or invalid.")
 
-            val permissions = dataFetchingEnv
+            val loggedUserTokenData = dataFetchingEnv
                 .graphQlContext
                 .get<LoggedUserTokenData>(CONTEXT_LOGGED_USER)
-                ?.permissions
-                ?.get(organizationId)
-                ?: emptySet()
+                ?: throw AuthorizationException("Authorization required")
+            val permissions = loggedUserTokenData.permissions[organizationId] ?: emptySet()
 
             if (!permissions.containsAll(requiredPermissions)) {
                 throw AccessDeniedException("insufficient permissions - ${requiredPermissions - permissions}.")

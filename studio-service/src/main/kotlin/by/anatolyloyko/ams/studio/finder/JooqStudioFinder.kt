@@ -1,7 +1,7 @@
 package by.anatolyloyko.ams.studio.finder
 
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.records.StudioRecord
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.STUDIO
+import by.anatolyloyko.ams.orm.jooq.schemas.studios.tables.Studio.Companion.STUDIO
+import by.anatolyloyko.ams.orm.jooq.schemas.studios.tables.records.StudioRecord
 import by.anatolyloyko.ams.orm.jooq.util.eq
 import by.anatolyloyko.ams.studio.model.Studio
 import org.jooq.DSLContext

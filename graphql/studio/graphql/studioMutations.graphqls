@@ -1,6 +1,6 @@
 extend type StudioMutations {
     createStudio(request: CreateStudioRequest!): ID!
-    updateStudio(request: UpdateStudioRequest!): ID! # TODO: auth & permissions control
+    updateStudio(request: UpdateStudioRequest!): ID! @requiresPermissions(permissions: ["UpdateStudio"])
 }
 
 input CreateStudioRequest {

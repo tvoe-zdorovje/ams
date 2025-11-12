@@ -13,5 +13,5 @@ import org.springframework.stereotype.Component
 class SaveBrandCommandHandler(
     private val saveBrandAction: SaveBrandAction
 ) : BaseCommandHandler<SaveBrandCommand, Long>() {
-    override fun handleInternal(command: SaveBrandCommand): Long = saveBrandAction(command.input)
+    override fun handleInternal(command: SaveBrandCommand): Long = saveBrandAction(command.input, command.loggedUserId)
 }

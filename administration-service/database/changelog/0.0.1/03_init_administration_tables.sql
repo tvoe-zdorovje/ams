@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS administration.role(
     id BIGINT PRIMARY KEY NOT NULL,
     name VARCHAR(100) NOT NULL,
-    description VARCHAR(255) NOT NULL
+    description VARCHAR(255) NOT NULL,
+    is_standard BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS administration.permission(

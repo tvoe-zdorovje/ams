@@ -38,27 +38,20 @@ CREATE OR REPLACE FUNCTION tests.has_user_mapping(
     local_user_name NAME,
     remote_user_name TEXT
 ) RETURNS SETOF TEXT AS $$
-DECLARE
-    user_mapping RECORD := _get_user_mapping(server_name);
 BEGIN
     RETURN QUERY SELECT ok(
-        user_mapping IS NOT NULL,
-        format('user mapping for "%s" server must exist', UPPER(server_name))
-    );
-    RETURN QUERY SELECT is(
-        user_mapping.server_name,
-        server_name,
-        format('user mapping for "%s" server must have "%s" server name', UPPER(server_name), server_name)
-    );
-    RETURN QUERY SELECT is(
-        user_mapping.local_user_name,
-        local_user_name,
-        format('user mapping for "%s" server must have "%s" local user name', UPPER(server_name), local_user_name)
-    );
-    RETURN QUERY SELECT is(
-        user_mapping.remote_user_name,
-        remote_user_name,
-        format('user mapping for "%s" server must have "%s" remote user name', UPPER(server_name), remote_user_name)
+        EXISTS(
+            SELECT 1
+            FROM _get_user_mapping(server_name)
+            WHERE _local_user_name = local_user_name
+                AND _remote_user_name = remote_user_name
+        ),
+        format(
+            'user mapping %s → %s for "%s" server must exist',
+            UPPER(server_name),
+            local_user_name,
+            remote_user_name
+        )
     );
 END;
 $$ LANGUAGE plpgsql;
@@ -88,11 +81,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION tests._get_user_mapping(
-    _server_name NAME
+    server_name NAME
 ) RETURNS TABLE(
-    server_name NAME,
-    local_user_name NAME,
-    remote_user_name TEXT
+    _server_name NAME,
+    _local_user_name NAME,
+    _remote_user_name TEXT
 ) AS $$
 BEGIN
     EXECUTE format('SET ROLE %I', _get_rel_owner('pg_user_mappings'));
@@ -112,7 +105,7 @@ BEGIN
         ) AS pum
         WHERE options LIKE 'user=%'
     ) AS user_mapping
-    WHERE user_mapping.srvname = _server_name
+    WHERE user_mapping.srvname = server_name
     GROUP BY user_mapping.srvname, user_mapping.usename
     ;
 END;

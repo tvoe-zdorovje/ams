@@ -2,6 +2,8 @@ package by.anatolyloyko.ams.studio
 
 import by.anatolyloyko.ams.studio.model.Studio
 
+const val USER_ID = 100000001413121100
+
 const val STUDIO_ID = 1000000000171342100
 
 val NEW_STUDIO = Studio(

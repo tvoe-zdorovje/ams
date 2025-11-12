@@ -4,5 +4,8 @@ databaseChangeLog:
       author: anatolyloyko
       changes:
         - sqlFile:
-            path: changelog/0.0.2/01_create_save-brand_function.sql
+            path: changelog/0.0.2/01_create_create-brand_procedure.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.2/02_create_update-brand_function.sql
             endDelimiter: "$$"

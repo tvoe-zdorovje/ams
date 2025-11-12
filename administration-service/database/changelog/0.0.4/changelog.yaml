@@ -7,5 +7,11 @@ databaseChangeLog:
             path: changelog/0.0.4/01_create_permissions.sql
             endDelimiter: "$$"
         - sqlFile:
-            path: changelog/0.0.4/02_create_standard_role_Owner.sql
+            path: changelog/0.0.4/02_create_create-standard-role-Owner_function.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.4/03_create_set-brand-owner_function.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.4/04_create_set-studio-owner_function.sql
             endDelimiter: "$$"

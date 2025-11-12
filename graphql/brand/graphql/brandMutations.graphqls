@@ -1,6 +1,6 @@
 extend type BrandMutations {
     createBrand(request: CreateBrandRequest!): ID!
-    updateBrand(request: UpdateBrandRequest!): ID! # TODO: auth & permissions control
+    updateBrand(request: UpdateBrandRequest!): ID! @requiresPermissions(permissions: ["UpdateBrand"])
 }
 
 input CreateBrandRequest {

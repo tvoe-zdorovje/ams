@@ -7,6 +7,8 @@ BEGIN
             WHEN 'studio' THEN PERFORM administration.refresh_fdw_studio();
             END CASE;
         END LOOP;
+
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 

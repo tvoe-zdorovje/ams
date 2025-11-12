@@ -1,7 +1,7 @@
 package by.anatolyloyko.ams.studio
 
-import by.anatolyloyko.ams.orm.jooq.schemas.Studios
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.STUDIO
+import by.anatolyloyko.ams.orm.jooq.schemas.studios.Studios
+import by.anatolyloyko.ams.orm.jooq.schemas.studios.tables.references.STUDIO
 import by.anatolyloyko.ams.orm.jooq.util.executeBatch
 import org.assertj.core.api.WithAssertions
 import org.jooq.DSLContext

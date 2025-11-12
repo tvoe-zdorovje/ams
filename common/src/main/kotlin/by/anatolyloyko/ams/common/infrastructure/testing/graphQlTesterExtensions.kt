@@ -1,8 +1,14 @@
 package by.anatolyloyko.ams.common.infrastructure.testing
 
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_AUTHORIZATION
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_AUTHORIZATION_PREFIX
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_USER_ID
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.model.LoggedUserTokenData
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.graphql.test.tester.WebGraphQlTester
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
  * Provides a more convenient way to access a specific path in the GraphQL response.
@@ -60,13 +66,47 @@ infix fun <T> GraphQlTester.Path.matches(expected: T) {
  *             .variable("lastName", "Kasimov")
  *             .variable("phoneNumber", "+375297671245")
  *             .execute()
+ *
+ * val result = graphQlTester
+ *  *             .loginAs(USER_ID, setOf("createBrand"))
+ *  *             .documentName("brand/createBrand")
+ *  *             .variable("name", "Lidskoe")
+ *  *             .variable("description", "Brew beer")
+ *  *             .execute()
  * ```
  *
  * @param userId value for {@code HEADER_USER_ID}
+ * @param permissions map of organization ID [Long] to collection of permissions
  * @return WebGraphQlTester instance
  */
-infix fun WebGraphQlTester.loginAs(userId: Long): WebGraphQlTester = mutate()
+fun WebGraphQlTester.loginAs(
+    userId: Long,
+    permissions: Map<Long, Collection<String>> = emptyMap()
+): WebGraphQlTester = mutate()
     .headers {
         it[HEADER_USER_ID] = "$userId"
+        it[HEADER_AUTHORIZATION] = "$HEADER_AUTHORIZATION_PREFIX${mockJWT(userId, permissions)}"
     }
     .build()
+
+fun WebGraphQlTester.loginAs(
+    userId: Long,
+    organizationId: Long = -1,
+    permissions: Collection<String> = emptySet()
+) = loginAs(
+    userId = userId,
+    permissions = mapOf(organizationId to permissions)
+)
+
+@OptIn(ExperimentalEncodingApi::class)
+private fun mockJWT(userId: Long, permissions: Map<Long, Collection<String>>): String {
+    val permissionsJson = jacksonObjectMapper().writeValueAsString(
+        permissions.mapValues { entry ->
+            entry.value.map { LoggedUserTokenData.Permission(-1, it) }
+        }
+    )
+    val jwtPayload = """ { "data": { "userId": $userId, "permissions": $permissionsJson } } """
+    val encodedJwtPayload = Base64.encode(jwtPayload.toByteArray())
+
+    return "headers.${encodedJwtPayload}.signature"
+}

@@ -3,7 +3,7 @@ SET search_path TO tap, tests, public;
 
 CREATE OR REPLACE FUNCTION tests.test_schemas_structure() RETURNS SETOF TEXT AS $$
 BEGIN
-    RETURN NEXT schemas_are(ARRAY ['public', 'brands', 'tap', 'tests']);
+    RETURN NEXT schemas_are(ARRAY ['public', 'brands', 'administration_dblink', 'tap', 'tests']);
 END;
 $$ LANGUAGE plpgsql;
 

@@ -9,7 +9,8 @@ BEGIN
         columns_with_type := ARRAY[
             'id BIGINT',
             'name VARCHAR(100)',
-            'description VARCHAR(255)'
+            'description VARCHAR(255)',
+            'is_standard BOOLEAN'
         ]
     );
 END;

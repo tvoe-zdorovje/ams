@@ -1,5 +1,7 @@
 package by.anatolyloyko.ams.studio.graphql.resolver
 
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.Principal
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.model.LoggedUser
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
 import by.anatolyloyko.ams.studio.command.SaveStudioCommand
 import by.anatolyloyko.ams.studio.graphql.dto.CreateStudioRequest
@@ -31,9 +33,11 @@ class StudioMutationsResolver(
      */
     @SchemaMapping(typeName = "StudioMutations")
     fun createStudio(
+        @Principal loggedUser: LoggedUser,
         @Argument request: CreateStudioRequest
     ): Long = commandGateway.handle(
         SaveStudioCommand(
+            loggedUserId = loggedUser.id,
             input = Studio(
                 name = request.name,
                 description = request.description,
@@ -49,13 +53,13 @@ class StudioMutationsResolver(
      *
      * @see SaveStudioCommand
      */
-    @Suppress("ForbiddenComment")
-    // TODO: auth & permissions control
     @SchemaMapping(typeName = "StudioMutations")
     fun updateStudio(
+        @Principal loggedUser: LoggedUser,
         @Argument request: UpdateStudioRequest
     ): Long = commandGateway.handle(
         SaveStudioCommand(
+            loggedUserId = loggedUser.id,
             input = Studio(
                 id = request.organizationId,
                 name = request.name,

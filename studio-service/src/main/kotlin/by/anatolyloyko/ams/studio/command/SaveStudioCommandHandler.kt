@@ -13,5 +13,8 @@ import org.springframework.stereotype.Component
 class SaveStudioCommandHandler(
     private val saveStudioAction: SaveStudioAction
 ) : BaseCommandHandler<SaveStudioCommand, Long>() {
-    override fun handleInternal(command: SaveStudioCommand): Long = saveStudioAction(command.input)
+    override fun handleInternal(command: SaveStudioCommand): Long = saveStudioAction(
+        studio = command.input,
+        ownerUserId = command.loggedUserId
+    )
 }

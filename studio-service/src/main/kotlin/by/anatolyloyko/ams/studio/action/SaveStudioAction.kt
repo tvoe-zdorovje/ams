@@ -10,7 +10,8 @@ interface SaveStudioAction {
      * Saves a studio and returns its ID.
      *
      * @param studio the studio data.
+     * @param ownerUserId identifier of a logged user. This user is considered the owner of the studio is created.
      * @return the ID of the saved studio.
      */
-    operator fun invoke(studio: Studio): Long
+    operator fun invoke(studio: Studio, ownerUserId: Long): Long
 }
