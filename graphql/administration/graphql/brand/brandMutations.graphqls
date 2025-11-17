@@ -1,7 +1,7 @@
 # /graphql/brand/graphql/brands.graphqls
 extend type BrandMutations {
-    createRole(request: CreateBrandRoleRequest!): ID!
-    assignStudios(request: AssignStudiosRequest!): Boolean!
+    createRole(request: CreateBrandRoleRequest!): ID! @requiresPermissions(permissions: ["CreateBrandRole"])
+    assignStudios(request: AssignStudiosRequest!): Boolean! @requiresPermissions(permissions: ["AssignStudios"])
 }
 
 input CreateBrandRoleRequest {

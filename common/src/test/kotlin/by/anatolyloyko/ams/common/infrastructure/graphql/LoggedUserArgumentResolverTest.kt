@@ -48,6 +48,6 @@ class LoggedUserArgumentResolverTest : WithAssertions {
 
         assertThatThrownBy { resolver.resolveArgument(methodParameter, environment) }
             .isInstanceOf(AuthorizationException::class.java)
-            .hasMessage("Authentication required")
+            .hasMessage("Authorization required")
     }
 }

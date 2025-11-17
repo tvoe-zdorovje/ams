@@ -7,7 +7,10 @@ import by.anatolyloyko.ams.administration.user.command.AssignRolesCommand
 import by.anatolyloyko.ams.administration.user.command.UnassignRolesCommand
 import by.anatolyloyko.ams.administration.user.command.input.UserRolesInput
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
+import by.anatolyloyko.ams.common.infrastructure.testing.expectForbidden
+import by.anatolyloyko.ams.common.infrastructure.testing.expectUnauthorized
 import by.anatolyloyko.ams.common.infrastructure.testing.get
+import by.anatolyloyko.ams.common.infrastructure.testing.loginAs
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.verify
@@ -36,6 +39,7 @@ class UserMutationsResolverTest {
             val roles = listOf(ROLE_ID)
 
             val result = graphQlTester
+                .loginAs(userId, organizationId, "AssignRoles")
                 .documentName("user/assignRoles")
                 .variable("userId", userId)
                 .variable("organizationId", organizationId)
@@ -61,6 +65,7 @@ class UserMutationsResolverTest {
         @Test
         fun `must return error if list of roles is empty`() {
             val result = graphQlTester
+                .loginAs(USER_ID, BRAND_ID, "AssignRoles")
                 .documentName("user/assignRoles")
                 .variable("userId", USER_ID)
                 .variable("organizationId", BRAND_ID)
@@ -73,6 +78,29 @@ class UserMutationsResolverTest {
 
             verify(exactly = 0) { commandGateway.handle(any()) }
         }
+
+        @Test
+        fun `must return error when unauthorized`() {
+            graphQlTester
+                .documentName("user/assignRoles")
+                .variable("userId", USER_ID)
+                .variable("organizationId", BRAND_ID)
+                .variable("roles", emptyList<Long>())
+                .execute()
+                .expectUnauthorized()
+        }
+
+        @Test
+        fun `must return error when user have no required permission`() {
+            graphQlTester
+                .loginAs(USER_ID)
+                .documentName("user/assignRoles")
+                .variable("userId", USER_ID)
+                .variable("organizationId", BRAND_ID)
+                .variable("roles", emptyList<Long>())
+                .execute()
+                .expectForbidden("AssignRoles")
+        }
     }
 
     @Nested
@@ -84,6 +112,7 @@ class UserMutationsResolverTest {
             val roles = listOf(ROLE_ID)
 
             val result = graphQlTester
+                .loginAs(userId, organizationId, "UnassignRoles")
                 .documentName("user/unassignRoles")
                 .variable("userId", userId)
                 .variable("organizationId", organizationId)
@@ -109,6 +138,7 @@ class UserMutationsResolverTest {
         @Test
         fun `must return error if list of roles is empty`() {
             val result = graphQlTester
+                .loginAs(USER_ID, BRAND_ID, "UnassignRoles")
                 .documentName("user/unassignRoles")
                 .variable("userId", USER_ID)
                 .variable("organizationId", BRAND_ID)
@@ -120,6 +150,29 @@ class UserMutationsResolverTest {
             }
 
             verify(exactly = 0) { commandGateway.handle(any()) }
+        }
+
+        @Test
+        fun `must return error when unauthorized`() {
+            graphQlTester
+                .documentName("user/unassignRoles")
+                .variable("userId", USER_ID)
+                .variable("organizationId", BRAND_ID)
+                .variable("roles", emptyList<Long>())
+                .execute()
+                .expectUnauthorized()
+        }
+
+        @Test
+        fun `must return error when user have no required permission`() {
+            graphQlTester
+                .loginAs(USER_ID)
+                .documentName("user/unassignRoles")
+                .variable("userId", USER_ID)
+                .variable("organizationId", BRAND_ID)
+                .variable("roles", emptyList<Long>())
+                .execute()
+                .expectForbidden("UnassignRoles")
         }
     }
 }

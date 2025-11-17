@@ -1,7 +1,7 @@
 # /graphql/user/graphql/users.graphqls
 extend type UserMutations {
-    assignRoles(request: AssignRolesRequest): ID!
-    unassignRoles(request: AssignRolesRequest): ID!
+    assignRoles(request: AssignRolesRequest): ID! @requiresPermissions(permissions: ["AssignRoles"])
+    unassignRoles(request: AssignRolesRequest): ID! @requiresPermissions(permissions: ["UnassignRoles"])
 }
 
 input AssignRolesRequest {

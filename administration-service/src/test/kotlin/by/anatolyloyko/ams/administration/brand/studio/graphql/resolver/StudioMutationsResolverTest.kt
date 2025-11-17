@@ -3,10 +3,14 @@ package by.anatolyloyko.ams.administration.brand.studio.graphql.resolver
 import by.anatolyloyko.ams.administration.NEW_ROLE
 import by.anatolyloyko.ams.administration.ROLE_ID
 import by.anatolyloyko.ams.administration.STUDIO_ID
+import by.anatolyloyko.ams.administration.USER_ID
 import by.anatolyloyko.ams.administration.brand.studio.command.CreateStudioRoleCommand
 import by.anatolyloyko.ams.administration.brand.studio.command.input.CreateStudioRoleInput
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
+import by.anatolyloyko.ams.common.infrastructure.testing.expectForbidden
+import by.anatolyloyko.ams.common.infrastructure.testing.expectUnauthorized
 import by.anatolyloyko.ams.common.infrastructure.testing.get
+import by.anatolyloyko.ams.common.infrastructure.testing.loginAs
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -38,6 +42,7 @@ class StudioMutationsResolverTest {
             every { commandGateway.handle(any<CreateStudioRoleCommand>()) } returns roleId
 
             val result = graphQlTester
+                .loginAs(USER_ID, studioId, "CreateStudioRole")
                 .documentName("brand/studio/createRole")
                 .variable("organizationId", studioId)
                 .variable("name", role.name)
@@ -69,6 +74,7 @@ class StudioMutationsResolverTest {
             every { commandGateway.handle(any<CreateStudioRoleCommand>()) } returns roleId
 
             val result = graphQlTester
+                .loginAs(USER_ID, studioId, "CreateStudioRole")
                 .documentName("brand/studio/createRole")
                 .variable("organizationId", studioId)
                 .variable("name", role.name)
@@ -89,6 +95,35 @@ class StudioMutationsResolverTest {
                     }
                 )
             }
+        }
+
+        @Test
+        fun `must return error when unauthorized`() {
+            val studioId = STUDIO_ID
+            val roleId = ROLE_ID
+            val role = NEW_ROLE
+            graphQlTester
+                .documentName("brand/studio/createRole")
+                .variable("organizationId", studioId)
+                .variable("name", role.name)
+                .variable("description", role.description)
+                .execute()
+                .expectUnauthorized()
+        }
+
+        @Test
+        fun `must return error when user have no required permission`() {
+            val studioId = STUDIO_ID
+            val roleId = ROLE_ID
+            val role = NEW_ROLE
+            graphQlTester
+                .loginAs(USER_ID)
+                .documentName("brand/studio/createRole")
+                .variable("organizationId", studioId)
+                .variable("name", role.name)
+                .variable("description", role.description)
+                .execute()
+                .expectForbidden("CreateStudioRole")
         }
     }
 }

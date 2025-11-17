@@ -1,5 +1,5 @@
 extend type RoleQueries {
-    role(request: GetOrganizationRoleRequest!): Role
+    role(request: GetOrganizationRoleRequest!): Role @requiresPermissions(permissions: ["GetOrganizationRole"])
 }
 
 input GetOrganizationRoleRequest {

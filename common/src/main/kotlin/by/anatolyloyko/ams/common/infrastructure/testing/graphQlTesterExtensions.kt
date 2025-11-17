@@ -5,6 +5,8 @@ import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_AUTHORIZATI
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_USER_ID
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.model.LoggedUserTokenData
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.springframework.graphql.execution.ErrorType.FORBIDDEN
+import org.springframework.graphql.execution.ErrorType.UNAUTHORIZED
 import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.graphql.test.tester.WebGraphQlTester
 import kotlin.io.encoding.Base64
@@ -92,10 +94,10 @@ fun WebGraphQlTester.loginAs(
 fun WebGraphQlTester.loginAs(
     userId: Long,
     organizationId: Long = -1,
-    permissions: Collection<String> = emptySet()
+    vararg permissions: String
 ) = loginAs(
     userId = userId,
-    permissions = mapOf(organizationId to permissions)
+    permissions = mapOf(organizationId to permissions.asList())
 )
 
 @OptIn(ExperimentalEncodingApi::class)
@@ -110,3 +112,18 @@ private fun mockJWT(userId: Long, permissions: Map<Long, Collection<String>>): S
 
     return "headers.${encodedJwtPayload}.signature"
 }
+
+/**
+ * Expects the [org.springframework.graphql.execution.ErrorType.UNAUTHORIZED] error in the response.
+ */
+fun GraphQlTester.Response.expectUnauthorized(): GraphQlTester.Errors =
+    errors().expect { it.message == "Authorization required" && it.errorType == UNAUTHORIZED }
+
+/**
+ * * Expects the [org.springframework.graphql.execution.ErrorType.FORBIDDEN] error in the response.
+ */
+fun GraphQlTester.Response.expectForbidden(vararg insufficientPermissions: String): GraphQlTester.Errors =
+    errors().expect {
+        it.message == "Access denied: insufficient permissions - ${insufficientPermissions.asList()}."
+            && it.errorType == FORBIDDEN
+    }

@@ -71,14 +71,14 @@ class AuthContextGraphQlInterceptorTest : WithAssertions {
             .apply(mockk(), executionInputBuilder)
             .graphQLContext
 
-        val actualLoggedUser = graphQLContext.get<LoggedUser>(CONTEXT_LOGGED_USER)
-        assertThat(actualLoggedUser).isEqualTo(LoggedUser(USER_ID))
-
         val actualLoggedUserTokenData = graphQLContext.get<LoggedUserTokenData>(CONTEXT_LOGGED_USER)
         assertThat(actualLoggedUserTokenData.id).isEqualTo(USER_ID)
         assertThat(actualLoggedUserTokenData.permissions).hasSize(1)
         assertThat(actualLoggedUserTokenData.permissions).containsKey(ORGANIZATION_ID)
         assertThat(actualLoggedUserTokenData.permissions[ORGANIZATION_ID]).containsExactly(TEST_PERMISSION_NAME)
+
+        val actualLoggedUser = graphQLContext.get<LoggedUser>(CONTEXT_LOGGED_USER)
+        assertThat(actualLoggedUser).hasSameClassAs(actualLoggedUserTokenData)
     }
 
     @Test
