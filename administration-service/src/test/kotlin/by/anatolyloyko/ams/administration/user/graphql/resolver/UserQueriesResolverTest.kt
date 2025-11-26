@@ -1,7 +1,6 @@
 package by.anatolyloyko.ams.administration.user.graphql.resolver
 
 import by.anatolyloyko.ams.administration.BRAND_ID
-import by.anatolyloyko.ams.administration.NEW_ROLE
 import by.anatolyloyko.ams.administration.ROLE
 import by.anatolyloyko.ams.administration.USER_ID
 import by.anatolyloyko.ams.administration.user.query.GetUserRolesQuery

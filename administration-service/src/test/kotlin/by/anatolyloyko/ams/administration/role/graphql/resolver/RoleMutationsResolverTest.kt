@@ -35,7 +35,7 @@ class RoleMutationsResolverTest {
         every { commandGateway.handle(any<SaveRoleCommand>()) } returns ROLE.id!!
 
         val result = graphQlTester
-            .loginAs(USER_ID, STUDIO_ID,"SaveRole")
+            .loginAs(USER_ID, STUDIO_ID, "SaveRole")
             .documentName("role/saveRole")
             .variable("organizationId", STUDIO_ID)
             .variable("id", ROLE.id)

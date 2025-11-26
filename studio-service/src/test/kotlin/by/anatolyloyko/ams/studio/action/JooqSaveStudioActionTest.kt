@@ -30,7 +30,6 @@ class JooqSaveStudioActionTest : WithAssertions {
         verify(exactly = 1) { createStudio(any(), NEW_STUDIO.name, NEW_STUDIO.description, USER_ID) }
     }
 
-
     @Test
     fun `must throw exception when create studio routine invocation result = null`() = mockkStatic(ROUTINES_REFERENCE) {
         every { createStudio(any(), any(), any(), any()) } returns null

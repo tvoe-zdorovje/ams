@@ -18,8 +18,6 @@ import java.util.Base64
 
 internal const val CONTEXT_LOGGED_USER = "loggedUser"
 
-internal const val HEADER_USER_ID = "user-id"
-
 internal const val HEADER_AUTHORIZATION = "Authorization"
 
 internal const val HEADER_AUTHORIZATION_PREFIX = "Bearer "
@@ -42,11 +40,10 @@ class AuthContextGraphQlInterceptor(
         chain: WebGraphQlInterceptor.Chain
     ): Mono<WebGraphQlResponse> = try {
         request
-            .headers[HEADER_USER_ID]
-            ?.firstNotNullOfOrNull { LoggedUser(id = it.toLong()) }
-            ?.also { loggedUser ->
-                val userWithTokenData = extractAccessTokenData(request.headers[HEADER_AUTHORIZATION])
-                assert(loggedUser.id == userWithTokenData.id)
+            .headers[HEADER_AUTHORIZATION]
+            ?.firstNotNullOfOrNull { it.removePrefix(HEADER_AUTHORIZATION_PREFIX) }
+            ?.also { headerValue ->
+                val userWithTokenData = parseJWT(headerValue)
 
                 request.configureExecutionInput { _, builder ->
                     builder
@@ -79,22 +76,15 @@ class AuthContextGraphQlInterceptor(
         )
     }
 
-    private fun extractAccessTokenData(authorizationHeaderValue: List<String>?): LoggedUserTokenData = try {
-        authorizationHeaderValue
-            ?.firstNotNullOfOrNull { it.removePrefix(HEADER_AUTHORIZATION_PREFIX) }
-            ?.let { parseJWT(it) }
-            ?: throw AuthorizationException("Authorization token value is invalid.")
-    } catch (ex: Exception) {
-        throw AuthorizationException("Failed to parse authorization token data.", ex)
-    }
-
-    private fun parseJWT(jwt: String): LoggedUserTokenData {
+    private fun parseJWT(jwt: String): LoggedUserTokenData = try {
         val jwtParts = jwt.split(".")
         @Suppress("MagicNumber")
         check(jwtParts.size == 3) { "JWT is invalid." }
         val payloadJson = String(Base64.getUrlDecoder().decode(jwtParts[1]))
         val tokenDataNode = objectMapper.readTree(payloadJson)[JWT_TOKEN_PARAMETER_NAME_DATA]
 
-        return objectMapper.treeToValue(tokenDataNode, LoggedUserTokenData::class.java)
+        objectMapper.treeToValue(tokenDataNode, LoggedUserTokenData::class.java)
+    } catch (ex: Exception) {
+        throw AuthorizationException("Failed to parse authorization token data.", ex)
     }
 }

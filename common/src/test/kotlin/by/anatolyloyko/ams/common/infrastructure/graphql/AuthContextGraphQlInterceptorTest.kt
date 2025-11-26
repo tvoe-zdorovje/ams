@@ -4,7 +4,6 @@ import by.anatolyloyko.ams.common.infrastructure.graphql.auth.AuthContextGraphQl
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.CONTEXT_LOGGED_USER
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_AUTHORIZATION
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_AUTHORIZATION_PREFIX
-import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_USER_ID
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.model.LoggedUser
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.model.LoggedUserTokenData
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -53,7 +52,6 @@ class AuthContextGraphQlInterceptorTest : WithAssertions {
 
     @Test
     fun `must inject logged user data into graphQL context`() {
-        every { request.headers[HEADER_USER_ID] } returns listOf(USER_ID.toString())
         val mockJwt = "header.${Base64.getEncoder().encodeToString(JWT_PAYLOAD.toByteArray())}.signature"
         every { request.headers[HEADER_AUTHORIZATION] } returns listOf("$HEADER_AUTHORIZATION_PREFIX$mockJwt")
 
@@ -83,7 +81,7 @@ class AuthContextGraphQlInterceptorTest : WithAssertions {
 
     @Test
     fun `must skip logic when header value is null`() {
-        every { request.headers[HEADER_USER_ID] } returns null
+        every { request.headers[HEADER_AUTHORIZATION] } returns null
 
         interceptor.intercept(request, chain)
 
@@ -96,27 +94,7 @@ class AuthContextGraphQlInterceptorTest : WithAssertions {
     }
 
     @Test
-    fun `must return error when authorization header is null`() {
-        every { request.headers[HEADER_USER_ID] } returns listOf(USER_ID.toString())
-        every { request.headers[HEADER_AUTHORIZATION] } returns null
-
-        val result = interceptor.intercept(request, chain).block(Duration.ZERO)
-
-        val error = result.errors.first()
-        assertThat(error.errorType).isEqualTo(UNAUTHORIZED)
-        assertThat(error.message).isEqualTo("Failed to parse authorization token data.")
-
-        verify(exactly = 0) {
-            request.configureExecutionInput(any())
-        }
-        verify(exactly = 0) {
-            chain.next(request)
-        }
-    }
-
-    @Test
     fun `must return error when cannot parse token data`() {
-        every { request.headers[HEADER_USER_ID] } returns listOf(USER_ID.toString())
         val invalidJwtPayload = "invalid"
         val mockJwt = "header.${Base64.getEncoder().encodeToString(invalidJwtPayload.toByteArray())}.signature"
         every { request.headers[HEADER_AUTHORIZATION] } returns listOf("$HEADER_AUTHORIZATION_PREFIX$mockJwt")

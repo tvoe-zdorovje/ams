@@ -30,7 +30,6 @@ class JooqSaveBrandActionTest : WithAssertions {
         verify(exactly = 1) { createBrand(any(), NEW_BRAND.name, NEW_BRAND.description, USER_ID) }
     }
 
-
     @Test
     fun `must throw exception when create brand routine invocation result is null`() = mockkStatic(ROUTINES_REFERENCE) {
         every { createBrand(any(), any(), any(), any()) } returns null
