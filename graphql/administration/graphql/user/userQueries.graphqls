@@ -1,6 +1,6 @@
 # /graphql/user/graphql/users.graphqls
 extend type UserQueries {
-    roles(request: GetUserRolesRequest): [Role!]
+    roles(request: GetUserRolesRequest): [Role!] @requiresPermissions(permissions: ["GetUserRoles"])
 }
 
 input GetUserRolesRequest {

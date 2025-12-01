@@ -2,6 +2,8 @@ package by.anatolyloyko.ams.brand
 
 import by.anatolyloyko.ams.brand.model.Brand
 
+const val USER_ID = 1000000001413121100
+
 const val BRAND_ID = 1000000001513221100
 
 val NEW_BRAND = Brand(

@@ -17,10 +17,10 @@ for service in administration appointment auth brand studio user; do
   sourceDir="/tmp/app/schemas/service"
   output="/tmp/app/schemas/$service$ext"
 
-  # Очищаем файл вывода
+  # clear the output file
   > "$output"
 
-  # Функция для добавления файлов с комментариями и разделителями
+  # Write gql files
   append_files() {
     dir=$1
     if [ -d "$dir" ]; then

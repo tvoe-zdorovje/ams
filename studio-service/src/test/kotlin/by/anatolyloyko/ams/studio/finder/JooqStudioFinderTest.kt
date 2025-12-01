@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.studio.finder
 
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.records.StudioRecord
+import by.anatolyloyko.ams.orm.jooq.schemas.studios.tables.records.StudioRecord
 import by.anatolyloyko.ams.studio.JooqTest
 import by.anatolyloyko.ams.studio.STUDIO
 import org.junit.jupiter.api.BeforeAll

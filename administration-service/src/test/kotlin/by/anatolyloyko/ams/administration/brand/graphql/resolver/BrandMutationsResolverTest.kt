@@ -4,12 +4,16 @@ import by.anatolyloyko.ams.administration.BRAND_ID
 import by.anatolyloyko.ams.administration.NEW_ROLE
 import by.anatolyloyko.ams.administration.ROLE_ID
 import by.anatolyloyko.ams.administration.STUDIO_ID
+import by.anatolyloyko.ams.administration.USER_ID
 import by.anatolyloyko.ams.administration.brand.command.AssignStudiosCommand
 import by.anatolyloyko.ams.administration.brand.command.CreateBrandRoleCommand
 import by.anatolyloyko.ams.administration.brand.command.input.AssignStudiosInput
 import by.anatolyloyko.ams.administration.brand.command.input.CreateBrandRoleInput
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
+import by.anatolyloyko.ams.common.infrastructure.testing.expectForbidden
+import by.anatolyloyko.ams.common.infrastructure.testing.expectUnauthorized
 import by.anatolyloyko.ams.common.infrastructure.testing.get
+import by.anatolyloyko.ams.common.infrastructure.testing.loginAs
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -41,6 +45,7 @@ class BrandMutationsResolverTest {
             every { commandGateway.handle(any<CreateBrandRoleCommand>()) } returns roleId
 
             val result = graphQlTester
+                .loginAs(USER_ID, brandId, "CreateBrandRole")
                 .documentName("brand/createRole")
                 .variable("organizationId", brandId)
                 .variable("name", role.name)
@@ -72,6 +77,7 @@ class BrandMutationsResolverTest {
             every { commandGateway.handle(any<CreateBrandRoleCommand>()) } returns roleId
 
             val result = graphQlTester
+                .loginAs(USER_ID, brandId, "CreateBrandRole")
                 .documentName("brand/createRole")
                 .variable("organizationId", brandId)
                 .variable("name", role.name)
@@ -93,6 +99,29 @@ class BrandMutationsResolverTest {
                 )
             }
         }
+
+        @Test
+        fun `must return error when unauthorized`() {
+            graphQlTester
+                .documentName("brand/createRole")
+                .variable("organizationId", BRAND_ID)
+                .variable("name", NEW_ROLE.name)
+                .variable("description", NEW_ROLE.description)
+                .execute()
+                .expectUnauthorized()
+        }
+
+        @Test
+        fun `must return error when user have no required permission`() {
+            graphQlTester
+                .loginAs(USER_ID)
+                .documentName("brand/createRole")
+                .variable("organizationId", BRAND_ID)
+                .variable("name", NEW_ROLE.name)
+                .variable("description", NEW_ROLE.description)
+                .execute()
+                .expectForbidden("CreateBrandRole")
+        }
     }
 
     @Nested
@@ -104,6 +133,7 @@ class BrandMutationsResolverTest {
             every { commandGateway.handle(any<AssignStudiosCommand>()) } returns Unit
 
             val result = graphQlTester
+                .loginAs(USER_ID, brandId, "AssignStudios")
                 .documentName("brand/assignStudios")
                 .variable("organizationId", brandId)
                 .variable("studios", studios)
@@ -130,6 +160,7 @@ class BrandMutationsResolverTest {
             every { commandGateway.handle(any<AssignStudiosCommand>()) } returns Unit
 
             val result = graphQlTester
+                .loginAs(USER_ID, brandId, "AssignStudios")
                 .documentName("brand/assignStudios")
                 .variable("organizationId", brandId)
                 .variable("studios", emptyList<Long>())
@@ -140,6 +171,27 @@ class BrandMutationsResolverTest {
             }
 
             verify(exactly = 0) { commandGateway.handle(any()) }
+        }
+
+        @Test
+        fun `must return error when unauthorized`() {
+            graphQlTester
+                .documentName("brand/assignStudios")
+                .variable("organizationId", BRAND_ID)
+                .variable("studios", emptyList<Long>())
+                .execute()
+                .expectUnauthorized()
+        }
+
+        @Test
+        fun `must return error when user have no required permission`() {
+            graphQlTester
+                .loginAs(USER_ID)
+                .documentName("brand/assignStudios")
+                .variable("organizationId", BRAND_ID)
+                .variable("studios", emptyList<Long>())
+                .execute()
+                .expectForbidden("AssignStudios")
         }
     }
 }

@@ -43,6 +43,27 @@ BEGIN
         local_user_name := 'adsportal',
         remote_user_name := 'adsportal_fdw'
     );
+
+    RETURN QUERY SELECT has_user_mapping(
+        server_name := 'user_fdw_db',
+        local_user_name := 'brsportal_dblink',
+        remote_user_name := 'adsportal_fdw'
+    );
+    RETURN QUERY SELECT has_user_mapping(
+        server_name := 'brand_fdw_db',
+        local_user_name := 'brsportal_dblink',
+        remote_user_name := 'adsportal_fdw'
+    );
+    RETURN QUERY SELECT has_user_mapping(
+        server_name := 'studio_fdw_db',
+        local_user_name := 'stsportal_dblink',
+        remote_user_name := 'adsportal_fdw'
+    );
+    RETURN QUERY SELECT has_user_mapping(
+        server_name := 'user_fdw_db',
+        local_user_name := 'stsportal_dblink',
+        remote_user_name := 'adsportal_fdw'
+    );
 END;
 $$ LANGUAGE plpgsql;
 

@@ -69,6 +69,7 @@ services:
     volumes:
       - brand_db_volume:/var/lib/postgresql/data
       - ./brand-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      - ./brand-service/database/pg_service.conf:/var/lib/postgresql/.pg_service.conf
     env_file:
       - brand-service/.env
 
@@ -110,6 +111,7 @@ services:
     volumes:
       - studio_db_volume:/var/lib/postgresql/data
       - ./studio-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      - ./studio-service/database/pg_service.conf:/var/lib/postgresql/.pg_service.conf
     env_file:
       - studio-service/.env
 

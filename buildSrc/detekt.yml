@@ -207,7 +207,7 @@ formatting:
     indentSize: 4
     maxLineLength: 120
   ChainWrapping:
-    active: true
+    active: false
   CommentSpacing:
     active: true
   EnumEntryNameCase:

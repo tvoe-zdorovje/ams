@@ -2,6 +2,7 @@ package by.anatolyloyko.ams.studio.command
 
 import by.anatolyloyko.ams.studio.NEW_STUDIO
 import by.anatolyloyko.ams.studio.STUDIO_ID
+import by.anatolyloyko.ams.studio.USER_ID
 import by.anatolyloyko.ams.studio.action.SaveStudioAction
 import by.anatolyloyko.ams.studio.model.Studio
 import io.mockk.every
@@ -12,11 +13,12 @@ import org.junit.jupiter.api.Test
 
 class SaveStudioCommandHandlerTest : WithAssertions {
     private val saveStudioAction = mockk<SaveStudioAction> {
-        every { this@mockk(any<Studio>()) } returns STUDIO_ID
+        every { this@mockk(any<Studio>(), any()) } returns STUDIO_ID
     }
     private val handler = SaveStudioCommandHandler(saveStudioAction)
 
     private val command = SaveStudioCommand(
+        loggedUserId = USER_ID,
         input = NEW_STUDIO,
     )
 
@@ -25,6 +27,6 @@ class SaveStudioCommandHandlerTest : WithAssertions {
         val result = handler.handle(command)
 
         assertThat(result).isEqualTo(STUDIO_ID)
-        verify(exactly = 1) { saveStudioAction(command.input) }
+        verify(exactly = 1) { saveStudioAction(command.input, command.loggedUserId) }
     }
 }

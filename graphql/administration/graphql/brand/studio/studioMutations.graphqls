@@ -1,6 +1,6 @@
 # /graphql/studio/graphql/studios.graphqls
 extend type StudioMutations {
-    createRole(request: CreateStudioRoleRequest!): ID!
+    createRole(request: CreateStudioRoleRequest!): ID! @requiresPermissions(permissions: ["CreateStudioRole"])
 }
 
 input CreateStudioRoleRequest {

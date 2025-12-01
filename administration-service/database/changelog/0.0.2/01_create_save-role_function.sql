@@ -4,7 +4,7 @@ CREATE SEQUENCE IF NOT EXISTS administration.role_id_seq START WITH 100000000161
 CREATE OR REPLACE FUNCTION administration.save_role(
     i_id BIGINT,
     i_name VARCHAR(50),
-    i_description VARCHAR(50),
+    i_description TEXT,
     i_permissions BIGINT[]
 ) RETURNS BIGINT AS $$
 DECLARE

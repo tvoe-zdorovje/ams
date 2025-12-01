@@ -15,6 +15,23 @@ CREATE SCHEMA IF NOT exists public;
 CREATE SCHEMA IF NOT exists brands;
 
 
+-- init administration dblink infrastructure
+
+CREATE EXTENSION IF NOT EXISTS dblink;
+
+
+CREATE SCHEMA IF NOT EXISTS administration_dblink;
+
+
+CREATE OR REPLACE FUNCTION administration_dblink.exec(sql TEXT) RETURNS VOID SECURITY DEFINER AS $$
+DECLARE
+    connstr TEXT := 'service=administration_db_service_dblink';
+BEGIN
+    PERFORM dblink_exec(connstr, sql, true);
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- init users & roles
 
 
@@ -78,7 +95,10 @@ GRANT CONNECT
     ON DATABASE brand_db
     TO brsportal;
 GRANT USAGE
-    ON SCHEMA brands
+    ON SCHEMA brands, administration_dblink
+    TO brsportal;
+GRANT EXECUTE
+    ON ROUTINE administration_dblink.exec(TEXT)
     TO brsportal;
 
 ALTER DEFAULT PRIVILEGES

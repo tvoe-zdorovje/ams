@@ -143,6 +143,29 @@ ALTER DEFAULT PRIVILEGES
     ON FUNCTIONS TO adsportal;
 
 
+-- ausportal (read only)
+
+
+CREATE USER ausportal WITH PASSWORD 'ausportal';
+
+
+GRANT CONNECT
+    ON DATABASE administration_db
+    TO ausportal;
+GRANT SELECT
+    ON ALL TABLES IN SCHEMA administration
+    TO ausportal;
+GRANT USAGE
+    ON SCHEMA administration
+    TO ausportal;
+
+ALTER DEFAULT PRIVILEGES
+    FOR USER adsliquibase
+    IN SCHEMA administration
+    GRANT SELECT
+    ON TABLES TO ausportal;
+
+
 -- apsportal_fdw (read only)
 
 
@@ -166,27 +189,52 @@ ALTER DEFAULT PRIVILEGES
     ON TABLES TO apsportal_fdw;
 
 
--- ausportal (read only)
+-- brsportal_dblink, stsportal_dblink (read, write, execute, fdw)
 
 
-CREATE USER ausportal WITH PASSWORD 'ausportal';
+CREATE USER brsportal_dblink WITH PASSWORD 'brsportal_dblink';
+CREATE USER stsportal_dblink WITH PASSWORD 'stsportal_dblink';
 
 
 GRANT CONNECT
     ON DATABASE administration_db
-    TO ausportal;
-GRANT SELECT
-    ON ALL TABLES IN SCHEMA administration
-    TO ausportal;
+    TO brsportal_dblink, stsportal_dblink;
 GRANT USAGE
-    ON SCHEMA administration
-    TO ausportal;
+    ON SCHEMA administration, fdw
+    TO brsportal_dblink, stsportal_dblink;
+GRANT USAGE
+    ON FOREIGN SERVER brand_fdw_db, studio_fdw_db, user_fdw_db
+    TO brsportal_dblink, stsportal_dblink;
 
 ALTER DEFAULT PRIVILEGES
     FOR USER adsliquibase
+    IN SCHEMA administration, fdw
+    GRANT EXECUTE
+    ON FUNCTIONS TO brsportal_dblink, stsportal_dblink;
+ALTER DEFAULT PRIVILEGES
+    FOR USER adsliquibase
+    IN SCHEMA administration, fdw
+    GRANT SELECT, INSERT, UPDATE, DELETE
+    ON TABLES TO brsportal_dblink, stsportal_dblink;
+ALTER DEFAULT PRIVILEGES
+    FOR USER adsliquibase
     IN SCHEMA administration
-    GRANT SELECT
-    ON TABLES TO ausportal;
+    GRANT SELECT, UPDATE
+    ON SEQUENCES TO brsportal_dblink, stsportal_dblink;
+
+-- such a wonderful loop, yeah ^_^
+CREATE USER MAPPING FOR brsportal_dblink SERVER brand_fdw_db
+    OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
+
+CREATE USER MAPPING FOR brsportal_dblink SERVER user_fdw_db
+    OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
+
+CREATE USER MAPPING FOR stsportal_dblink SERVER studio_fdw_db
+    OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
+
+CREATE USER MAPPING FOR stsportal_dblink SERVER user_fdw_db
+    OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
+
 
 
  -- change owner trigger

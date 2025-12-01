@@ -6,7 +6,10 @@ import by.anatolyloyko.ams.administration.USER_ID
 import by.anatolyloyko.ams.administration.user.query.GetUserRolesQuery
 import by.anatolyloyko.ams.administration.user.query.input.GetUserRolesQueryInput
 import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
+import by.anatolyloyko.ams.common.infrastructure.testing.expectForbidden
+import by.anatolyloyko.ams.common.infrastructure.testing.expectUnauthorized
 import by.anatolyloyko.ams.common.infrastructure.testing.get
+import by.anatolyloyko.ams.common.infrastructure.testing.loginAs
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -37,6 +40,7 @@ class UserQueriesResolverTest {
             val organizationId = BRAND_ID
 
             val result = graphQlTester
+                .loginAs(userId, organizationId, "GetUserRoles")
                 .documentName("user/getRoles")
                 .variable("userId", userId)
                 .variable("organizationId", organizationId)
@@ -58,6 +62,27 @@ class UserQueriesResolverTest {
                     }
                 )
             }
+        }
+
+        @Test
+        fun `must return error when unauthorized`() {
+            graphQlTester
+                .documentName("user/getRoles")
+                .variable("userId", USER_ID)
+                .variable("organizationId", BRAND_ID)
+                .execute()
+                .expectUnauthorized()
+        }
+
+        @Test
+        fun `must return error when user have no required permission`() {
+            graphQlTester
+                .loginAs(USER_ID)
+                .documentName("user/getRoles")
+                .variable("userId", USER_ID)
+                .variable("organizationId", BRAND_ID)
+                .execute()
+                .expectForbidden("GetUserRoles")
         }
     }
 }

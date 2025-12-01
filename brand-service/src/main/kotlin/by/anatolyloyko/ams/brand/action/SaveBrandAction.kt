@@ -10,7 +10,8 @@ interface SaveBrandAction {
      * Saves a brand and returns its ID.
      *
      * @param brand the brand data.
+     * @param ownerUserId identifier of a logged user. This user is considered the owner of the brand is created.
      * @return the ID of the saved brand.
      */
-    operator fun invoke(brand: Brand): Long
+    operator fun invoke(brand: Brand, ownerUserId: Long): Long
 }

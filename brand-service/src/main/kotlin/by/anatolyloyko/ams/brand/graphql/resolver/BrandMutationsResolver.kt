@@ -4,6 +4,8 @@ import by.anatolyloyko.ams.brand.command.SaveBrandCommand
 import by.anatolyloyko.ams.brand.graphql.dto.CreateBrandRequest
 import by.anatolyloyko.ams.brand.graphql.dto.UpdateBrandRequest
 import by.anatolyloyko.ams.brand.model.Brand
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.Principal
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.model.LoggedUser
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.SchemaMapping
@@ -31,9 +33,11 @@ class BrandMutationsResolver(
      */
     @SchemaMapping(typeName = "BrandMutations")
     fun createBrand(
+        @Principal loggedUser: LoggedUser,
         @Argument request: CreateBrandRequest
     ): Long = commandGateway.handle(
         SaveBrandCommand(
+            loggedUserId = loggedUser.id,
             input = Brand(
                 name = request.name,
                 description = request.description,
@@ -53,9 +57,11 @@ class BrandMutationsResolver(
     // TODO: auth & permissions control
     @SchemaMapping(typeName = "BrandMutations")
     fun updateBrand(
+        @Principal loggedUser: LoggedUser,
         @Argument request: UpdateBrandRequest
     ): Long = commandGateway.handle(
         SaveBrandCommand(
+            loggedUserId = loggedUser.id,
             input = Brand(
                 id = request.organizationId,
                 name = request.name,
