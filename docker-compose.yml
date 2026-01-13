@@ -4,7 +4,20 @@ services:
       context: gateway
       dockerfile: Dockerfile
     container_name: gateway
-    restart: no
+    restart: on-failure
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      administration-service:
+        condition: service_healthy
+      appointment-service:
+        condition: service_healthy
+      brand-service:
+        condition: service_healthy
+      studio-service:
+        condition: service_healthy
+      user_db:
+        condition: service_healthy
     ports:
       - "4000:8080"
     volumes:
@@ -18,15 +31,15 @@ services:
   user_db:
     image: postgres:17.2-alpine3.21
     container_name: user_db
-    restart: always
+    restart: on-failure
     ports:
         - "5441:5432"
     healthcheck:
       test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
-      interval: 5s
+      interval: 30s
       timeout: 5s
       retries: 5
-      start_period: 5s
+      start_period: 30s
     volumes:
       - user_db_volume:/var/lib/postgresql/data
       - ./user-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
@@ -54,8 +67,16 @@ services:
       context: user-service
       dockerfile: Dockerfile
     container_name: user-service
+    restart: on-failure
     depends_on:
-      - liquibase_user_db
+      liquibase_user_db:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+      start_period: 50s
     ports:
       - "8081:8080"
     volumes:
@@ -66,15 +87,15 @@ services:
   brand_db:
     image: postgres:17.2-alpine3.21
     container_name: brand_db
-    restart: always
+    restart: on-failure
     ports:
       - "5442:5432"
     healthcheck:
       test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
-      interval: 5s
+      interval: 30s
       timeout: 5s
       retries: 5
-      start_period: 5s
+      start_period: 30s
     volumes:
       - brand_db_volume:/var/lib/postgresql/data
       - ./brand-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
@@ -101,8 +122,16 @@ services:
   brand-service:
     image: jetty:11-jdk17-alpine-eclipse-temurin
     container_name: brand-service
+    restart: on-failure
     depends_on:
-      - liquibase_brand_db
+      liquibase_brand_db:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+      start_period: 50s
     ports:
       - "8082:8080"
     volumes:
@@ -113,15 +142,15 @@ services:
   studio_db:
     image: postgres:17.2-alpine3.21
     container_name: studio_db
-    restart: always
+    restart: on-failure
     ports:
       - "5443:5432"
     healthcheck:
       test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
-      interval: 5s
+      interval: 30s
       timeout: 5s
       retries: 5
-      start_period: 5s
+      start_period: 30s
     volumes:
       - studio_db_volume:/var/lib/postgresql/data
       - ./studio-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
@@ -148,10 +177,18 @@ services:
   studio-service:
     image: jetty:11-jdk17-alpine-eclipse-temurin
     container_name: studio-service
+    restart: on-failure
     depends_on:
-      - liquibase_studio_db
+      liquibase_studio_db:
+        condition: service_completed_successfully
     ports:
       - "8083:8080"
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+      start_period: 50s
     volumes:
       - ./studio-service/build/libs/studio-service.war:/var/lib/jetty/webapps/ROOT.war
     env_file:
@@ -160,22 +197,22 @@ services:
   administration_db:
     image: postgres:17.2-alpine3.21
     container_name: administration_db
-    restart: always
+    restart: on-failure
     ports:
       - "5444:5432"
     healthcheck:
       test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
-      interval: 5s
+      interval: 30s
       timeout: 5s
       retries: 5
-      start_period: 5s
+      start_period: 30s
     depends_on:
-      - user_db
-      - liquibase_user_db
-      - brand_db
-      - liquibase_brand_db
-      - studio_db
-      - liquibase_studio_db
+      liquibase_user_db:
+        condition: service_completed_successfully
+      liquibase_brand_db:
+        condition: service_completed_successfully
+      liquibase_studio_db:
+        condition: service_completed_successfully
     volumes:
       - administration_db_volume:/var/lib/postgresql/data
       - ./administration-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_administration_db.sql
@@ -218,8 +255,16 @@ services:
   administration-service:
     image: jetty:11-jdk17-alpine-eclipse-temurin
     container_name: administration-service
+    restart: on-failure
     depends_on:
-      - liquibase_administration_db
+      liquibase_administration_db:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+      start_period: 50s
     ports:
       - "8084:8080"
     volumes:
@@ -230,8 +275,16 @@ services:
   appointment-service:
     image: jetty:11-jdk17-alpine-eclipse-temurin
     container_name: appointment-service
+    restart: on-failure
     depends_on:
-      - liquibase_appointment_db
+      liquibase_administration_db:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+      start_period: 50s
     ports:
       - "8085:8080"
     volumes:
@@ -244,9 +297,18 @@ services:
       context: user-service
       dockerfile: Dockerfile
     container_name: auth-service
+    restart: on-failure
     depends_on:
-      - liquibase_user_db
-      - liquibase_administration_db
+      liquibase_user_db:
+        condition: service_completed_successfully
+      liquibase_administration_db:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+      start_period: 50s
     ports:
       - "8086:8080"
     volumes:

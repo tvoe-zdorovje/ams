@@ -20,6 +20,16 @@ spring:
             username: ${DBUSER:adsportal}
             password: ${DBPASS:adsportal}
 
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health
+    endpoint:
+        health:
+            probes:
+                enabled: true
+
 jwt:
     time-of-life: 300000 # 5 minutes
     algorithm: RS256

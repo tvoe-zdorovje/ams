@@ -34,6 +34,7 @@ dependencies {
     api(kotlin("stdlib"))
 
     api("org.springframework.boot:spring-boot-starter")
+    api("org.springframework.boot:spring-boot-starter-actuator")
     api("org.springframework.boot:spring-boot-starter-logging")
     api("org.springframework.boot:spring-boot-starter-graphql")
     api("org.springframework.boot:spring-boot-starter-web") {
