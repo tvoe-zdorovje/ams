@@ -16,13 +16,17 @@ services:
       - gateway/.env
 
   user_db:
-    build:
-      context: postgres
-      dockerfile: postgres.Dockerfile
+    image: postgres:17.2-alpine3.21
     container_name: user_db
     restart: always
     ports:
         - "5441:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
     volumes:
       - user_db_volume:/var/lib/postgresql/data
       - ./user-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
@@ -30,19 +34,20 @@ services:
       - user-service/.env
 
   liquibase_user_db:
-    build:
-      context: postgres
-      dockerfile: liquibase.Dockerfile
+    image: liquibase/liquibase:latest-alpine
     container_name: liquibase_user_db
     restart: on-failure
     env_file:
       - user-service/.env
     depends_on:
-      - user_db
+      user_db:
+        condition: service_healthy
     volumes:
       - ./user-service/database/changelog:/liquibase/changelog
       - ./user-service/database/test:/liquibase/tests
       - ./postgres/test/_util:/liquibase/tests/_util
+    command:
+      - update
 
   user-service:
     build:
@@ -59,13 +64,17 @@ services:
       - user-service/.env
 
   brand_db:
-    build:
-      context: postgres
-      dockerfile: postgres.Dockerfile
+    image: postgres:17.2-alpine3.21
     container_name: brand_db
     restart: always
     ports:
       - "5442:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
     volumes:
       - brand_db_volume:/var/lib/postgresql/data
       - ./brand-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
@@ -74,19 +83,20 @@ services:
       - brand-service/.env
 
   liquibase_brand_db:
-    build:
-      context: postgres
-      dockerfile: liquibase.Dockerfile
+    image: liquibase/liquibase:latest-alpine
     container_name: liquibase_brand_db
     restart: on-failure
     env_file:
       - brand-service/.env
     depends_on:
-      - brand_db
+      brand_db:
+        condition: service_healthy
     volumes:
       - ./brand-service/database/changelog:/liquibase/changelog
       - ./brand-service/database/test:/liquibase/tests
       - ./postgres/test/_util:/liquibase/tests/_util
+    command:
+      - update
 
   brand-service:
     image: jetty:11-jdk17-alpine-eclipse-temurin
@@ -101,13 +111,17 @@ services:
       - brand-service/.env
 
   studio_db:
-    build:
-      context: postgres
-      dockerfile: postgres.Dockerfile
+    image: postgres:17.2-alpine3.21
     container_name: studio_db
     restart: always
     ports:
       - "5443:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
     volumes:
       - studio_db_volume:/var/lib/postgresql/data
       - ./studio-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
@@ -116,19 +130,20 @@ services:
       - studio-service/.env
 
   liquibase_studio_db:
-    build:
-      context: postgres
-      dockerfile: liquibase.Dockerfile
+    image: liquibase/liquibase:latest-alpine
     container_name: liquibase_studio_db
     restart: on-failure
     env_file:
       - studio-service/.env
     depends_on:
-      - studio_db
+      studio_db:
+        condition: service_healthy
     volumes:
       - ./studio-service/database/changelog:/liquibase/changelog
       - ./studio-service/database/test:/liquibase/tests
       - ./postgres/test/_util:/liquibase/tests/_util
+    command:
+      - update
   
   studio-service:
     image: jetty:11-jdk17-alpine-eclipse-temurin
@@ -143,13 +158,17 @@ services:
       - studio-service/.env
 
   administration_db:
-    build:
-      context: postgres
-      dockerfile: postgres.Dockerfile
+    image: postgres:17.2-alpine3.21
     container_name: administration_db
     restart: always
     ports:
       - "5444:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
     depends_on:
       - user_db
       - liquibase_user_db
@@ -165,34 +184,36 @@ services:
       - administration-service/.env
 
   liquibase_administration_db:
-    build:
-      context: postgres
-      dockerfile: liquibase.Dockerfile
+    image: liquibase/liquibase:latest-alpine
     container_name: liquibase_administration_db
     restart: on-failure
     env_file:
       - administration-service/.env
     depends_on:
-      - administration_db
+      administration_db:
+        condition: service_healthy
     volumes:
       - ./administration-service/database/changelog:/liquibase/changelog
       - ./administration-service/database/test:/liquibase/tests
       - ./postgres/test/_util:/liquibase/tests/_util
+    command:
+      - update
 
   liquibase_appointment_db:
-    build:
-      context: postgres
-      dockerfile: liquibase.Dockerfile
+    image: liquibase/liquibase:latest-alpine
     container_name: liquibase_appointment_db
     restart: on-failure
     env_file:
       - appointment-service/.env
     depends_on:
-      - administration_db
+      administration_db:
+        condition: service_healthy
     volumes:
       - ./appointment-service/database/changelog:/liquibase/changelog
       - ./appointment-service/database/test:/liquibase/tests
       - ./postgres/test/_util:/liquibase/tests/_util
+    command:
+      - update
 
   administration-service:
     image: jetty:11-jdk17-alpine-eclipse-temurin
