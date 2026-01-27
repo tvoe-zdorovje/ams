@@ -1,0 +1,862 @@
+{
+	"info": {
+		"_postman_id": "ea474f4b-0cb5-49be-b6e7-b848715d95ac",
+		"name": "z_AMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "gateway",
+			"item": [
+				{
+					"name": "administration-service",
+					"item": [
+						{
+							"name": "get role",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query GetRole(\n    $id: ID!\n) {\n    roles {\n        role(id: $id) {\n            id\n            name\n            description\n            permissions {\n                id\n                name\n                description\n            }\n        }\n    }\n}\n",
+										"variables": "{\n    \"id\": 1000000011613321100\n}"
+									}
+								},
+								"url": {
+									"raw": "{{host}}",
+									"host": [
+										"{{host}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "save role",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation SaveRole(\n    $id: ID\n    $name: String!\n    $description: String!\n    $permissions: [ID!]\n) {\n    roles {\n        saveRole(\n            request: {\n                id: $id\n                name: $name\n                description: $description\n                permissions: $permissions\n            }\n        )\n    }\n}\n",
+										"variables": "{\n    \"id\": null,\n    \"name\": \"testTole\",\n    \"description\": \"my test role\",\n    \"permissions\": []\n}\n"
+									}
+								},
+								"url": {
+									"raw": "{{host}}",
+									"host": [
+										"{{host}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "appointment-service",
+					"item": [
+						{
+							"name": "get appointment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query GetAppointment(\n    $id: ID!\n) {\n    appointments {\n        appointment(id: $id) {\n            id\n            description\n            clientUserId\n            masterUserId\n            managerUserId\n            studioId\n            status\n            comment\n        }\n    }\n}\n",
+										"variables": "{\n    \"id\": \"be8eaf89-f494-487a-9427-6f18a4487245\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{host}}",
+									"host": [
+										"{{host}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create appointment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation CreateAppointment(\n    $description: String!\n    $clientUserId: ID!\n    $masterUserId: ID!\n    $managerUserId: ID!\n    $studioId: ID!\n    $comment: String!\n) {\n    appointments {\n        createAppointment(\n            request: {\n                description: $description\n                clientUserId: $clientUserId\n                masterUserId: $masterUserId\n                managerUserId: $managerUserId\n                studioId: $studioId\n                comment: $comment\n            }\n        )\n    }\n}\n",
+										"variables": "{\n    \"description\": \"app description\",\n    \"clientUserId\": 123,\n    \"masterUserId\": 123,\n    \"managerUserId\": 123,\n    \"studioId\": 123,\n    \"comment\": \"MY COMMENT\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{host}}",
+									"host": [
+										"{{host}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "auth-service",
+					"item": [
+						{
+							"name": "login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"jwt\", jsonData.data.auth.login.accessToken);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation Login(\n    $phoneNumber: String!\n    $password: String!\n) {\n    auth {\n        login(\n            request: {\n                phoneNumber: $phoneNumber\n                password: $password\n            }\n        ) {\n            userId\n            accessToken\n        }\n    }\n}\n",
+										"variables": "{\n    \"phoneNumber\": \"+79110384322\",\n    \"password\": \"strong_password\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{host}}",
+									"host": [
+										"{{host}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "brand-service",
+					"item": [
+						{
+							"name": "get brand",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query GetBrand(\n    $id: ID!\n) {\n    brands {\n        brand(id: $id) {\n            id\n            name\n            description\n        }\n    }\n}\n",
+										"variables": "{\n    \"id\": 1000000005513221100\n}"
+									}
+								},
+								"url": {
+									"raw": "{{host}}",
+									"host": [
+										"{{host}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create brand",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation CreateBrand(\n    $name: String!\n    $description: String!\n) {\n    brands {\n        createBrand(\n            request: {\n                name: $name\n                description: $description\n            }\n        )\n    }\n}\n",
+										"variables": "{\n    \"name\": \"Lidskoe\",\n    \"description\": \"Brews the best beer\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{host}}",
+									"host": [
+										"{{host}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "studio-service",
+					"item": [
+						{
+							"name": "get studio",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query GetStudio(\n    $id: ID!\n) {\n    studios {\n        studio(id: $id) {\n            id\n            name\n            description\n        }\n    }\n}\n",
+										"variables": "{\n    \"id\": 1\n}"
+									}
+								},
+								"url": {
+									"raw": "{{host}}",
+									"host": [
+										"{{host}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create studio",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation CreateStudio(\n    $name: String!\n    $description: String!\n) {\n    studios {\n        createStudio(\n            request: {\n                name: $name\n                description: $description\n            }\n        )\n    }\n}\n",
+										"variables": "{\n    \"name\": \"Beauty Studio\",\n    \"description\": \"Make you a bit better\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{host}}",
+									"host": [
+										"{{host}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "user-service",
+					"item": [
+						{
+							"name": "get user",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query GetUser(\n    $id: ID!\n) {\n    users {\n        user(id: $id) {\n            id\n            firstName\n            lastName\n            phoneNumber\n        }\n    }\n}\n",
+										"variables": "{\n    \"id\": 1000000004413121100\n}"
+									}
+								},
+								"url": {
+									"raw": "{{host}}",
+									"host": [
+										"{{host}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create user",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation CreateUser(\n    $password: String!\n    $firstName: String!\n    $lastName: String!\n    $phoneNumber: String!\n) {\n    users {\n        createUser(\n            request: {\n                password: $password\n                firstName: $firstName\n                lastName: $lastName\n                phoneNumber: $phoneNumber\n            }\n        )\n    }\n}\n",
+										"variables": "{\n    \"password\": \"strong_password\",\n    \"firstName\": \"Alexey2\",\n    \"lastName\": \"Kasimov\",\n    \"phoneNumber\": \"+79110384322\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{host}}",
+									"host": [
+										"{{host}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "debug",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n  __schema {\n    types {\n      name\n    }\n  }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/graphql",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "administration-service",
+			"item": [
+				{
+					"name": "users",
+					"item": [
+						{
+							"name": "get user roles",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query GetRoles(\n    $userId: ID!\n    $organizationId: ID!\n) {\n    users {\n        roles(\n            request: {\n                userId: $userId\n                organizationId: $organizationId\n            }\n        ) {\n            id\n            name\n            description\n            permissions {\n                id\n                name\n                description\n            }\n        }\n    }\n}\n",
+										"variables": "{\n    \"userId\": 1000000003413121100,\n    \"organizationId\": 10003\n}"
+									}
+								},
+								"url": {
+									"raw": "{{adm-service}}/graphql",
+									"host": [
+										"{{adm-service}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "assign user roles",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation AssignRoles(\n    $userId: ID!\n    $organizationId: ID!\n    $roles: [ID!]!\n) {\n    users {\n        assignRoles(\n            request: {\n                userId: $userId\n                organizationId: $organizationId\n                roles: $roles\n            }\n        )\n    }\n}\n",
+										"variables": "{\n    \"userId\": 1000000003413121100,\n    \"organizationId\": 10002,\n    \"roles\": [1]\n}\n"
+									}
+								},
+								"url": {
+									"raw": "{{adm-service}}/graphql",
+									"host": [
+										"{{adm-service}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "unassign user roles",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation UnassignRoles(\n    $userId: ID!\n    $organizationId: ID!\n    $roles: [ID!]!\n) {\n    users {\n        unassignRoles(\n            request: {\n                userId: $userId\n                organizationId: $organizationId\n                roles: $roles\n            }\n        )\n    }\n}\n",
+										"variables": "{\n    \"userId\": 1000000003413121100,\n    \"organizationId\": 10002,\n    \"roles\": [1]\n}\n"
+									}
+								},
+								"url": {
+									"raw": "{{adm-service}}/graphql",
+									"host": [
+										"{{adm-service}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "get role",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetRole(\n    $id: ID!\n) {\n    roles {\n        role(id: $id) {\n            id\n            name\n            description\n            permissions {\n                id\n                name\n                description\n            }\n        }\n    }\n}\n",
+								"variables": "{\n    \"id\": 1000000011613321100\n}"
+							}
+						},
+						"url": {
+							"raw": "{{adm-service}}/graphql",
+							"host": [
+								"{{adm-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "appointment-service",
+			"item": [
+				{
+					"name": "get appointment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetAppointment(\n    $id: ID!\n) {\n    appointments {\n        appointment(id: $id) {\n            id\n            description\n            clientUserId\n            masterUserId\n            managerUserId\n            studioId\n            status\n            comment\n        }\n    }\n}\n",
+								"variables": "{\n    \"id\": \"be8eaf89-f494-487a-9427-6f18a4487245\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{app-service}}/graphql",
+							"host": [
+								"{{app-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create appointment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateAppointment(\n    $description: String!\n    $clientUserId: ID!\n    $masterUserId: ID!\n    $managerUserId: ID!\n    $studioId: ID!\n    $comment: String!\n) {\n    appointments {\n        createAppointment(\n            request: {\n                description: $description\n                clientUserId: $clientUserId\n                masterUserId: $masterUserId\n                managerUserId: $managerUserId\n                studioId: $studioId\n                comment: $comment\n            }\n        )\n    }\n}\n",
+								"variables": "{\n    \"description\": \"app description\",\n    \"clientUserId\": 123,\n    \"masterUserId\": 123,\n    \"managerUserId\": 123,\n    \"studioId\": 123,\n    \"comment\": \"MY COMMENT\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{app-service}}/graphql",
+							"host": [
+								"{{app-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth-service",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jwt\", jsonData.data.auth.login.accessToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Login(\n    $phoneNumber: String!\n    $password: String!\n) {\n    auth {\n        login(\n            request: {\n                phoneNumber: $phoneNumber\n                password: $password\n            }\n        ) {\n            userId\n            accessToken\n        }\n    }\n}\n",
+								"variables": "{\n    \"phoneNumber\": \"+3752976712432\",\n    \"password\": \"strong_password\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{auth-service}}/graphql",
+							"host": [
+								"{{auth-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "JWKS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{auth-service}}/.well-known/jwks",
+							"host": [
+								"{{auth-service}}"
+							],
+							"path": [
+								".well-known",
+								"jwks"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "brand-service",
+			"item": [
+				{
+					"name": "get brand",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetBrand(\n    $id: ID!\n) {\n    brands {\n        brand(id: $id) {\n            id\n            name\n            description\n        }\n    }\n}\n",
+								"variables": "{\n    \"id\": 1000000005513221100\n}"
+							}
+						},
+						"url": {
+							"raw": "{{brand-service}}/graphql",
+							"host": [
+								"{{brand-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create brand",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateBrand(\n    $name: String!\n    $description: String!\n) {\n    brands {\n        createBrand(\n            request: {\n                name: $name\n                description: $description\n            }\n        )\n    }\n}\n",
+								"variables": "{\n    \"name\": \"Lidskoe\",\n    \"description\": \"Brews the best beer\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{brand-service}}/graphql",
+							"host": [
+								"{{brand-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update brand",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "user-id",
+								"value": "123",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateBrand(\n    $organizationId: ID!\n    $name: String!\n    $description: String!\n) {\n    brands {\n        updateBrand(\n            request: {\n                organizationId: $organizationId\n                name: $name\n                description: $description\n            }\n        )\n    }\n}\n",
+								"variables": "{\n    \"organizationId\": \"1000000005513221100\",\n    \"name\": \"Lidskoe2\",\n    \"description\": \"Brews the best beer\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{brand-service}}/graphql",
+							"host": [
+								"{{brand-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "studio-service",
+			"item": [
+				{
+					"name": "get studio",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetStudio(\n    $id: ID!\n) {\n    studios {\n        studio(id: $id) {\n            id\n            name\n            description\n        }\n    }\n}\n",
+								"variables": "{\n    \"id\": 1000000002171342100\n}"
+							}
+						},
+						"url": {
+							"raw": "{{studio-service}}/graphql",
+							"host": [
+								"{{studio-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create studio",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateStudio(\n    $name: String!\n    $description: String!\n) {\n    studios {\n        createStudio(\n            request: {\n                name: $name\n                description: $description\n            }\n        )\n    }\n}\n",
+								"variables": "{\n    \"name\": \"Beauty Studio\",\n    \"description\": \"Make you a bit better\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{studio-service}}/graphql",
+							"host": [
+								"{{studio-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update studio",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateStudio(\n    $organizationId: ID!\n    $name: String!\n    $description: String!\n) {\n    studios {\n        updateStudio(\n            request: {\n                organizationId: $organizationId\n                name: $name\n                description: $description\n            }\n        )\n    }\n}\n",
+								"variables": "{\n    \"organizationId\": \"1000000005513221100\",\n    \"name\": \"Beauty Studio\",\n    \"description\": \"Make you a bit better\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{studio-service}}/graphql",
+							"host": [
+								"{{studio-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user-service",
+			"item": [
+				{
+					"name": "create user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateUser(\n    $password: String!\n    $firstName: String!\n    $lastName: String!\n    $phoneNumber: String!\n) {\n    users {\n        createUser(\n            request: {\n                password: $password\n                firstName: $firstName\n                lastName: $lastName\n                phoneNumber: $phoneNumber\n            }\n        )\n    }\n}\n",
+								"variables": "{\n    \"password\": \"strong_password\",\n    \"firstName\": \"Alexey2\",\n    \"lastName\": \"Kasimov\",\n    \"phoneNumber\": \"+375297671245\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{user-service}}/graphql",
+							"host": [
+								"{{user-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetUser(\n    $id: ID!\n) {\n    users {\n        user(id: $id) {\n            id\n            firstName\n            lastName\n            phoneNumber\n        }\n    }\n}\n",
+								"variables": "{\n    \"id\": 1000000003413121100\n}"
+							}
+						},
+						"url": {
+							"raw": "{{user-service}}/graphql",
+							"host": [
+								"{{user-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "user-id",
+								"value": "1000000003413121100",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateUser(\n    $firstName: String!\n    $lastName: String!\n    $phoneNumber: String!\n) {\n    users {\n        updateUser(\n            request: {\n                firstName: $firstName\n                lastName: $lastName\n                phoneNumber: $phoneNumber\n            }\n        )\n    }\n}\n",
+								"variables": "{\n    \"firstName\": \"Aliaksei\",\n    \"lastName\": \"Kasimay\",\n    \"phoneNumber\": \"+995591806424\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{user-service}}/graphql",
+							"host": [
+								"{{user-service}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
