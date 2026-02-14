@@ -8,14 +8,14 @@ import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.AddBrandStud
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.AddUserRoles
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.AssertRolesBelongTo
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.CreateBrandRole
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.CreateStandardRoleOwner
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.CreateStudioRole
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.DeleteUserRoles
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.RefreshFdwBrand
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.RefreshFdwStudio
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.RefreshFdwUser
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SaveRole
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SetBrandOwner
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SetBrandRoles
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SetRolePermissions
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SetStudioOwner
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SetStudioRoles
 
 import org.jooq.Configuration
@@ -189,6 +189,27 @@ fun createBrandRole(
 }
 
 /**
+ * Call <code>administration.create_standard_role_owner</code>
+ */
+fun createStandardRoleOwner(
+      configuration: Configuration
+): Long? {
+    val f = CreateStandardRoleOwner()
+
+    f.execute(configuration)
+    return f.returnValue
+}
+
+/**
+ * Get <code>administration.create_standard_role_owner</code> as a field.
+ */
+fun createStandardRoleOwner(): Field<Long?> {
+    val f = CreateStandardRoleOwner()
+
+    return f.asField()
+}
+
+/**
  * Call <code>administration.create_studio_role</code>
  */
 fun createStudioRole(
@@ -295,39 +316,6 @@ fun deleteUserRoles(
 }
 
 /**
- * Call <code>administration.refresh_fdw_brand</code>
- */
-fun refreshFdwBrand(
-      configuration: Configuration
-): Unit {
-    val p = RefreshFdwBrand()
-
-    p.execute(configuration)
-}
-
-/**
- * Call <code>administration.refresh_fdw_studio</code>
- */
-fun refreshFdwStudio(
-      configuration: Configuration
-): Unit {
-    val p = RefreshFdwStudio()
-
-    p.execute(configuration)
-}
-
-/**
- * Call <code>administration.refresh_fdw_user</code>
- */
-fun refreshFdwUser(
-      configuration: Configuration
-): Unit {
-    val p = RefreshFdwUser()
-
-    p.execute(configuration)
-}
-
-/**
  * Call <code>administration.save_role</code>
  */
 fun saveRole(
@@ -387,6 +375,21 @@ fun saveRole(
     f.setIPermissions(iPermissions)
 
     return f.asField()
+}
+
+/**
+ * Call <code>administration.set_brand_owner</code>
+ */
+fun setBrandOwner(
+      configuration: Configuration
+    , iBrandId: Long?
+    , iUserId: Long?
+): Unit {
+    val p = SetBrandOwner()
+    p.setIBrandId(iBrandId)
+    p.setIUserId(iUserId)
+
+    p.execute(configuration)
 }
 
 /**
@@ -475,6 +478,21 @@ fun setRolePermissions(
     f.setIPermissions(iPermissions)
 
     return f.asField()
+}
+
+/**
+ * Call <code>administration.set_studio_owner</code>
+ */
+fun setStudioOwner(
+      configuration: Configuration
+    , iStudioId: Long?
+    , iUserId: Long?
+): Unit {
+    val p = SetStudioOwner()
+    p.setIStudioId(iStudioId)
+    p.setIUserId(iUserId)
+
+    p.execute(configuration)
 }
 
 /**

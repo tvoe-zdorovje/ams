@@ -30,6 +30,3 @@ databaseChangeLog:
         - sqlFile:
             path: changelog/0.0.2/09_create_add-brand-studios_function.sql
             endDelimiter: "$$"
-        - sqlFile:
-            path: changelog/0.0.2/10_create_triggers_that_refreshes_caches.sql
-            endDelimiter: "$$"

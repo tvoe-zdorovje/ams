@@ -97,29 +97,6 @@ ALTER DEFAULT PRIVILEGES
     ON FUNCTIONS TO ussportal;
 
 
--- adsportal_fdw (read only)
-
-
-CREATE USER adsportal_fdw WITH PASSWORD 'adsportal_fdw';
-
-
-GRANT CONNECT
-    ON DATABASE user_db
-    TO adsportal_fdw;
-GRANT SELECT
-    ON ALL TABLES IN SCHEMA users
-    TO adsportal_fdw;
-GRANT USAGE
-    ON SCHEMA users
-    TO adsportal_fdw;
-
-ALTER DEFAULT PRIVILEGES
-    FOR USER ussliquibase
-    IN SCHEMA users
-    GRANT SELECT
-    ON TABLES TO adsportal_fdw;
-
-
 -- ausportal (read only)
 
 

@@ -14,24 +14,14 @@ CREATE SCHEMA IF NOT EXISTS public;
 
 CREATE SCHEMA IF NOT EXISTS administration;
 
-
--- init FDW infrastructure
-
-
-CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+-- init other services infrastructure
 
 
-CREATE SERVER user_fdw_db FOREIGN DATA WRAPPER postgres_fdw
-    OPTIONS (host 'user_db', dbname 'user_db', port '5432');
+CREATE SCHEMA IF NOT EXISTS users;
 
-CREATE SERVER brand_fdw_db FOREIGN DATA WRAPPER postgres_fdw
-    OPTIONS (host 'brand_db', dbname 'brand_db', port '5432');
+CREATE SCHEMA IF NOT EXISTS brands;
 
-CREATE SERVER studio_fdw_db FOREIGN DATA WRAPPER postgres_fdw
-    OPTIONS (host 'studio_db', dbname 'studio_db', port '5432');
-
-
-CREATE SCHEMA IF NOT EXISTS fdw;
+CREATE SCHEMA IF NOT EXISTS studios;
 
 
 -- init users & roles
@@ -50,13 +40,7 @@ GRANT ALL PRIVILEGES
     ON SCHEMA public
     TO adsliquibase;
 GRANT USAGE, CREATE
-    ON SCHEMA administration
-    TO adsliquibase;
-GRANT USAGE, CREATE
-    ON SCHEMA fdw
-    TO adsliquibase;
-GRANT USAGE
-    ON FOREIGN SERVER brand_fdw_db, studio_fdw_db, user_fdw_db
+    ON SCHEMA administration, users, brands, studios
     TO adsliquibase;
 
 
@@ -101,31 +85,13 @@ DO $$
 CREATE USER adsportal WITH PASSWORD 'adsportal';
 
 
-CREATE USER MAPPING FOR adsportal SERVER user_fdw_db
-    OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
-
-CREATE USER MAPPING FOR adsportal SERVER brand_fdw_db
-    OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
-
-CREATE USER MAPPING FOR adsportal SERVER studio_fdw_db
-    OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
-
-
 GRANT CONNECT
     ON DATABASE administration_db
     TO adsportal;
 GRANT USAGE
-    ON FOREIGN SERVER brand_fdw_db, studio_fdw_db, user_fdw_db
-    TO adsportal;
-GRANT USAGE
-    ON SCHEMA administration, fdw
+    ON SCHEMA administration, users, brands, studios
     TO adsportal;
 
-ALTER DEFAULT PRIVILEGES
-    FOR USER adsliquibase
-    IN SCHEMA fdw
-    GRANT SELECT
-    ON TABLES TO adsportal;
 ALTER DEFAULT PRIVILEGES
     FOR USER adsliquibase
     IN SCHEMA administration
@@ -133,12 +99,12 @@ ALTER DEFAULT PRIVILEGES
     ON SEQUENCES TO adsportal;
 ALTER DEFAULT PRIVILEGES
     FOR USER adsliquibase
-    IN SCHEMA administration
+    IN SCHEMA administration, users, brands, studios
     GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES
     ON TABLES TO adsportal;
 ALTER DEFAULT PRIVILEGES
     FOR USER adsliquibase
-    IN SCHEMA administration
+    IN SCHEMA administration, users, brands, studios
     GRANT EXECUTE
     ON FUNCTIONS TO adsportal;
 
@@ -166,78 +132,7 @@ ALTER DEFAULT PRIVILEGES
     ON TABLES TO ausportal;
 
 
--- apsportal_fdw (read only)
-
-
-CREATE USER apsportal_fdw WITH PASSWORD 'apsportal_fdw';
-
-
-GRANT CONNECT
-    ON DATABASE administration_db
-    TO apsportal_fdw;
-GRANT SELECT
-    ON ALL TABLES IN SCHEMA administration
-    TO apsportal_fdw;
-GRANT USAGE
-    ON SCHEMA administration
-    TO apsportal_fdw;
-
-ALTER DEFAULT PRIVILEGES
-    FOR USER adsliquibase
-    IN SCHEMA administration
-    GRANT SELECT
-    ON TABLES TO apsportal_fdw;
-
-
--- brsportal_dblink, stsportal_dblink (read, write, execute, fdw)
-
-
-CREATE USER brsportal_dblink WITH PASSWORD 'brsportal_dblink';
-CREATE USER stsportal_dblink WITH PASSWORD 'stsportal_dblink';
-
-
-GRANT CONNECT
-    ON DATABASE administration_db
-    TO brsportal_dblink, stsportal_dblink;
-GRANT USAGE
-    ON SCHEMA administration, fdw
-    TO brsportal_dblink, stsportal_dblink;
-GRANT USAGE
-    ON FOREIGN SERVER brand_fdw_db, studio_fdw_db, user_fdw_db
-    TO brsportal_dblink, stsportal_dblink;
-
-ALTER DEFAULT PRIVILEGES
-    FOR USER adsliquibase
-    IN SCHEMA administration, fdw
-    GRANT EXECUTE
-    ON FUNCTIONS TO brsportal_dblink, stsportal_dblink;
-ALTER DEFAULT PRIVILEGES
-    FOR USER adsliquibase
-    IN SCHEMA administration, fdw
-    GRANT SELECT, INSERT, UPDATE, DELETE
-    ON TABLES TO brsportal_dblink, stsportal_dblink;
-ALTER DEFAULT PRIVILEGES
-    FOR USER adsliquibase
-    IN SCHEMA administration
-    GRANT SELECT, UPDATE
-    ON SEQUENCES TO brsportal_dblink, stsportal_dblink;
-
--- such a wonderful loop, yeah ^_^
-CREATE USER MAPPING FOR brsportal_dblink SERVER brand_fdw_db
-    OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
-
-CREATE USER MAPPING FOR brsportal_dblink SERVER user_fdw_db
-    OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
-
-CREATE USER MAPPING FOR stsportal_dblink SERVER studio_fdw_db
-    OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
-
-CREATE USER MAPPING FOR stsportal_dblink SERVER user_fdw_db
-    OPTIONS (user 'adsportal_fdw', password 'adsportal_fdw');
-
-
-
- -- change owner trigger
+-- change owner trigger
  -- Foreign keys work on behalf of the table owner.
  -- To avoid granting additional privileges to the liquibase user,
  -- this trigger changes the table owner to the schema owner.

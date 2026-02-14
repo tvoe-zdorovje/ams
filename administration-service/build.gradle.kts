@@ -70,7 +70,7 @@ tasks.register("generateDatabaseSchema") {
     description = "Generate Kotlin classes representing database tables based on a database schema."
 
     doLast {
-        GenerateDatabaseSchemasTask(project).execute("administration")
+        GenerateDatabaseSchemasTask(project).execute("administration", "brands", "studios", "users")
     }
 }
 

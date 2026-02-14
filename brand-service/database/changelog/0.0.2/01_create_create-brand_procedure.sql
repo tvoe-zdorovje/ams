@@ -21,19 +21,5 @@ BEGIN
         i_description
     )
     RETURNING id INTO o_id;
-
-    COMMIT;
-
-    BEGIN
-        PERFORM administration_dblink.exec(
-            format('CALL administration.set_brand_owner(%s, %s)', o_id, i_owner_user_id)
-        );
-    EXCEPTION WHEN OTHERS THEN
-        RAISE WARNING 'An error occured: %s', SQLERRM;
-        DELETE FROM brands.brand WHERE id = o_id;
-        COMMIT;
-        o_id = null;
-        RAISE;
-    END;
 END;
 $$ LANGUAGE plpgsql;
