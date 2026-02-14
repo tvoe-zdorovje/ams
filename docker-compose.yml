@@ -45,6 +45,10 @@ services:
       - ./user-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
     env_file:
       - user-service/.env
+    command: >
+      -c wal_level=logical
+      -c max_wal_senders=1
+      -c max_replication_slots=1
 
   liquibase_user_db:
     image: liquibase/liquibase:latest-alpine
@@ -102,6 +106,10 @@ services:
       - ./brand-service/database/pg_service.conf:/var/lib/postgresql/.pg_service.conf
     env_file:
       - brand-service/.env
+    command: >
+      -c wal_level=logical
+      -c max_wal_senders=1
+      -c max_replication_slots=1
 
   liquibase_brand_db:
     image: liquibase/liquibase:latest-alpine
@@ -157,6 +165,10 @@ services:
       - ./studio-service/database/pg_service.conf:/var/lib/postgresql/.pg_service.conf
     env_file:
       - studio-service/.env
+    command: >
+      -c wal_level=logical
+      -c max_wal_senders=1
+      -c max_replication_slots=1
 
   liquibase_studio_db:
     image: liquibase/liquibase:latest-alpine
@@ -206,13 +218,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    depends_on:
-      liquibase_user_db:
-        condition: service_completed_successfully
-      liquibase_brand_db:
-        condition: service_completed_successfully
-      liquibase_studio_db:
-        condition: service_completed_successfully
     volumes:
       - administration_db_volume:/var/lib/postgresql/data
       - ./administration-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_administration_db.sql
@@ -316,8 +321,130 @@ services:
     env_file:
       - auth-service/.env
 
+  kafka:
+    image: confluentinc/cp-kafka:8.0.3
+    hostname: kafka
+    container_name: kafka
+    restart: on-failure
+    ports:
+      - "9092:9092"
+    environment: # temporary here
+      KAFKA_BROKER_ID: 1
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_OFFSETS_TOPIC_NUM_PARTITIONS: 1
+      KAFKA_NUM_PARTITIONS: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      KAFKA_LOG_DIRS: '/var/lib/kafka/data/log'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
+      CLUSTER_ID: 'qtYbt-BeTuCoNnuqDxqY6Q'
+    healthcheck:
+      test: [ "CMD-SHELL", "kafka-cluster cluster-id --bootstrap-server kafka:29092" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - kafka-volume:/var/lib/kafka/data
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:8.0.3
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: on-failure
+    ports:
+      - "9081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'PLAINTEXT://kafka:29092'
+      SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:8081'
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8081/subjects" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kafka-connect: #// todo: use Strimzi when use k8s for configuring instead of REST HTTP approach (or Terraform?)
+    image: confluentinc/cp-kafka-connect:8.0.3
+    hostname: kafka-connect
+    container_name: kafka-connect
+    restart: on-failure
+    depends_on:
+      kafka:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+      liquibase_user_db:
+        condition: service_completed_successfully
+      liquibase_brand_db:
+        condition: service_completed_successfully
+      liquibase_studio_db:
+        condition: service_completed_successfully
+    ports:
+      - "9083:8083"
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: 'kafka:29092'
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: kafka-connect-group
+      CONNECT_TOPIC_CREATION_ENABLE: "true"
+      CONNECT_TOPIC_PARTITIONS: 3
+      CONNECT_TOPIC_REPLICATION_FACTOR: 1
+      CONNECT_CONFIG_STORAGE_TOPIC: kafka-connect-configs
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_TOPIC: kafka-connect-offsets
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_TOPIC: kafka-connect-status
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_VALUE_CONVERTER_AUTO_REGISTER_SCHEMAS: "true"
+      CONNECT_PUBLICATION_AUTOCREATE_MODE: "disabled"
+      CONNECT_SLOT_AUTOCREATE: "true"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      CONNECT_SNAPSHOT_MODE: "never"
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8083/connector-plugins" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - connect-plugins:/usr/share/confluent-hub-components
+    command:
+      - bash
+      - -c
+      - |
+        if [ ! -d "/usr/share/confluent-hub-components/debezium-debezium-connector-postgresql" ]; then
+          echo "Installing connector plugins"
+          confluent-hub install --no-prompt debezium/debezium-connector-postgresql:3.1.2
+        fi
+        echo "Launching Kafka Connect worker"
+        /etc/confluent/docker/run
+
 volumes:
   user_db_volume:
   brand_db_volume:
   studio_db_volume:
   administration_db_volume:
+  kafka-volume:
+    driver: local
+  connect-plugins:
