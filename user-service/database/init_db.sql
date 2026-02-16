@@ -15,6 +15,18 @@ CREATE SCHEMA IF NOT EXISTS public;
 CREATE SCHEMA IF NOT EXISTS users;
 
 
+-- init debezium infrastructure
+
+
+CREATE SCHEMA IF NOT EXISTS debezium;
+
+-- to prevent WAL growth
+CREATE TABLE IF NOT EXISTS debezium.heartbeat_table(
+    id BIGINT PRIMARY KEY,
+    updated_at TIMESTAMP NOT NULL
+);
+
+
 -- init users & roles
 
 
@@ -95,6 +107,29 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA users
     GRANT EXECUTE
     ON FUNCTIONS TO ussportal;
+
+
+-- debezium (USAGE)
+
+
+CREATE USER ussdebezium WITH PASSWORD 'ussdebezium' REPLICATION;
+
+
+GRANT CONNECT
+    ON DATABASE user_db
+    TO ussdebezium;
+GRANT USAGE
+    ON SCHEMA users, debezium
+    TO ussdebezium;
+GRANT ALL PRIVILEGES
+    ON TABLE debezium.heartbeat_table
+    TO ussdebezium;
+
+ALTER DEFAULT PRIVILEGES
+    FOR USER ussliquibase
+    IN SCHEMA users
+    GRANT SELECT
+    ON TABLES TO ussdebezium;
 
 
 -- ausportal (read only)
