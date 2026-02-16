@@ -15,6 +15,18 @@ CREATE SCHEMA IF NOT exists public;
 CREATE SCHEMA IF NOT exists brands;
 
 
+-- init debezium infrastructure
+
+
+CREATE SCHEMA IF NOT EXISTS debezium;
+
+-- to prevent WAL growth
+CREATE TABLE IF NOT EXISTS debezium.heartbeat_table(
+    id BIGINT PRIMARY KEY,
+    updated_at TIMESTAMP NOT NULL
+);
+
+
 -- init users & roles
 
 
@@ -96,6 +108,29 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA brands
     GRANT EXECUTE
     ON FUNCTIONS TO brsportal;
+
+
+-- debezium (USAGE)
+
+
+CREATE USER brsdebezium WITH PASSWORD 'brsdebezium' REPLICATION;
+
+
+GRANT CONNECT
+    ON DATABASE brand_db
+    TO brsdebezium;
+GRANT USAGE
+    ON SCHEMA brands, debezium
+    TO brsdebezium;
+GRANT ALL PRIVILEGES
+    ON TABLE debezium.heartbeat_table
+    TO brsdebezium;
+
+ALTER DEFAULT PRIVILEGES
+    FOR USER brsliquibase
+    IN SCHEMA brands
+    GRANT SELECT
+    ON TABLES TO brsdebezium;
 
 
 -- change owner trigger

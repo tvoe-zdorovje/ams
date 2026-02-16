@@ -4,4 +4,11 @@ databaseChangeLog:
       author: anatolyloyko
       changes:
         - sqlFile:
-            path: changelog/0.0.1/01_init_table.sql
+            path: changelog/0.0.1/01_create_brand_table.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.1/02_create_create-brand_procedure.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.1/03_create_update-brand_function.sql
+            endDelimiter: "$$"
