@@ -15,6 +15,18 @@ CREATE SCHEMA IF NOT EXISTS public;
 CREATE SCHEMA IF NOT EXISTS studios;
 
 
+-- init debezium infrastructure
+
+
+CREATE SCHEMA IF NOT EXISTS debezium;
+
+-- to prevent WAL growth
+CREATE TABLE IF NOT EXISTS debezium.heartbeat_table(
+    id BIGINT PRIMARY KEY,
+    updated_at TIMESTAMP NOT NULL
+);
+
+
 -- init users & roles
 
 
@@ -96,6 +108,29 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA studios
     GRANT EXECUTE
     ON FUNCTIONS TO stsportal;
+
+
+-- debezium (USAGE)
+
+
+CREATE USER stsdebezium WITH PASSWORD 'stsdebezium' REPLICATION;
+
+
+GRANT CONNECT
+    ON DATABASE studio_db
+    TO stsdebezium;
+GRANT USAGE
+    ON SCHEMA studios, debezium
+    TO stsdebezium;
+GRANT ALL PRIVILEGES
+    ON TABLE debezium.heartbeat_table
+    TO stsdebezium;
+
+ALTER DEFAULT PRIVILEGES
+    FOR USER stsliquibase
+    IN SCHEMA studios
+    GRANT SELECT
+    ON TABLES TO stsdebezium;
 
 
 -- change owner trigger

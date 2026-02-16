@@ -4,8 +4,5 @@ databaseChangeLog:
       author: anatolyloyko
       changes:
         - sqlFile:
-            path: changelog/0.0.2/01_create_create-studio_procedure.sql
-            endDelimiter: "$$"
-        - sqlFile:
-            path: changelog/0.0.2/02_create_update-studio_function.sql
+            path: changelog/0.0.2/01_create_publication_for_kafka-connect.sql
             endDelimiter: "$$"

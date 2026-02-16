@@ -1,0 +1,58 @@
+{
+  "name": "studio-db-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "plugin.name": "pgoutput",
+
+    "database.hostname": "studio_db",
+    "database.port": "5432",
+    "database.user": "stsdebezium",
+    "database.password": "stsdebezium",
+    "database.dbname": "studio_db",
+    "database.server.name": "studio_db_server",
+
+    "table.include.list": "studios.studio, debezium.heartbeat_table",
+    "topic.prefix": "v1",
+
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "value.converter.schemas.enable": "false",
+
+    "heartbeat.interval.ms": "5000",
+    "heartbeat.action.query" :"INSERT INTO debezium.heartbeat_table (id, updated_at) VALUES (1, NOW()) ON CONFLICT(id) DO UPDATE SET updated_at=EXCLUDED.updated_at;",
+
+    "slot.name": "postgres_debezium",
+
+    "publication.name": "studio_outbox_publication",
+    "publication.autocreate.mode": "disabled",
+
+    "topic.creation.enable": "true",
+    "topic.creation.default.partitions": 3,
+    "topic.creation.default.replication.factor": 1,
+
+    "predicates": "studio-events-predicate",
+    "predicates.studio-events-predicate.type": "org.apache.kafka.connect.transforms.predicates.TopicNameMatches",
+    "predicates.studio-events-predicate.pattern": "v1.studios.studio",
+
+    "transforms": "unwrap,keep,SetValueSchema",
+
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.unwrap.delete.handling.mode": "rewrite",
+    "transforms.unwrap.add.fields.prefix": "",
+    "transforms.unwrap.add.fields": "op",
+    "transforms.unwrap.drop.tombstones": "true",
+
+    "transforms.keep.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.keep.include": "id,op",
+    "transforms.keep.predicate": "studio-events-predicate",
+
+    "transforms.SetValueSchema.type": "org.apache.kafka.connect.transforms.SetSchemaMetadata$Value",
+    "transforms.SetValueSchema.schema.name": "by.anatolyloyko.ams.studio.kafka.schema.StudioEvent",
+    "transforms.SetValueSchema.predicate": "studio-events-predicate",
+
+    "message.key.columns": "studios.studio:id",
+    "key.converter" : "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter.schemas.enable": false,
+    "tombstones.on.delete": false
+  }
+}
