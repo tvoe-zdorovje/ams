@@ -379,8 +379,14 @@ services:
       timeout: 5s
       retries: 5
 
-  kafka-connect: #// todo: use Strimzi when use k8s for configuring instead of REST HTTP approach (or Terraform?)
-    image: confluentinc/cp-kafka-connect:8.0.3
+  #// todo: use Strimzi when use k8s for configuring instead of REST HTTP approach (or Terraform?)
+  kafka-connect:
+    image: ams/kafka-connect:8.0.3-debezium-3.4.1
+    build:
+      context: .
+      dockerfile: kafka/connect/Dockerfile
+      args:
+        DEBEZIUM_VERSION: 3.4.1.Final
     hostname: kafka-connect
     container_name: kafka-connect
     restart: on-failure
@@ -427,18 +433,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 60s
-    volumes:
-      - connect-plugins:/usr/share/confluent-hub-components
-    command:
-      - bash
-      - -c
-      - |
-        if [ ! -d "/usr/share/confluent-hub-components/debezium-debezium-connector-postgresql" ]; then
-          echo "Installing connector plugins"
-          confluent-hub install --no-prompt debezium/debezium-connector-postgresql:3.1.2
-        fi
-        echo "Launching Kafka Connect worker"
-        /etc/confluent/docker/run
 
 volumes:
   user_db_volume:
@@ -447,4 +441,3 @@ volumes:
   administration_db_volume:
   kafka-volume:
     driver: local
-  connect-plugins:
