@@ -109,6 +109,26 @@ ALTER DEFAULT PRIVILEGES
     ON FUNCTIONS TO adsportal;
 
 
+-- debezium (USAGE)
+
+
+CREATE USER adsdebezium WITH PASSWORD 'adsdebezium' REPLICATION;
+
+
+GRANT CONNECT
+    ON DATABASE administration_db
+    TO adsdebezium;
+GRANT USAGE
+    ON SCHEMA users
+    TO adsdebezium;
+
+ALTER DEFAULT PRIVILEGES
+    FOR USER adsliquibase
+    IN SCHEMA users
+    GRANT SELECT, INSERT, UPDATE, DELETE
+    ON TABLES TO adsdebezium;
+
+
 -- ausportal (read only)
 
 

@@ -1,9 +1,11 @@
 package by.anatolyloyko.ams.brand.command
 
+import by.anatolyloyko.ams.brand.BRAND
 import by.anatolyloyko.ams.brand.BRAND_ID
 import by.anatolyloyko.ams.brand.NEW_BRAND
 import by.anatolyloyko.ams.brand.USER_ID
-import by.anatolyloyko.ams.brand.action.SaveBrandAction
+import by.anatolyloyko.ams.brand.action.CreateBrandAction
+import by.anatolyloyko.ams.brand.action.UpdateBrandAction
 import by.anatolyloyko.ams.brand.model.Brand
 import io.mockk.every
 import io.mockk.mockk
@@ -12,21 +14,47 @@ import org.assertj.core.api.WithAssertions
 import org.junit.jupiter.api.Test
 
 class SaveBrandCommandHandlerTest : WithAssertions {
-    private val saveBrandAction = mockk<SaveBrandAction> {
+    private val dbCreateBrandAction = mockk<CreateBrandAction> {
         every { this@mockk(any<Brand>(), any()) } returns BRAND_ID
     }
-    private val handler = SaveBrandCommandHandler(saveBrandAction)
+    private val kafkaCreateBrandAction = mockk<CreateBrandAction> {
+        every { this@mockk(any<Brand>(), any()) } returns BRAND_ID
+    }
+    private val updateBrandAction = mockk<UpdateBrandAction> {
+        every { this@mockk(any<Brand>()) } returns BRAND_ID
+    }
 
-    private val command = SaveBrandCommand(
-        input = NEW_BRAND,
-        loggedUserId = USER_ID,
-    )
+    private val handler = SaveBrandCommandHandler(dbCreateBrandAction, updateBrandAction, kafkaCreateBrandAction)
 
     @Test
-    fun `must invoke the action`() {
+    fun `must invoke create actions if ID is null`() {
+        val command = SaveBrandCommand(
+            input = NEW_BRAND,
+            loggedUserId = USER_ID,
+        )
+
         val result = handler.handle(command)
 
         assertThat(result).isEqualTo(BRAND_ID)
-        verify(exactly = 1) { saveBrandAction(command.input, USER_ID) }
+        verify(exactly = 1) { dbCreateBrandAction(command.input, USER_ID) }
+        verify(exactly = 1) {
+            kafkaCreateBrandAction(
+                eq(command.input.copy(id = BRAND_ID)),
+                eq(USER_ID)
+            )
+        }
+    }
+
+    @Test
+    fun `must invoke update action if ID is not null`() {
+        val command = SaveBrandCommand(
+            input = BRAND,
+            loggedUserId = USER_ID,
+        )
+
+        val result = handler.handle(command)
+
+        assertThat(result).isEqualTo(BRAND_ID)
+        verify(exactly = 1) { updateBrandAction(command.input) }
     }
 }

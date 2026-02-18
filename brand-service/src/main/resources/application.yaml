@@ -13,6 +13,26 @@ spring:
         url: jdbc:postgresql://${DBHOST:localhost}:${DBPORT:5442}/${DBNAME:brand_db}
         username: ${DBUSER:brsportal}
         password: ${DBPASS:brsportal}
+    kafka:
+        bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+        producer:
+            key-serializer: org.apache.kafka.common.serialization.LongSerializer
+            value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+            properties:
+                schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:9081}
+                enable.idempotence: false
+                acks: all
+
+ams:
+    kafka:
+        topic:
+            brand:
+                name: ${BRAND_EVENTS_TOPIC:v1.brands.brand}
+                partitions: ${BRAND_EVENTS_TOPIC_PARTITIONS_COUNT:3}
+                replicas: ${BRAND_EVENTS_TOPIC_REPLICATION_FACTOR:1}
+
+        props:
+            nack-cooldown: 100ms
 
 management:
     endpoints:

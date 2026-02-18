@@ -5,8 +5,8 @@
 
     "connector.class": "io.debezium.connector.jdbc.JdbcSinkConnector",
     "connection.url": "jdbc:postgresql://administration_db:5432/administration_db",
-    "connection.username": "admdebezium",
-    "connection.password": "admdebezium",
+    "connection.username": "adsdebezium",
+    "connection.password": "adsdebezium",
     "dialect.name": "PostgreSqlDatabaseDialect",
 
     "insert.mode": "upsert",
