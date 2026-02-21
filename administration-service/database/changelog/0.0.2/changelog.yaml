@@ -4,6 +4,9 @@ databaseChangeLog:
       author: anatolyloyko
       changes:
         - sqlFile:
+            path: changelog/0.0.2/00_create_assert-roles-belong-to_function.sql
+            endDelimiter: "$$"
+        - sqlFile:
             path: changelog/0.0.2/01_create_save-role_function.sql
             endDelimiter: "$$"
         - sqlFile:

@@ -8,11 +8,12 @@ DECLARE
     _role_id BIGINT;
 BEGIN
     _role_id = administration.save_role(
+        i_brand_id,
         null,
         i_name,
         i_description,
         i_permissions
-    );
+               );
 
     INSERT INTO administration.brand_roles(brand_id, role_id) VALUES (i_brand_id, _role_id);
 

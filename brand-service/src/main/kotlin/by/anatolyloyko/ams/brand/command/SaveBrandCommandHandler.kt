@@ -17,7 +17,6 @@ class SaveBrandCommandHandler(
     private val dbUpdateBrandAction: UpdateBrandAction,
     private val kafkaCreateBrandAction: CreateBrandAction
 ) : BaseCommandHandler<SaveBrandCommand, Long>() {
-    @Transactional // TODO: test it
     override fun handleInternal(command: SaveBrandCommand): Long = if (command.input.id == null) {
         val id = dbCreateBrandAction(command.input, command.loggedUserId)
         kafkaCreateBrandAction(command.input.copy(id = id), command.loggedUserId)
