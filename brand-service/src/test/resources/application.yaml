@@ -16,9 +16,9 @@ ams:
   kafka:
     topic:
       brand:
-        name: ${BRAND_EVENTS_TOPIC:v1.brands.brand}
-        partitions: ${BRAND_EVENTS_TOPIC_PARTITIONS_COUNT:3}
-        replicas: ${BRAND_EVENTS_TOPIC_REPLICATION_FACTOR:1}
+        name: ${KAFKA_BRAND_EVENTS_TOPIC:v1.brands.brand}
+        partitions: ${KAFKA_BRAND_EVENTS_TOPIC_PARTITIONS_COUNT:3}
+        replicas: ${KAFKA_BRAND_EVENTS_TOPIC_REPLICATION_FACTOR:1}
 
     props:
       nack-cooldown: 100ms

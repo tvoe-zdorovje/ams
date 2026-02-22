@@ -9,11 +9,10 @@ import org.springframework.stereotype.Component
 internal class JooqCreateBrandAction(
     private val dslContext: DSLContext
 ) : CreateBrandAction {
-    override fun invoke(brand: Brand, ownerUserId: Long): Long = createBrand(
+    override fun invoke(brand: Brand): Long = createBrand(
         configuration = dslContext.configuration(),
         iName = brand.name,
-        iDescription = brand.description,
-        iOwnerUserId = ownerUserId
+        iDescription = brand.description
     )
         ?: error("Could not save the brand $brand")
 }

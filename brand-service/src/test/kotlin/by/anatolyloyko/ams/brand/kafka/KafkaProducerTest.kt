@@ -1,4 +1,4 @@
-package by.anatolyloyko.ams.brand.kafka.action
+package by.anatolyloyko.ams.brand.kafka
 
 import by.anatolyloyko.ams.brand.BRAND
 import by.anatolyloyko.ams.brand.NEW_BRAND
@@ -15,12 +15,12 @@ import org.springframework.kafka.core.KafkaTemplate
 
 const val TOPIC_NAME = "topicName"
 
-class KafkaCreateBrandActionTest : WithAssertions {
+class KafkaProducerTest : WithAssertions {
     val kafkaTemplate = mockk<KafkaTemplate<Long, BrandEvent>> {
         every { send(any(), any(), any()) } returns mockk(relaxed = true)
     }
 
-    private val action = KafkaCreateBrandAction(
+    private val action = KafkaProducer(
         topicName = TOPIC_NAME,
         kafkaTemplate = kafkaTemplate
     )
@@ -30,7 +30,7 @@ class KafkaCreateBrandActionTest : WithAssertions {
         val brand = BRAND
         val ownerUserId = USER_ID
 
-        val result = action(brand, ownerUserId)
+        val result = action.sendBrandCreated(brand, ownerUserId)
 
         assertThat(result).isEqualTo(brand.id)
         verify(exactly = 1) {
@@ -51,7 +51,7 @@ class KafkaCreateBrandActionTest : WithAssertions {
         val brand = NEW_BRAND
         val ownerUserId = USER_ID
 
-        assertThrows<IllegalArgumentException> { action(brand, ownerUserId) }
+        assertThrows<IllegalArgumentException> { action.sendBrandCreated(brand, ownerUserId) }
 
         verify(exactly = 0) {
             kafkaTemplate.send(any(), any(), any())

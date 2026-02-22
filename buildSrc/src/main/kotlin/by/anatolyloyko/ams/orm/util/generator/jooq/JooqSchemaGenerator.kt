@@ -57,7 +57,7 @@ internal class JooqSchemaGenerator(
     ) {
         configuration.generator.apply {
             database.schemata = schemaNames.map { SchemaMappingType().withInputSchema(it) }
-            target.packageName = "$destinationPackage"
+            target.packageName = destinationPackage + if (schemaNames.count() == 1) ".${schemaNames.first()}" else ""
         }
 
         run(configuration)

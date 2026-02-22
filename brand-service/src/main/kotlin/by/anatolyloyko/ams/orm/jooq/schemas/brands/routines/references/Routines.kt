@@ -19,15 +19,41 @@ fun createBrand(
       configuration: Configuration
     , iName: String?
     , iDescription: String?
-    , iOwnerUserId: Long?
 ): Long? {
-    val p = CreateBrand()
-    p.setIName(iName)
-    p.setIDescription(iDescription)
-    p.setIOwnerUserId(iOwnerUserId)
+    val f = CreateBrand()
+    f.setIName(iName)
+    f.setIDescription(iDescription)
 
-    p.execute(configuration)
-    return p.getOId()
+    f.execute(configuration)
+    return f.returnValue
+}
+
+/**
+ * Get <code>brands.create_brand</code> as a field.
+ */
+fun createBrand(
+      iName: String?
+    , iDescription: String?
+): Field<Long?> {
+    val f = CreateBrand()
+    f.setIName(iName)
+    f.setIDescription(iDescription)
+
+    return f.asField()
+}
+
+/**
+ * Get <code>brands.create_brand</code> as a field.
+ */
+fun createBrand(
+      iName: Field<String?>
+    , iDescription: Field<String?>
+): Field<Long?> {
+    val f = CreateBrand()
+    f.setIName(iName)
+    f.setIDescription(iDescription)
+
+    return f.asField()
 }
 
 /**

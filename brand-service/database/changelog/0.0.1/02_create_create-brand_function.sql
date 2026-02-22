@@ -1,15 +1,13 @@
 CREATE SEQUENCE IF NOT EXISTS brands.brand_id_seq START WITH 1000000001513221100 INCREMENT 1000000000;
 
 
-CREATE OR REPLACE PROCEDURE brands.create_brand(
+CREATE OR REPLACE FUNCTION brands.create_brand(
     i_name VARCHAR(50),
-    i_description VARCHAR(50),
-    i_owner_user_id BIGINT,
-
-    OUT o_id BIGINT
-) AS $$
+    i_description VARCHAR(50)
+) RETURNS BIGINT AS $$
 DECLARE
     id_seq_name REGCLASS := 'brands.brand_id_seq';
+    o_id BIGINT;
 BEGIN
     INSERT INTO brands.brand(
         id,
@@ -21,5 +19,7 @@ BEGIN
         i_description
     )
     RETURNING id INTO o_id;
+
+    RETURN o_id;
 END;
 $$ LANGUAGE plpgsql;

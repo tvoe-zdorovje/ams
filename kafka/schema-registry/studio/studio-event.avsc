@@ -1,0 +1,31 @@
+{
+  "type": "record",
+  "name": "StudioEvent",
+  "namespace": "by.anatolyloyko.ams.studio.kafka.schema",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long"
+    },
+    {
+      "name": "brandId",
+      "type": "long"
+    },
+    {
+      "name": "userId",
+      "type": "long"
+    },
+    {
+      "name": "type",
+      "type": {
+        "type": "enum",
+        "name": "EventType",
+        "symbols": [
+          "CREATED"
+        ]
+      },
+      "default": "CREATED"
+    }
+  ],
+  "connect.name": "by.anatolyloyko.ams.studio.kafka.schema.StudioEvent"
+}

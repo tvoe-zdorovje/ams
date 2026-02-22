@@ -6,7 +6,7 @@ databaseChangeLog:
         - sqlFile:
             path: changelog/0.0.1/01_create_studio_table.sql
         - sqlFile:
-            path: changelog/0.0.1/02_create_create-studio_procedure.sql
+            path: changelog/0.0.1/02_create_create-studio_function.sql
             endDelimiter: "$$"
         - sqlFile:
             path: changelog/0.0.1/03_create_update-studio_function.sql

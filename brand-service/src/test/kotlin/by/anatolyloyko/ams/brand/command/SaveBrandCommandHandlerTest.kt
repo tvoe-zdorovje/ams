@@ -6,6 +6,7 @@ import by.anatolyloyko.ams.brand.NEW_BRAND
 import by.anatolyloyko.ams.brand.USER_ID
 import by.anatolyloyko.ams.brand.action.CreateBrandAction
 import by.anatolyloyko.ams.brand.action.UpdateBrandAction
+import by.anatolyloyko.ams.brand.kafka.KafkaProducer
 import by.anatolyloyko.ams.brand.model.Brand
 import io.mockk.every
 import io.mockk.mockk
@@ -15,16 +16,16 @@ import org.junit.jupiter.api.Test
 
 class SaveBrandCommandHandlerTest : WithAssertions {
     private val dbCreateBrandAction = mockk<CreateBrandAction> {
-        every { this@mockk(any<Brand>(), any()) } returns BRAND_ID
+        every { this@mockk(any<Brand>()) } returns BRAND_ID
     }
-    private val kafkaCreateBrandAction = mockk<CreateBrandAction> {
-        every { this@mockk(any<Brand>(), any()) } returns BRAND_ID
+    private val kafkaProducer = mockk<KafkaProducer> {
+        every { sendBrandCreated(any<Brand>(), any()) } returns BRAND_ID
     }
     private val updateBrandAction = mockk<UpdateBrandAction> {
         every { this@mockk(any<Brand>()) } returns BRAND_ID
     }
 
-    private val handler = SaveBrandCommandHandler(dbCreateBrandAction, updateBrandAction, kafkaCreateBrandAction)
+    private val handler = SaveBrandCommandHandler(dbCreateBrandAction, updateBrandAction, kafkaProducer)
 
     @Test
     fun `must invoke create actions if ID is null`() {
@@ -36,9 +37,9 @@ class SaveBrandCommandHandlerTest : WithAssertions {
         val result = handler.handle(command)
 
         assertThat(result).isEqualTo(BRAND_ID)
-        verify(exactly = 1) { dbCreateBrandAction(command.input, USER_ID) }
+        verify(exactly = 1) { dbCreateBrandAction(command.input) }
         verify(exactly = 1) {
-            kafkaCreateBrandAction(
+            kafkaProducer.sendBrandCreated(
                 eq(command.input.copy(id = BRAND_ID)),
                 eq(USER_ID)
             )

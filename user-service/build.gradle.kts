@@ -49,7 +49,7 @@ sourceSets {
 }
 
 tasks.register("generateDatabaseSchema") {
-    group = "generation"
+    group = "source generation"
     description = "Generate Kotlin classes representing database tables based on a database schema."
 
     doLast {

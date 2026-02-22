@@ -9,6 +9,19 @@ spring:
     password: testpassword
   jooq:
     sql-dialect: h2
+  kafka:
+    listener:
+      auto-startup: false
+ams:
+  kafka:
+    topic:
+      studio:
+        name: ${KAFKA_STUDIO_EVENTS_TOPIC:v1.studios.studio}
+        partitions: ${KAFKA_STUDIO_EVENTS_TOPIC_PARTITIONS_COUNT:3}
+        replicas: ${KAFKA_STUDIO_EVENTS_TOPIC_REPLICATION_FACTOR:1}
+
+    props:
+      nack-cooldown: 100ms
 logging:
   pattern:
     console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){cyan} - %clr(%-5level){yellow} %clr(%logger{36}){green} - %msg%n"

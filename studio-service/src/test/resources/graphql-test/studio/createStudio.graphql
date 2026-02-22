@@ -1,10 +1,12 @@
 mutation CreateStudio(
+    $organizationId: ID!
     $name: String!
     $description: String!
 ) {
     studios {
         createStudio(
             request: {
+                organizationId: $organizationId
                 name: $name
                 description: $description
             }
