@@ -1,7 +1,6 @@
 package by.anatolyloyko.ams.brand.action
 
 import by.anatolyloyko.ams.brand.model.Brand
-import by.anatolyloyko.ams.orm.jooq.schemas.brands.routines.references.createBrand
 import by.anatolyloyko.ams.orm.jooq.schemas.brands.routines.references.updateBrand
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component

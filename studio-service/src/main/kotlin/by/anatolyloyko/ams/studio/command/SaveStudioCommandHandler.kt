@@ -17,7 +17,6 @@ class SaveStudioCommandHandler(
     private val dbUpdateStudioAction: UpdateStudioAction,
     private val kafkaProducer: KafkaProducer,
 ) : BaseCommandHandler<SaveStudioCommand, Long>() {
-
     /**
      * Executes the command-specific logic for saving a studio.
      *

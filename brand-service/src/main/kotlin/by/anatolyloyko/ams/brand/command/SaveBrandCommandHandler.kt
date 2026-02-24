@@ -17,7 +17,6 @@ class SaveBrandCommandHandler(
     private val dbUpdateBrandAction: UpdateBrandAction,
     private val kafkaProducer: KafkaProducer
 ) : BaseCommandHandler<SaveBrandCommand, Long>() {
-
     /**
      * Executes the command-specific logic for saving a brand.
      *
