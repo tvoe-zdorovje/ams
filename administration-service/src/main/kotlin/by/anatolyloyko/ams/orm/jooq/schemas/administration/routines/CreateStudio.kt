@@ -31,6 +31,11 @@ open class CreateStudio : AbstractRoutine<Long>("create_studio", Administration.
         val I_STUDIO_ID: Parameter<Long?> = Internal.createParameter("i_studio_id", SQLDataType.BIGINT, false, false)
 
         /**
+         * The parameter <code>administration.create_studio.i_brand_id</code>.
+         */
+        val I_BRAND_ID: Parameter<Long?> = Internal.createParameter("i_brand_id", SQLDataType.BIGINT, false, false)
+
+        /**
          * The parameter <code>administration.create_studio.i_user_id</code>.
          */
         val I_USER_ID: Parameter<Long?> = Internal.createParameter("i_user_id", SQLDataType.BIGINT, false, false)
@@ -39,6 +44,7 @@ open class CreateStudio : AbstractRoutine<Long>("create_studio", Administration.
     init {
         returnParameter = CreateStudio.RETURN_VALUE
         addInParameter(CreateStudio.I_STUDIO_ID)
+        addInParameter(CreateStudio.I_BRAND_ID)
         addInParameter(CreateStudio.I_USER_ID)
     }
 
@@ -53,6 +59,19 @@ open class CreateStudio : AbstractRoutine<Long>("create_studio", Administration.
      */
     fun setIStudioId(field: Field<Long?>): Unit {
         setField(CreateStudio.I_STUDIO_ID, field)
+    }
+
+    /**
+     * Set the <code>i_brand_id</code> parameter IN value to the routine
+     */
+    fun setIBrandId(value: Long?): Unit = setValue(CreateStudio.I_BRAND_ID, value)
+
+    /**
+     * Set the <code>i_brand_id</code> parameter to the function to be used with
+     * a {@link org.jooq.Select} statement
+     */
+    fun setIBrandId(field: Field<Long?>): Unit {
+        setField(CreateStudio.I_BRAND_ID, field)
     }
 
     /**

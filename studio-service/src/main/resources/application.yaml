@@ -28,8 +28,8 @@ ams:
         topic:
             studio:
                 name: ${KAFKA_STUDIO_EVENTS_TOPIC:v1.studios.studio}
-                partitions: ${KAFKA_STUDIO_EVENTS_TOPIC_REPLICATION_FACTOR:3}
-                replicas: ${KAFKA_STUDIO_EVENTS_TOPIC_PARTITIONS_COUNT:1}
+                replicas: ${KAFKA_STUDIO_EVENTS_TOPIC_REPLICATION_FACTOR:3}
+                partitions: ${KAFKA_STUDIO_EVENTS_TOPIC_PARTITIONS_COUNT:1}
 
         props:
             nack-cooldown: 100ms

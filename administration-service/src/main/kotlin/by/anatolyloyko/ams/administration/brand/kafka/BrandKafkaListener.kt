@@ -4,7 +4,6 @@ import by.anatolyloyko.ams.administration.brand.action.CreateBrandAction
 import by.anatolyloyko.ams.administration.infrastructure.kafka.MyKafkaListener
 import by.anatolyloyko.ams.brand.kafka.schema.BrandEvent
 import by.anatolyloyko.ams.brand.kafka.schema.EventType
-import by.anatolyloyko.ams.common.infrastructure.logging.log
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.kafka.support.KafkaHeaders

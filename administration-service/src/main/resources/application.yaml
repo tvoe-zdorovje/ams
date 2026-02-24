@@ -33,6 +33,8 @@ ams:
         topic:
             brand:
                 name: ${KAFKA_TOPIC_BRAND:v1.brands.brand}
+            studio:
+                name: ${KAFKA_TOPIC_STUDIO:v1.studios.studio}
         props:
             nack-cooldown: 100ms
 

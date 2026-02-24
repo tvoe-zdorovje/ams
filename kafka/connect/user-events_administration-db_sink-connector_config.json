@@ -1,5 +1,5 @@
 {
-  "name": "user-events-sink",
+  "name": "user-events_administration-db_sink-connector",
   "config": {
     "topics": "v1.users.user",
 

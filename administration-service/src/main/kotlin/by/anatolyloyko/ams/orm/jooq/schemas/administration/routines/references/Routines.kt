@@ -261,10 +261,12 @@ fun createStandardRoleOwner(): Field<Long?> {
 fun createStudio(
       configuration: Configuration
     , iStudioId: Long?
+    , iBrandId: Long?
     , iUserId: Long?
 ): Long? {
     val f = CreateStudio()
     f.setIStudioId(iStudioId)
+    f.setIBrandId(iBrandId)
     f.setIUserId(iUserId)
 
     f.execute(configuration)
@@ -276,10 +278,12 @@ fun createStudio(
  */
 fun createStudio(
       iStudioId: Long?
+    , iBrandId: Long?
     , iUserId: Long?
 ): Field<Long?> {
     val f = CreateStudio()
     f.setIStudioId(iStudioId)
+    f.setIBrandId(iBrandId)
     f.setIUserId(iUserId)
 
     return f.asField()
@@ -290,10 +294,12 @@ fun createStudio(
  */
 fun createStudio(
       iStudioId: Field<Long?>
+    , iBrandId: Field<Long?>
     , iUserId: Field<Long?>
 ): Field<Long?> {
     val f = CreateStudio()
     f.setIStudioId(iStudioId)
+    f.setIBrandId(iBrandId)
     f.setIUserId(iUserId)
 
     return f.asField()
