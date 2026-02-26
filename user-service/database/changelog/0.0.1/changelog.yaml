@@ -4,4 +4,14 @@ databaseChangeLog:
       author: anatolyloyko
       changes:
         - sqlFile:
-            path: changelog/0.0.1/01_init_table.sql
+            path: changelog/0.0.1/01_create_user_table.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.1/02_create_user-password_table.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.1/03_create_create-user_function.sql
+            endDelimiter: "$$"
+        - sqlFile:
+            path: changelog/0.0.1/04_create_save-user_function.sql
+            endDelimiter: "$$"

@@ -15,19 +15,6 @@ CREATE SCHEMA IF NOT EXISTS public;
 CREATE SCHEMA IF NOT EXISTS appointments;
 
 
--- init FDW infrastructure
-
-
-CREATE SCHEMA IF NOT EXISTS administration_fdw;
-
-
-CREATE EXTENSION IF NOT EXISTS postgres_fdw;
-
-
-CREATE SERVER administration_fdw_db FOREIGN DATA WRAPPER postgres_fdw
-    OPTIONS (host 'administration_db', dbname 'administration_db', port '5432');
-
-
 -- init users & roles
 
 
@@ -43,10 +30,7 @@ GRANT ALL
     ON SCHEMA public
     TO apsliquibase;
 GRANT USAGE, CREATE
-    ON SCHEMA appointments, administration_fdw
-    TO apsliquibase;
-GRANT USAGE
-    ON FOREIGN SERVER administration_fdw_db
+    ON SCHEMA appointments
     TO apsliquibase;
 
 REVOKE GRANT OPTION FOR ALL
@@ -93,15 +77,12 @@ GRANT CONNECT
     ON DATABASE administration_db
     TO apsportal;
 GRANT USAGE
-    ON FOREIGN SERVER administration_fdw_db
-    TO apsportal;
-GRANT USAGE
-    ON SCHEMA appointments, administration_fdw
+    ON SCHEMA appointments
     TO apsportal;
 
 ALTER DEFAULT PRIVILEGES
     FOR USER apsliquibase, adsliquibase
-    IN SCHEMA appointments, administration_fdw
+    IN SCHEMA appointments
     GRANT SELECT
     ON TABLES TO apsportal;
 ALTER DEFAULT PRIVILEGES
@@ -114,10 +95,6 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA appointments
     GRANT EXECUTE
     ON FUNCTIONS TO apsportal;
-
-CREATE USER MAPPING FOR apsportal SERVER administration_fdw_db
-    OPTIONS (user 'apsportal_fdw', password 'apsportal_fdw');
-
 
 -- change owner trigger
 -- Foreign keys work on behalf of the table owner.

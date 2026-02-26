@@ -1,0 +1,39 @@
+CREATE TABLE IF NOT EXISTS users.user(
+    id BIGINT PRIMARY KEY
+);
+
+CREATE OR REPLACE FUNCTION users.create_user(
+    _id BIGINT
+) RETURNS VOID AS $$
+BEGIN
+    INSERT INTO users.user (id) VALUES (_id) ON CONFLICT DO NOTHING;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE TABLE IF NOT EXISTS brands.brand(
+    id BIGINT PRIMARY KEY
+);
+
+CREATE OR REPLACE FUNCTION brands.create_brand(
+    _id BIGINT
+) RETURNS VOID AS $$
+BEGIN
+    INSERT INTO brands.brand (id) VALUES (_id) ON CONFLICT DO NOTHING;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE TABLE IF NOT EXISTS studios.studio(
+    id BIGINT PRIMARY KEY
+);
+
+CREATE OR REPLACE FUNCTION studios.create_studio(
+    _id BIGINT
+) RETURNS VOID AS $$
+BEGIN
+    INSERT INTO studios.studio (id) VALUES (_id) ON CONFLICT DO NOTHING;
+END;
+$$ LANGUAGE plpgsql;

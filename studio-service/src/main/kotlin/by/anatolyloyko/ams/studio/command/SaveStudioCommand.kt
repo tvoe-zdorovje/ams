@@ -8,8 +8,10 @@ import by.anatolyloyko.ams.studio.model.Studio
  *
  * @param input contains the studio data.
  * @param loggedUserId identifier of a logged user. This user is considered the owner of the studio is created.
+ * @param brandId identifier of a brand which the studio belongs to.
  */
 class SaveStudioCommand(
     input: Studio,
-    loggedUserId: Long
+    loggedUserId: Long,
+    val brandId: Long
 ) : LoggedUserIdCommand<Studio, Long>(input, loggedUserId)

@@ -9,6 +9,18 @@ spring:
     password: testpassword
   jooq:
     sql-dialect: h2
+  kafka:
+    listener:
+      auto-startup: false
+ams:
+  kafka:
+    topic:
+      brand:
+        name: ${KAFKA_TOPIC_BRAND:v1.brands.brand}
+      studio:
+        name: ${KAFKA_TOPIC_STUDIO:v1.studios.studio}
+    props:
+      nack-cooldown: 100ms
 logging:
   pattern:
     console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){cyan} - %clr(%-5level){yellow} %clr(%logger{36}){green} - %msg%n"

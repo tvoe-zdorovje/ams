@@ -6,6 +6,7 @@ import by.anatolyloyko.ams.common.infrastructure.testing.expectUnauthorized
 import by.anatolyloyko.ams.common.infrastructure.testing.get
 import by.anatolyloyko.ams.common.infrastructure.testing.loginAs
 import by.anatolyloyko.ams.common.infrastructure.testing.matches
+import by.anatolyloyko.ams.studio.BRAND_ID
 import by.anatolyloyko.ams.studio.STUDIO
 import by.anatolyloyko.ams.studio.STUDIO_ID
 import by.anatolyloyko.ams.studio.USER_ID
@@ -41,6 +42,7 @@ class StudioMutationsResolverTest {
             val result = graphQlTester
                 .loginAs(USER_ID)
                 .documentName("studio/createStudio")
+                .variable("organizationId", BRAND_ID)
                 .variable("name", STUDIO.name)
                 .variable("description", STUDIO.description)
                 .execute()
@@ -53,6 +55,7 @@ class StudioMutationsResolverTest {
         fun `must return error when unauthorized`() {
             graphQlTester
                 .documentName("studio/createStudio")
+                .variable("organizationId", BRAND_ID)
                 .variable("name", STUDIO.name)
                 .variable("description", STUDIO.description)
                 .execute()

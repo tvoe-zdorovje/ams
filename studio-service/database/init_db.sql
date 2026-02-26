@@ -15,23 +15,6 @@ CREATE SCHEMA IF NOT EXISTS public;
 CREATE SCHEMA IF NOT EXISTS studios;
 
 
--- init administration dblink infrastructure
-
-CREATE EXTENSION IF NOT EXISTS dblink;
-
-
-CREATE SCHEMA IF NOT EXISTS administration_dblink;
-
-
-CREATE OR REPLACE FUNCTION administration_dblink.exec(sql TEXT) RETURNS VOID SECURITY DEFINER AS $$
-DECLARE
-    connstr TEXT := 'service=administration_db_service_dblink';
-BEGIN
-    PERFORM dblink_exec(connstr, sql, true);
-END;
-$$ LANGUAGE plpgsql;
-
-
 -- init users & roles
 
 
@@ -95,10 +78,7 @@ GRANT CONNECT
     ON DATABASE studio_db
     TO stsportal;
 GRANT USAGE
-    ON SCHEMA studios, administration_dblink
-    TO stsportal;
-GRANT EXECUTE
-    ON ROUTINE administration_dblink.exec(TEXT)
+    ON SCHEMA studios
     TO stsportal;
 
 ALTER DEFAULT PRIVILEGES
@@ -116,29 +96,6 @@ ALTER DEFAULT PRIVILEGES
     IN SCHEMA studios
     GRANT EXECUTE
     ON FUNCTIONS TO stsportal;
-
-
--- adsportal_fdw (read only)
-
-
-CREATE USER adsportal_fdw WITH PASSWORD 'adsportal_fdw';
-
-
-GRANT CONNECT
-    ON DATABASE studio_db
-    TO adsportal_fdw;
-GRANT SELECT
-    ON ALL TABLES IN SCHEMA studios
-    TO adsportal_fdw;
-GRANT USAGE
-    ON SCHEMA studios
-    TO adsportal_fdw;
-
-ALTER DEFAULT PRIVILEGES
-    FOR USER stsliquibase
-    IN SCHEMA studios
-    GRANT SELECT
-    ON TABLES TO adsportal_fdw;
 
 
 -- change owner trigger

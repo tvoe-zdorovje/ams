@@ -22,6 +22,7 @@ dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
         mavenCentral()
+        maven(url = "https://packages.confluent.io/maven/")
     }
 }
 

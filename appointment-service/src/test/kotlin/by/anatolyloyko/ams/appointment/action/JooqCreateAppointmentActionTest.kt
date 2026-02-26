@@ -3,7 +3,7 @@ package by.anatolyloyko.ams.appointment.action
 import by.anatolyloyko.ams.appointment.APPOINTMENT_ID
 import by.anatolyloyko.ams.appointment.NEW_APPOINTMENT
 import by.anatolyloyko.ams.appointment.ROUTINES_REFERENCE
-import by.anatolyloyko.ams.orm.jooq.schemas.routines.references.createAppointment
+import by.anatolyloyko.ams.orm.jooq.schemas.appointments.routines.references.createAppointment
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic

@@ -19,15 +19,41 @@ fun createStudio(
       configuration: Configuration
     , iName: String?
     , iDescription: String?
-    , iOwnerUserId: Long?
 ): Long? {
-    val p = CreateStudio()
-    p.setIName(iName)
-    p.setIDescription(iDescription)
-    p.setIOwnerUserId(iOwnerUserId)
+    val f = CreateStudio()
+    f.setIName(iName)
+    f.setIDescription(iDescription)
 
-    p.execute(configuration)
-    return p.getOId()
+    f.execute(configuration)
+    return f.returnValue
+}
+
+/**
+ * Get <code>studios.create_studio</code> as a field.
+ */
+fun createStudio(
+      iName: String?
+    , iDescription: String?
+): Field<Long?> {
+    val f = CreateStudio()
+    f.setIName(iName)
+    f.setIDescription(iDescription)
+
+    return f.asField()
+}
+
+/**
+ * Get <code>studios.create_studio</code> as a field.
+ */
+fun createStudio(
+      iName: Field<String?>
+    , iDescription: Field<String?>
+): Field<Long?> {
+    val f = CreateStudio()
+    f.setIName(iName)
+    f.setIDescription(iDescription)
+
+    return f.asField()
 }
 
 /**

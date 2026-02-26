@@ -1,7 +1,7 @@
 package by.anatolyloyko.ams.appointment.action
 
 import by.anatolyloyko.ams.appointment.model.Appointment
-import by.anatolyloyko.ams.orm.jooq.schemas.routines.references.createAppointment
+import by.anatolyloyko.ams.orm.jooq.schemas.appointments.routines.references.createAppointment
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional

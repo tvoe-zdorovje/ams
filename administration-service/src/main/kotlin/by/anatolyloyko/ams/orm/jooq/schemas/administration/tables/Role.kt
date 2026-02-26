@@ -16,7 +16,7 @@ import org.jooq.InverseForeignKey
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Records
-import org.jooq.Row3
+import org.jooq.Row4
 import org.jooq.Schema
 import org.jooq.SelectField
 import org.jooq.Table
@@ -81,6 +81,11 @@ open class Role(
      */
     val DESCRIPTION: TableField<RoleRecord, String?> = createField(DSL.name("description"), SQLDataType.VARCHAR(255).nullable(false), this, "")
 
+    /**
+     * The column <code>administration.role.is_standard</code>.
+     */
+    val IS_STANDARD: TableField<RoleRecord, Boolean?> = createField(DSL.name("is_standard"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field(DSL.raw("false"), SQLDataType.BOOLEAN)), this, "")
+
     private constructor(alias: Name, aliased: Table<RoleRecord>?): this(alias, null, null, null, aliased, null, null)
     private constructor(alias: Name, aliased: Table<RoleRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
 
@@ -102,18 +107,18 @@ open class Role(
     override fun getPrimaryKey(): UniqueKey<RoleRecord> = Internal.createUniqueKey(Role.ROLE, DSL.name("role_pkey"), arrayOf(Role.ROLE.ID), true)
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row3<Long?, String?, String?> = super.fieldsRow() as Row3<Long?, String?, String?>
+    override fun fieldsRow(): Row4<Long?, String?, String?, Boolean?> = super.fieldsRow() as Row4<Long?, String?, String?, Boolean?>
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    fun <U> mapping(from: (Long?, String?, String?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    fun <U> mapping(from: (Long?, String?, String?, Boolean?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    fun <U> mapping(toType: Class<U>, from: (Long?, String?, String?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    fun <U> mapping(toType: Class<U>, from: (Long?, String?, String?, Boolean?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }
