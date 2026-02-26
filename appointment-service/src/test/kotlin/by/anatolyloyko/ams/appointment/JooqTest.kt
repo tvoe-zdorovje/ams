@@ -1,7 +1,7 @@
 package by.anatolyloyko.ams.appointment
 
-import by.anatolyloyko.ams.orm.jooq.schemas.Appointments
-import by.anatolyloyko.ams.orm.jooq.schemas.tables.references.APPOINTMENT
+import by.anatolyloyko.ams.orm.jooq.schemas.appointments.Appointments
+import by.anatolyloyko.ams.orm.jooq.schemas.appointments.tables.references.APPOINTMENT
 import by.anatolyloyko.ams.orm.jooq.util.executeBatch
 import org.assertj.core.api.WithAssertions
 import org.jooq.DSLContext

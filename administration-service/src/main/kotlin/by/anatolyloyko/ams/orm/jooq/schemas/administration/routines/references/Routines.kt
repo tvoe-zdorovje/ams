@@ -7,15 +7,17 @@ package by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.references
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.AddBrandStudios
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.AddUserRoles
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.AssertRolesBelongTo
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.CreateBrand
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.CreateBrandRole
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.CreateStandardRoleOwner
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.CreateStudio
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.CreateStudioRole
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.DeleteUserRoles
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.RefreshFdwBrand
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.RefreshFdwStudio
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.RefreshFdwUser
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SaveRole
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SetBrandOwner
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SetBrandRoles
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SetRolePermissions
+import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SetStudioOwner
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.routines.SetStudioRoles
 
 import org.jooq.Configuration
@@ -133,6 +135,50 @@ fun assertRolesBelongTo(
 }
 
 /**
+ * Call <code>administration.create_brand</code>
+ */
+fun createBrand(
+      configuration: Configuration
+    , iBrandId: Long?
+    , iUserId: Long?
+): Long? {
+    val f = CreateBrand()
+    f.setIBrandId(iBrandId)
+    f.setIUserId(iUserId)
+
+    f.execute(configuration)
+    return f.returnValue
+}
+
+/**
+ * Get <code>administration.create_brand</code> as a field.
+ */
+fun createBrand(
+      iBrandId: Long?
+    , iUserId: Long?
+): Field<Long?> {
+    val f = CreateBrand()
+    f.setIBrandId(iBrandId)
+    f.setIUserId(iUserId)
+
+    return f.asField()
+}
+
+/**
+ * Get <code>administration.create_brand</code> as a field.
+ */
+fun createBrand(
+      iBrandId: Field<Long?>
+    , iUserId: Field<Long?>
+): Field<Long?> {
+    val f = CreateBrand()
+    f.setIBrandId(iBrandId)
+    f.setIUserId(iUserId)
+
+    return f.asField()
+}
+
+/**
  * Call <code>administration.create_brand_role</code>
  */
 fun createBrandRole(
@@ -184,6 +230,77 @@ fun createBrandRole(
     f.setIName(iName)
     f.setIDescription(iDescription)
     f.setIPermissions(iPermissions)
+
+    return f.asField()
+}
+
+/**
+ * Call <code>administration.create_standard_role_owner</code>
+ */
+fun createStandardRoleOwner(
+      configuration: Configuration
+): Long? {
+    val f = CreateStandardRoleOwner()
+
+    f.execute(configuration)
+    return f.returnValue
+}
+
+/**
+ * Get <code>administration.create_standard_role_owner</code> as a field.
+ */
+fun createStandardRoleOwner(): Field<Long?> {
+    val f = CreateStandardRoleOwner()
+
+    return f.asField()
+}
+
+/**
+ * Call <code>administration.create_studio</code>
+ */
+fun createStudio(
+      configuration: Configuration
+    , iStudioId: Long?
+    , iBrandId: Long?
+    , iUserId: Long?
+): Long? {
+    val f = CreateStudio()
+    f.setIStudioId(iStudioId)
+    f.setIBrandId(iBrandId)
+    f.setIUserId(iUserId)
+
+    f.execute(configuration)
+    return f.returnValue
+}
+
+/**
+ * Get <code>administration.create_studio</code> as a field.
+ */
+fun createStudio(
+      iStudioId: Long?
+    , iBrandId: Long?
+    , iUserId: Long?
+): Field<Long?> {
+    val f = CreateStudio()
+    f.setIStudioId(iStudioId)
+    f.setIBrandId(iBrandId)
+    f.setIUserId(iUserId)
+
+    return f.asField()
+}
+
+/**
+ * Get <code>administration.create_studio</code> as a field.
+ */
+fun createStudio(
+      iStudioId: Field<Long?>
+    , iBrandId: Field<Long?>
+    , iUserId: Field<Long?>
+): Field<Long?> {
+    val f = CreateStudio()
+    f.setIStudioId(iStudioId)
+    f.setIBrandId(iBrandId)
+    f.setIUserId(iUserId)
 
     return f.asField()
 }
@@ -295,39 +412,6 @@ fun deleteUserRoles(
 }
 
 /**
- * Call <code>administration.refresh_fdw_brand</code>
- */
-fun refreshFdwBrand(
-      configuration: Configuration
-): Unit {
-    val p = RefreshFdwBrand()
-
-    p.execute(configuration)
-}
-
-/**
- * Call <code>administration.refresh_fdw_studio</code>
- */
-fun refreshFdwStudio(
-      configuration: Configuration
-): Unit {
-    val p = RefreshFdwStudio()
-
-    p.execute(configuration)
-}
-
-/**
- * Call <code>administration.refresh_fdw_user</code>
- */
-fun refreshFdwUser(
-      configuration: Configuration
-): Unit {
-    val p = RefreshFdwUser()
-
-    p.execute(configuration)
-}
-
-/**
  * Call <code>administration.save_role</code>
  */
 fun saveRole(
@@ -385,6 +469,50 @@ fun saveRole(
     f.setIName(iName)
     f.setIDescription(iDescription)
     f.setIPermissions(iPermissions)
+
+    return f.asField()
+}
+
+/**
+ * Call <code>administration.set_brand_owner</code>
+ */
+fun setBrandOwner(
+      configuration: Configuration
+    , iBrandId: Long?
+    , iUserId: Long?
+): Long? {
+    val f = SetBrandOwner()
+    f.setIBrandId(iBrandId)
+    f.setIUserId(iUserId)
+
+    f.execute(configuration)
+    return f.returnValue
+}
+
+/**
+ * Get <code>administration.set_brand_owner</code> as a field.
+ */
+fun setBrandOwner(
+      iBrandId: Long?
+    , iUserId: Long?
+): Field<Long?> {
+    val f = SetBrandOwner()
+    f.setIBrandId(iBrandId)
+    f.setIUserId(iUserId)
+
+    return f.asField()
+}
+
+/**
+ * Get <code>administration.set_brand_owner</code> as a field.
+ */
+fun setBrandOwner(
+      iBrandId: Field<Long?>
+    , iUserId: Field<Long?>
+): Field<Long?> {
+    val f = SetBrandOwner()
+    f.setIBrandId(iBrandId)
+    f.setIUserId(iUserId)
 
     return f.asField()
 }
@@ -473,6 +601,50 @@ fun setRolePermissions(
     val f = SetRolePermissions()
     f.setIRoleId(iRoleId)
     f.setIPermissions(iPermissions)
+
+    return f.asField()
+}
+
+/**
+ * Call <code>administration.set_studio_owner</code>
+ */
+fun setStudioOwner(
+      configuration: Configuration
+    , iStudioId: Long?
+    , iUserId: Long?
+): Long? {
+    val f = SetStudioOwner()
+    f.setIStudioId(iStudioId)
+    f.setIUserId(iUserId)
+
+    f.execute(configuration)
+    return f.returnValue
+}
+
+/**
+ * Get <code>administration.set_studio_owner</code> as a field.
+ */
+fun setStudioOwner(
+      iStudioId: Long?
+    , iUserId: Long?
+): Field<Long?> {
+    val f = SetStudioOwner()
+    f.setIStudioId(iStudioId)
+    f.setIUserId(iUserId)
+
+    return f.asField()
+}
+
+/**
+ * Get <code>administration.set_studio_owner</code> as a field.
+ */
+fun setStudioOwner(
+      iStudioId: Field<Long?>
+    , iUserId: Field<Long?>
+): Field<Long?> {
+    val f = SetStudioOwner()
+    f.setIStudioId(iStudioId)
+    f.setIUserId(iUserId)
 
     return f.asField()
 }

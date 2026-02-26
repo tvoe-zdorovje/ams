@@ -395,7 +395,7 @@ naming:
     maximumVariableNameLength: 64
   VariableMinLength:
     active: true
-    minimumVariableNameLength: 3
+    minimumVariableNameLength: 2
   VariableNaming:
     active: true
     excludes: [ '**/test/**' ]

@@ -1,15 +1,18 @@
 package by.anatolyloyko.ams.administration
 
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.Administration
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.BRAND
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.BRAND_ROLES
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.PERMISSION
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.ROLE
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.ROLE_PERMISSIONS
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.STUDIO
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.STUDIO_ROLES
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.USER
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references.USER_ROLES
+import by.anatolyloyko.ams.orm.jooq.schemas.brands.Brands
+import by.anatolyloyko.ams.orm.jooq.schemas.brands.tables.references.BRAND
+import by.anatolyloyko.ams.orm.jooq.schemas.studios.Studios
+import by.anatolyloyko.ams.orm.jooq.schemas.studios.tables.references.STUDIO
+import by.anatolyloyko.ams.orm.jooq.schemas.users.Users
+import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.references.USER
 import by.anatolyloyko.ams.orm.jooq.util.executeBatch
 import org.assertj.core.api.WithAssertions
 import org.jooq.DSLContext
@@ -42,6 +45,9 @@ abstract class JooqTest : WithAssertions {
     private fun setUpDatabase() = with(dslContext) {
         executeBatch(
             createSchemaIfNotExists(Administration()),
+            createSchemaIfNotExists(Users()),
+            createSchemaIfNotExists(Brands()),
+            createSchemaIfNotExists(Studios()),
 
             createTableIfNotExists(USER)
                 .columns(*USER.fields()),

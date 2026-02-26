@@ -4,15 +4,12 @@
 package by.anatolyloyko.ams.orm.jooq.schemas.administration
 
 
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.Brand
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.BrandRoles
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.BrandStudios
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.Permission
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.Role
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.RolePermissions
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.Studio
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.StudioRoles
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.User
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.UserRoles
 
 import kotlin.collections.List
@@ -33,11 +30,6 @@ open class Administration : SchemaImpl("administration", null) {
          */
         val ADMINISTRATION: Administration = Administration()
     }
-
-    /**
-     * The table <code>administration.brand</code>.
-     */
-    val BRAND: Brand get() = Brand.BRAND
 
     /**
      * The table <code>administration.brand_roles</code>.
@@ -65,19 +57,9 @@ open class Administration : SchemaImpl("administration", null) {
     val ROLE_PERMISSIONS: RolePermissions get() = RolePermissions.ROLE_PERMISSIONS
 
     /**
-     * The table <code>administration.studio</code>.
-     */
-    val STUDIO: Studio get() = Studio.STUDIO
-
-    /**
      * The table <code>administration.studio_roles</code>.
      */
     val STUDIO_ROLES: StudioRoles get() = StudioRoles.STUDIO_ROLES
-
-    /**
-     * The table <code>administration.user</code>.
-     */
-    val USER: User get() = User.USER
 
     /**
      * The table <code>administration.user_roles</code>.
@@ -85,15 +67,12 @@ open class Administration : SchemaImpl("administration", null) {
     val USER_ROLES: UserRoles get() = UserRoles.USER_ROLES
 
     override fun getTables(): List<Table<*>> = listOf(
-        Brand.BRAND,
         BrandRoles.BRAND_ROLES,
         BrandStudios.BRAND_STUDIOS,
         Permission.PERMISSION,
         Role.ROLE,
         RolePermissions.ROLE_PERMISSIONS,
-        Studio.STUDIO,
         StudioRoles.STUDIO_ROLES,
-        User.USER,
         UserRoles.USER_ROLES
     )
 }

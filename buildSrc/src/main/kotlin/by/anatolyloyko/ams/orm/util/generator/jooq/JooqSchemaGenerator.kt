@@ -11,6 +11,7 @@ import org.jooq.meta.jaxb.SchemaMappingType
 import org.jooq.meta.jaxb.Target
 import org.jooq.meta.postgres.PostgresDatabase
 import java.sql.DriverManager
+import kotlin.run
 
 // This is a Java regular expression.
 // Use the pipe to separate several expressions.
@@ -53,11 +54,10 @@ internal class JooqSchemaGenerator(
     private fun GenerationTool.generate(
         configuration: Configuration,
         schemaNames: Iterable<String>
-    ) = schemaNames.forEach { schemaName ->
+    ) {
         configuration.generator.apply {
-            val schema = SchemaMappingType().withInputSchema(schemaName)
-            database.schemata = listOf(schema)
-            target.packageName = "${target.packageName}.$schemaName"
+            database.schemata = schemaNames.map { SchemaMappingType().withInputSchema(it) }
+            target.packageName = destinationPackage + if (schemaNames.count() == 1) ".${schemaNames.first()}" else ""
         }
 
         run(configuration)

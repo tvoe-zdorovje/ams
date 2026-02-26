@@ -4,23 +4,15 @@
 package by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.references
 
 
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.Brand
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.BrandRoles
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.BrandStudios
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.Permission
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.Role
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.RolePermissions
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.Studio
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.StudioRoles
-import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.User
 import by.anatolyloyko.ams.orm.jooq.schemas.administration.tables.UserRoles
 
 
-
-/**
- * The table <code>administration.brand</code>.
- */
-val BRAND: Brand = Brand.BRAND
 
 /**
  * The table <code>administration.brand_roles</code>.
@@ -48,19 +40,9 @@ val ROLE: Role = Role.ROLE
 val ROLE_PERMISSIONS: RolePermissions = RolePermissions.ROLE_PERMISSIONS
 
 /**
- * The table <code>administration.studio</code>.
- */
-val STUDIO: Studio = Studio.STUDIO
-
-/**
  * The table <code>administration.studio_roles</code>.
  */
 val STUDIO_ROLES: StudioRoles = StudioRoles.STUDIO_ROLES
-
-/**
- * The table <code>administration.user</code>.
- */
-val USER: User = User.USER
 
 /**
  * The table <code>administration.user_roles</code>.

@@ -1,0 +1,27 @@
+{
+  "type": "record",
+  "name": "BrandEvent",
+  "namespace": "by.anatolyloyko.ams.brand.kafka.schema",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long"
+    },
+    {
+      "name": "userId",
+      "type": "long"
+    },
+    {
+      "name": "type",
+      "type": {
+        "type": "enum",
+        "name": "EventType",
+        "symbols": [
+          "CREATED"
+        ]
+      },
+      "default": "CREATED"
+    }
+  ],
+  "connect.name": "by.anatolyloyko.ams.brand.kafka.schema.BrandEvent"
+}

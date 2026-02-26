@@ -38,6 +38,7 @@ class StudioMutationsResolver(
     ): Long = commandGateway.handle(
         SaveStudioCommand(
             loggedUserId = loggedUser.id,
+            brandId = request.organizationId,
             input = Studio(
                 name = request.name,
                 description = request.description,
@@ -60,6 +61,7 @@ class StudioMutationsResolver(
     ): Long = commandGateway.handle(
         SaveStudioCommand(
             loggedUserId = loggedUser.id,
+            brandId = 0L,
             input = Studio(
                 id = request.organizationId,
                 name = request.name,

@@ -4,6 +4,7 @@ extend type StudioMutations {
 }
 
 input CreateStudioRequest {
+    organizationId: ID! # brand id
     name: String!
     description: String!
 }

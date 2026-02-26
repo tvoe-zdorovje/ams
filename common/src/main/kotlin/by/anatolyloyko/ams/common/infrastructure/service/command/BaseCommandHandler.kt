@@ -1,6 +1,7 @@
 package by.anatolyloyko.ams.common.infrastructure.service.command
 
 import by.anatolyloyko.ams.common.infrastructure.logging.log
+import org.springframework.transaction.annotation.Transactional
 import java.lang.reflect.ParameterizedType
 
 /**
@@ -33,6 +34,7 @@ abstract class BaseCommandHandler<I : Command<R>, R : Any> : CommandHandler {
      * @param command the command to handle.
      * @return the result of the command execution.
      */
+    @Transactional
     override fun handle(command: Command<*>): R {
         log.info("Handling command $command")
         @Suppress("UNCHECKED_CAST")

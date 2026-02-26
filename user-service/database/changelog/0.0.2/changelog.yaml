@@ -4,5 +4,5 @@ databaseChangeLog:
       author: anatolyloyko
       changes:
         - sqlFile:
-            path: changelog/0.0.2/01_create_save-user_function.sql
+            path: changelog/0.0.2/01_create_publication_for_kafka-connect.sql
             endDelimiter: "$$"

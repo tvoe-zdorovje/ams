@@ -8,6 +8,7 @@ DECLARE
     _role_id BIGINT;
 BEGIN
     _role_id = administration.save_role(
+        i_studio_id,
         null,
         i_name,
         i_description,
@@ -19,3 +20,4 @@ BEGIN
     RETURN _role_id;
 END;
 $$ LANGUAGE plpgsql;
+

@@ -2,9 +2,10 @@ CREATE SEQUENCE IF NOT EXISTS administration.role_id_seq START WITH 100000000161
 
 
 CREATE OR REPLACE FUNCTION administration.save_role(
+    i_organization_id BIGINT,
     i_id BIGINT,
     i_name VARCHAR(50),
-    i_description TEXT,
+    i_description VARCHAR(50),
     i_permissions BIGINT[]
 ) RETURNS BIGINT AS $$
 DECLARE
@@ -18,17 +19,19 @@ BEGIN
             name,
             description
         ) VALUES (
-            nextval(id_seq_name),
-            i_name,
-            i_description
-        )
+                     nextval(id_seq_name),
+                     i_name,
+                     i_description
+                 )
         RETURNING id INTO o_id;
     ELSE
+        PERFORM administration.assert_roles_belong_to(i_organization_id, ARRAY[i_id]);
+
         UPDATE administration."role"
-            SET
-                name = i_name,
-                description = i_description
-            WHERE id = i_id;
+        SET
+            name = i_name,
+            description = i_description
+        WHERE id = i_id;
     END IF;
 
 
