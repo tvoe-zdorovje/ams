@@ -1,0 +1,34 @@
+{
+  "name": "user-events_administration-db_sink-connector",
+  "config": {
+    "topics": "v1.users.user",
+
+    "connector.class": "io.debezium.connector.jdbc.JdbcSinkConnector",
+    "connection.url": "jdbc:postgresql://administration_db:5432/administration_db",
+    "connection.username": "adsdebezium",
+    "connection.password": "adsdebezium",
+    "dialect.name": "PostgreSqlDatabaseDialect",
+
+    "insert.mode": "upsert",
+    "delete.enabled": "false",
+
+    "primary.key.mode": "record_value",
+    "primary.key.fields": "id",
+
+    "auto.create": "false",
+    "auto.evolve": "false",
+    "schema.evolution": "none",
+    "table.name.format": "users.user",
+
+    "transforms": "dropOp",
+    "transforms.dropOp.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.dropOp.exclude": "op",
+
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter.schemas.enable": "false",
+
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "value.converter.schemas.enable": "false"
+  }
+}

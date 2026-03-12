@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+  annotations:
+    {{- include "default.annotations" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "default.labels" . | indent 8 }}
+      annotations:
+        checksum/config-env: {{ include (print $.Template.BasePath "/configmap-env.yml") . | sha256sum }}
+        checksum/config-connectors: {{ include (print $.Template.BasePath "/configmap-connectors.yml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ . }}
+      {{- end }}
+      containers:
+        - name: {{ .Release.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- include "required.container.parameters" . | indent 10 }}
+          ports:
+            {{- range $value := .Values.service.ports }}
+            - name: {{ $value.name | default (printf "port-%v" $value.targetPort) }}
+              containerPort: {{ $value.targetPort }}
+              protocol: {{ $value.protocol }}
+            {{- end }}
+          {{- if or .Values.cm .Values.secret }}
+          envFrom:
+          {{- if .Values.cm }}
+            - configMapRef:
+                name: {{ .Release.Name }}-env
+          {{- end }}
+          {{- if .Values.secret }}
+            - secretRef:
+                name: {{ .Release.Name }}
+          {{- end }}
+          {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.startupProbe }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: connectors-config
+              mountPath: {{ .Values.connectors.mountPath }}
+              readOnly: true
+      volumes:
+        - name: connectors-config
+          configMap:
+            name: {{ .Release.Name }}-connectors
+      {{- with .Values.affinity }}
+      affinity:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}

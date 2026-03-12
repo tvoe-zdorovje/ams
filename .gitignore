@@ -41,3 +41,4 @@ bin/
 
 
 /log/
+/infrastructure/k8s/secrets/

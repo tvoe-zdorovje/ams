@@ -1,5 +1,7 @@
 FROM confluentinc/cp-kafka-connect:8.0.3
 
+LABEL org.opencontainers.image.source https://github.com/tvoe-zdorovje/ams
+
 USER root
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
