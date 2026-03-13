@@ -3,7 +3,7 @@ kafkaConnect:
   useConnectorResources: true
 
   replicas: 1
-  bootstrapServers: kafka:29092
+  bootstrapServers: kafka-kafka-bootstrap:29092
   groupId: kafka-connect-group
   configStorageTopic: kafka-connect-configs
   offsetStorageTopic: kafka-connect-offsets

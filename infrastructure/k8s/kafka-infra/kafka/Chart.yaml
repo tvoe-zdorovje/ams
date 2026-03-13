@@ -1,6 +1,6 @@
 apiVersion: v2
 name: ams-kafka
-description: A Helm chart for deploying Kafka
+description: A Helm chart for deploying Kafka with Strimzi
 type: application
 version: 0.1.0
-appVersion: "8.0.3"
+appVersion: "4.2.0"

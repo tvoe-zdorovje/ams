@@ -1,75 +1,60 @@
-replicaCount: 1
+kafka:
+  listeners:
+    - name: plain
+      port: 29092
+      type: internal
+      tls: false
 
-image:
-  repository: "confluentinc/cp-kafka"
-  tag: "8.0.3"
-  pullPolicy: IfNotPresent
+  config:
+    default.replication.factor: 1
+    min.insync.replicas: 1
+    offsets.topic.replication.factor: 1
+    offsets.topic.num.partitions: 1
+    num.partitions: 1
+    group.initial.rebalance.delay.ms: 0
+    transaction.state.log.min.isr: 1
+    transaction.state.log.replication.factor: 1
+    auto.create.topics.enable: false
 
-service:
-  ports:
-    - port: 29092
-      targetPort: 29092
-      protocol: TCP
-      name: client
-    - port: 29093
-      targetPort: 29093
-      protocol: TCP
-      name: internal
+  livenessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    failureThreshold: 3
+    successThreshold: 1
 
-persistence:
-  accessModes: ReadWriteOnce
-  storage: 256Mi
-  path: /var/lib/kafka/data
+  readinessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    failureThreshold: 3
+    successThreshold: 1
 
-resources:
-  requests:
-    cpu: 125m
-    memory: 256Mi
+  startupProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    successThreshold: 1
 
-readinessProbe:
-  tcpSocket:
-    port: 29092
-  initialDelaySeconds: 30
-  periodSeconds: 15
-  failureThreshold: 3
-  successThreshold: 1
+  nodePool:
+    replicas: 1
+    roles:
+      - controller
+      - broker
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+    storage:
+      type: persistent-claim
+      size: 256Mi
+      deleteClaim: false
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - "{{ .Release.Name }}"
+            topologyKey: kubernetes.io/hostname
 
-livenessProbe:
-  tcpSocket:
-    port: 29092
-  initialDelaySeconds: 30
-  periodSeconds: 15
-  failureThreshold: 3
-  successThreshold: 1
-
-startupProbe:
-  tcpSocket:
-    port: 29092
-  initialDelaySeconds: 30
-  periodSeconds: 15
-  successThreshold: 1
-
-cm:
-  env:
-    KAFKA_BROKER_ID: 1
-    KAFKA_NODE_ID: 1
-    KAFKA_PROCESS_ROLES: broker,controller
-    KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-0.kafka.kafka.svc.cluster.local:29093
-    KAFKA_LISTENERS: PLAINTEXT://:29092,CONTROLLER://:29093
-    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,
-    KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-0.kafka.kafka.svc.cluster.local:29092
-    KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-    KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-    KAFKA_DEFAULT_REPLICATION_FACTOR: 1
-    KAFKA_MIN_INSYNC_REPLICAS: 1
-    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    KAFKA_OFFSETS_TOPIC_NUM_PARTITIONS: 1
-    KAFKA_NUM_PARTITIONS: 1
-    KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-    KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-    KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-    KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry
-    KAFKA_LOG_DIRS: /var/lib/kafka/data/log
-    KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
-    CLUSTER_ID: qtYbt-BeTuCoNnuqDxqY6Q
-
+  entityOperator: {}

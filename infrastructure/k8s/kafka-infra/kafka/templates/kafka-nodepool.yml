@@ -1,0 +1,26 @@
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaNodePool
+metadata:
+  name: {{ .Release.Name }}-pool
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+    strimzi.io/cluster: {{ .Release.Name }}
+  annotations:
+    {{- include "default.annotations" . | indent 4 }}
+spec:
+  replicas: {{ .Values.kafka.nodePool.replicas }}
+  roles:
+    {{- toYaml .Values.kafka.nodePool.roles | nindent 4 }}
+  storage:
+    {{- toYaml .Values.kafka.nodePool.storage | nindent 4 }}
+  {{- with .Values.kafka.nodePool.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    pod:
+      {{- with .Values.kafka.nodePool.affinity }}
+      affinity:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
