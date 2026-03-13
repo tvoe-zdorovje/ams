@@ -384,7 +384,7 @@ services:
     image: ams/kafka-connect:8.0.3-debezium-3.4.1
     build:
       context: .
-      dockerfile: kafka/connect/Dockerfile
+      dockerfile: infrastructure/kafka/connect/Dockerfile
       args:
         DEBEZIUM_VERSION: 3.4.1.Final
     hostname: kafka-connect

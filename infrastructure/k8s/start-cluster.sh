@@ -57,11 +57,11 @@ done
 
 echo ""
 echo "== Install Kafka =="
-helm install kafka ./data/kafka -n kafka
+helm install kafka ./kafka-infra/kafka -n kafka
 
 echo ""
 echo "== Install Kafka-Connect =="
-helm install kafka-connect ./data/kafka-connect -n kafka
+helm install kafka-connect ./kafka-infra/kafka-connect -n kafka
 
 # ...
 
