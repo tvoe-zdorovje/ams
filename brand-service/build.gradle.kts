@@ -65,7 +65,7 @@ tasks.register("generateDatabaseSchema") {
 
 tasks.named<GenerateAvroJavaTask>("generateAvroJava") {
     source(
-        fileTree(rootProject.layout.projectDirectory.dir("kafka/schema-registry/brand")) {
+        fileTree(rootProject.layout.projectDirectory.dir("infrastructure/kafka/schema-registry/brand")) {
             include("**/*.avsc")
         }
     )

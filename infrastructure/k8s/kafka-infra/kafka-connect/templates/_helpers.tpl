@@ -6,7 +6,3 @@ chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 {{- define "default.annotations" }}
 deploymentTime: {{ now | date "02.01.2006 15:04:05" }}
 {{- end }}
-
-{{- define "required.container.parameters" }}
-terminationMessagePolicy: FallbackToLogsOnError
-{{- end }}

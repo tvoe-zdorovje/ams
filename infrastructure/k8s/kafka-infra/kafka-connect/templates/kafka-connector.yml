@@ -1,0 +1,30 @@
+{{- $Release := .Release }}
+{{- range $connector := .Values.connectors }}
+---
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaConnector
+metadata:
+  name: {{ $Release.Name }}-{{ $connector.name }}
+  namespace: {{ $Release.Namespace | quote }}
+  labels:
+    strimzi.io/cluster: {{ $Release.Name }}
+    {{- with $connector.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with $connector.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  class: {{ $connector.class | quote }}
+  tasksMax: {{ $connector.tasksMax | default 1 }}
+  {{- with $connector.state }}
+  state: {{ . | quote }}
+  {{- end }}
+  {{- with $connector.autoRestart }}
+  autoRestart:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  config:
+    {{- toYaml $connector.config | nindent 4 }}
+{{- end }}
