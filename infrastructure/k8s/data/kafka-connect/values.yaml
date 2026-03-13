@@ -1,85 +1,161 @@
-replicaCount: 1
+kafkaConnect:
+  name: kafka-connect
+  useConnectorResources: true
 
-image:
-  repository: "ghcr.io/tvoe-zdorovje/ams/kafka-connect"
-  tag: "8.0.3-debezium-3.4.1"
-  pullPolicy: IfNotPresent
-  pullSecret: github-registry
+  replicas: 1
+  bootstrapServers: kafka:29092
+  groupId: kafka-connect-group
+  configStorageTopic: kafka-connect-configs
+  offsetStorageTopic: kafka-connect-offsets
+  statusStorageTopic: kafka-connect-status
 
-service:
-  ports:
-    - port: 8083
-      targetPort: 8083
-      protocol: TCP
-      name: rest
+  image:
+    pullSecrets:
+      - name: github-registry
+
+  build:
+    output:
+      type: docker
+      image: ghcr.io/tvoe-zdorovje/ams/kafka-connect:strimzi-4.2.0
+      pushSecret: github-registry
+      additionalBuildOptions: []
+      additionalPushOptions: []
+    plugins:
+      - name: confluent-avro
+        artifacts:
+          - type: maven
+            repository: https://packages.confluent.io/maven/
+            group: io.confluent
+            artifact: kafka-connect-avro-converter
+            version: 8.0.3
+      - name: debezium-connector-postgresql
+        artifacts:
+          - type: tgz
+            url: https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/3.4.1.Final/debezium-connector-postgres-3.4.1.Final-plugin.tar.gz
+      - name: debezium-connector-jdbc
+        artifacts:
+          - type: tgz
+            url: https://repo1.maven.org/maven2/io/debezium/debezium-connector-jdbc/3.4.1.Final/debezium-connector-jdbc-3.4.1.Final-plugin.tar.gz
+
+  config:
+    config.storage.replication.factor: 1
+    offset.storage.replication.factor: 1
+    status.storage.replication.factor: 1
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: io.confluent.connect.avro.AvroConverter
+    value.converter.schema.registry.url: http://schema-registry:8081
+    value.converter.auto.register.schemas: true
+    internal.key.converter: org.apache.kafka.connect.json.JsonConverter
+    internal.value.converter: org.apache.kafka.connect.json.JsonConverter
+    topic.creation.enable: true
+    topic.creation.default.partitions: 3
+    topic.creation.default.replication.factor: 1
+
+  resources:
+    requests:
+      cpu: 125m
+      memory: 256Mi
+
+  livenessProbe:
+    initialDelaySeconds: 60
+    timeoutSeconds: 5
+    periodSeconds: 10
+    failureThreshold: 5
+
+  readinessProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 5
+    periodSeconds: 10
+    failureThreshold: 5
+
+  logging:
+    type: inline
+    loggers:
+      rootLogger.level: INFO
+
+  jvmOptions: {}
+
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - "{{ .Release.Name }}"
+          topologyKey: "kubernetes.io/hostname"
 
 connectors:
-  mountPath: /etc/kafka-connect/connectors
+  - name: user-events-source
+    class: io.debezium.connector.postgresql.PostgresConnector
+    tasksMax: 1
+    state: running
+    config:
+      plugin.name: pgoutput
+      database.hostname: user_db
+      database.port: 5432
+      database.user: ussdebezium
+      database.password: ussdebezium
+      database.dbname: user_db
+      database.server.name: user_db_server
+      table.include.list: users.user, debezium.heartbeat_table
+      topic.prefix: v1
+      value.converter: io.confluent.connect.avro.AvroConverter
+      value.converter.schema.registry.url: http://schema-registry:8081
+      value.converter.schemas.enable: false
+      heartbeat.interval.ms: 5000
+      heartbeat.action.query: INSERT INTO debezium.heartbeat_table (id, updated_at) VALUES (1, NOW()) ON CONFLICT(id) DO UPDATE SET updated_at=EXCLUDED.updated_at;
+      slot.name: postgres_debezium
+      publication.name: user_outbox_publication
+      publication.autocreate.mode: disabled
+      snapshot.mode: never
+      topic.creation.enable: true
+      topic.creation.default.partitions: 3
+      topic.creation.default.replication.factor: 1
+      predicates: user-events-predicate
+      predicates.user-events-predicate.type: org.apache.kafka.connect.transforms.predicates.TopicNameMatches
+      predicates.user-events-predicate.pattern: v1.users.user
+      transforms: unwrap,keep,SetValueSchema
+      transforms.unwrap.type: io.debezium.transforms.ExtractNewRecordState
+      transforms.unwrap.delete.handling.mode: rewrite
+      transforms.unwrap.add.fields.prefix: ""
+      transforms.unwrap.add.fields: op
+      transforms.unwrap.drop.tombstones: true
+      transforms.keep.type: org.apache.kafka.connect.transforms.ReplaceField$Value
+      transforms.keep.include: id,op
+      transforms.keep.predicate: user-events-predicate
+      transforms.SetValueSchema.type: org.apache.kafka.connect.transforms.SetSchemaMetadata$Value
+      transforms.SetValueSchema.schema.name: by.anatolyloyko.ams.user.kafka.schema.UserEvent
+      transforms.SetValueSchema.predicate: user-events-predicate
+      message.key.columns: users.user:id
+      key.converter: org.apache.kafka.connect.storage.StringConverter
+      key.converter.schemas.enable: false
+      tombstones.on.delete: false
 
-resources:
-  requests:
-    cpu: 125m
-    memory: 256Mi
-
-readinessProbe:
-  httpGet:
-    path: /connector-plugins
-    port: rest
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 5
-
-livenessProbe:
-  httpGet:
-    path: /connector-plugins
-    port: rest
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 5
-
-startupProbe:
-  httpGet:
-    path: /connector-plugins
-    port: rest
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 6
-
-podAnnotations: {}
-affinity:
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-            - key: app
-              operator: In
-              values:
-                - "{{ .Release.Name }}"
-        topologyKey: "kubernetes.io/hostname"
-tolerations: []
-
-cm:
-  env:
-    CONNECT_BOOTSTRAP_SERVERS: kafka:29092
-    CONNECT_REST_ADVERTISED_HOST_NAME: "{{ .Release.Name }}"
-    CONNECT_REST_PORT: 8083
-    CONNECT_GROUP_ID: kafka-connect-group
-    CONNECT_TOPIC_CREATION_ENABLE: "true"
-    CONNECT_TOPIC_PARTITIONS: 3
-    CONNECT_TOPIC_REPLICATION_FACTOR: 1
-    CONNECT_CONFIG_STORAGE_TOPIC: kafka-connect-configs
-    CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-    CONNECT_OFFSET_STORAGE_TOPIC: kafka-connect-offsets
-    CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-    CONNECT_STATUS_STORAGE_TOPIC: kafka-connect-status
-    CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-    CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
-    CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-    CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-    CONNECT_VALUE_CONVERTER_AUTO_REGISTER_SCHEMAS: "true"
-    CONNECT_PUBLICATION_AUTOCREATE_MODE: "disabled"
-    CONNECT_SLOT_AUTOCREATE: "true"
-    CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-    CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-    CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components
-    CONNECT_SNAPSHOT_MODE: "never"
+  - name: user-events-sink
+    class: io.debezium.connector.jdbc.JdbcSinkConnector
+    tasksMax: 1
+    state: running
+    config:
+      topics: v1.users.user
+      connection.url: jdbc:postgresql://administration_db:5432/administration_db
+      connection.username: adsdebezium
+      connection.password: adsdebezium
+      dialect.name: PostgreSqlDatabaseDialect
+      insert.mode: upsert
+      delete.enabled: false
+      primary.key.mode: record_value
+      primary.key.fields: id
+      auto.create: false
+      auto.evolve: false
+      schema.evolution: none
+      table.name.format: users.user
+      transforms: dropOp
+      transforms.dropOp.type: org.apache.kafka.connect.transforms.ReplaceField$Value
+      transforms.dropOp.exclude: op
+      key.converter: org.apache.kafka.connect.storage.StringConverter
+      key.converter.schemas.enable: false
+      value.converter: io.confluent.connect.avro.AvroConverter
+      value.converter.schema.registry.url: http://schema-registry:8081
+      value.converter.schemas.enable: false

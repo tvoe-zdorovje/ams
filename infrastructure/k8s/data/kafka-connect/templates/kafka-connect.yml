@@ -1,0 +1,73 @@
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaConnect
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+  annotations:
+    {{- include "default.annotations" . | indent 4 }}
+    {{- if .Values.kafkaConnect.useConnectorResources }}
+    strimzi.io/use-connector-resources: "true"
+    {{- end }}
+spec:
+  version: {{ .Chart.AppVersion | quote }}
+  replicas: {{ .Values.kafkaConnect.replicas }}
+  bootstrapServers: {{ .Values.kafkaConnect.bootstrapServers | quote }}
+  groupId: {{ .Values.kafkaConnect.groupId | quote }}
+  configStorageTopic: {{ .Values.kafkaConnect.configStorageTopic | quote }}
+  offsetStorageTopic: {{ .Values.kafkaConnect.offsetStorageTopic | quote }}
+  statusStorageTopic: {{ .Values.kafkaConnect.statusStorageTopic | quote }}
+  build:
+    output:
+      type: {{ .Values.kafkaConnect.build.output.type | quote }}
+      image: {{ .Values.kafkaConnect.build.output.image | quote }}
+      {{- with .Values.kafkaConnect.build.output.pushSecret }}
+      pushSecret: {{ . | quote }}
+      {{- end }}
+      {{- with .Values.kafkaConnect.build.output.additionalBuildOptions }}
+      additionalBuildOptions:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kafkaConnect.build.output.additionalPushOptions }}
+      additionalPushOptions:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    plugins:
+      {{- toYaml .Values.kafkaConnect.build.plugins | nindent 6 }}
+  config:
+    {{- toYaml .Values.kafkaConnect.config | nindent 4 }}
+  {{- with .Values.kafkaConnect.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.kafkaConnect.logging }}
+  logging:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.kafkaConnect.jvmOptions }}
+  jvmOptions:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.kafkaConnect.livenessProbe }}
+  livenessProbe:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.kafkaConnect.readinessProbe }}
+  readinessProbe:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.kafkaConnect.startupProbe }}
+  startupProbe:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    pod:
+      {{- with .Values.kafkaConnect.image.pullSecrets }}
+      imagePullSecrets:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kafkaConnect.affinity }}
+      affinity:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
