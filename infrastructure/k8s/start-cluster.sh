@@ -60,6 +60,10 @@ echo "== Install Kafka =="
 helm install kafka ./kafka-infra/kafka -n kafka
 
 echo ""
+echo "== Install Schema Registry =="
+helm install schema-registry ./kafka-infra/schema-registry -n kafka
+
+echo ""
 echo "== Install Kafka-Connect =="
 helm install kafka-connect ./kafka-infra/kafka-connect -n kafka
 
