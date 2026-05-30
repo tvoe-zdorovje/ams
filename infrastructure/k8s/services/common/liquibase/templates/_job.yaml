@@ -1,0 +1,71 @@
+{{- define "common.liquibase.job" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-liquibase
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- with .Values.liquibase.hook }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
+spec:
+  backoffLimit: {{ .Values.liquibase.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.liquibase.ttlSecondsAfterFinished }}
+  template:
+    spec:
+      {{- with .Values.liquibase.image.pullSecrets }}
+      imagePullSecrets:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: wait-for-postgres
+          image: {{ .Values.liquibase.initContainer.image.repository }}:{{ .Values.liquibase.initContainer.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.liquibase.initContainer.image.pullPolicy }}
+          {{- if or .Values.liquibase.cm .Values.liquibase.secrets }}
+          terminationMessagePolicy: FallbackToLogsOnError
+          envFrom:
+            {{- if .Values.liquibase.cm }}
+            - configMapRef:
+                name: {{ .Release.Name }}-env
+            {{- end }}
+            {{- if .Values.liquibase.secrets }}
+            {{- range $secret := .Values.liquibase.secrets }}
+            - secretRef:
+                name: {{ $secret.name }}
+            {{- end }}
+            {{- end }}
+          {{- end }}
+          command:
+            - sh
+            - -c
+            - until pg_isready -h $PGHOST -U $PGUSER; do echo waiting for postgres; sleep 2; done;
+      containers:
+        - name: liquibase
+          image: {{ .Values.liquibase.image.repository }}:{{ .Values.liquibase.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.liquibase.image.pullPolicy }}
+          terminationMessagePolicy: FallbackToLogsOnError
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              liquibase \
+                --url=jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE} \
+                --username=${PGUSER} \
+                --password=${PGPASSWORD} \
+                --changelog-file={{ .Values.liquibase.changelogFile }} \
+                update
+          {{- if or .Values.liquibase.cm .Values.liquibase.secrets }}
+          envFrom:
+            {{- if .Values.liquibase.cm }}
+            - configMapRef:
+                name: {{ .Release.Name }}-env
+            {{- end }}
+            {{- if .Values.liquibase.secrets }}
+            {{- range $secret := .Values.liquibase.secrets }}
+            - secretRef:
+                name: {{ $secret.name }}
+            {{- end }}
+            {{- end }}
+          {{- end }}
+      restartPolicy: Never
+
+{{- end }}

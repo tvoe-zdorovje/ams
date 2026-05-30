@@ -22,7 +22,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: schema-registry
-          image: "{{ .Values.schemaRegistry.image.repository }}:{{ .Values.schemaRegistry.image.tag }}"
+          image: "{{ .Values.schemaRegistry.image.repository }}:{{ .Values.schemaRegistry.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.schemaRegistry.image.pullPolicy }}
           ports:
             - name: http

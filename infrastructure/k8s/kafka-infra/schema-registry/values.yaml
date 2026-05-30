@@ -3,7 +3,7 @@ schemaRegistry:
 
   image:
     repository: confluentinc/cp-schema-registry
-    tag: 8.0.3
+    tag: ""
     pullPolicy: IfNotPresent
 
   service:

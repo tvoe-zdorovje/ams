@@ -1,0 +1,110 @@
+{{- define "common.service.deployment" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+  annotations:
+    {{- include "default.annotations" . | indent 4}}
+spec:
+  replicas: {{ .Values.service.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ (.Values.service.deployment.rollingUpdate | default dict).maxSurge | default 1 }}
+      maxUnavailable: {{ (.Values.service.deployment.rollingUpdate | default dict).maxUnavailable | default 1 }}
+  template:
+    metadata:
+      labels:
+        {{- include "default.labels" . | indent 8 }}
+      annotations:
+        {{- if .Values.service.cm }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-env.yml") . | sha256sum }}
+        {{- end }}
+    spec:
+      {{- with .Values.service.image.pullSecrets }}
+      imagePullSecrets:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Release.Name }}
+          {{- include "required.container.parameters" . | indent 10  }}
+          image: {{ .Values.service.image.repository }}:{{ .Values.service.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.service.image.pullPolicy }}
+          {{- if .Values.service.command }}
+          args:
+          {{ toYaml .Values.service.command.args | indent 12 }}
+          {{- end }}
+          ports:
+          {{- range $value := .Values.service.service.ports }}
+            - containerPort: {{ $value.targetPort }}
+              protocol: {{ $value.protocol }}
+          {{- end }}
+          {{- if or .Values.service.cm .Values.service.secrets }}
+          envFrom:
+          {{- if .Values.service.cm }}
+            - configMapRef:
+                name: {{ .Release.Name }}-env
+          {{- end }}
+          {{- if .Values.service.secrets }}
+            {{- range $secret := .Values.service.secrets }}
+            - secretRef:
+                name: {{ $secret.name }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.service.deployment.livenessProbe }}
+          livenessProbe:
+            {{ toYaml .Values.service.deployment.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.readinessProbe }}
+          readinessProbe:
+            {{ toYaml .Values.service.deployment.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.startupProbe }}
+          startupProbe:
+            {{ toYaml .Values.service.deployment.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.resources }}
+          resources:
+          {{- if .Values.service.deployment.resources.requests }}
+            requests:
+          {{- if .Values.service.deployment.resources.requests.cpu }}
+              cpu: {{ .Values.service.deployment.resources.requests.cpu | default "125m" }}
+          {{- end }}
+          {{- if .Values.service.deployment.resources.requests.memory }}
+              memory: {{ .Values.service.deployment.resources.requests.memory | default "256Mi" }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.service.deployment.resources.limits }}
+            limits:
+          {{- if .Values.service.deployment.resources.limits.cpu }}
+              cpu: {{ .Values.service.deployment.resources.limits.cpu }}
+          {{- end }}
+          {{- if .Values.service.deployment.resources.limits.memory }}
+              memory: {{ .Values.service.deployment.resources.limits.memory }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-directory
+      volumes:
+        - name: tmp-directory
+          emptyDir: { }
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Release.Name }}
+              topologyKey: "kubernetes.io/hostname"
+{{- end }}

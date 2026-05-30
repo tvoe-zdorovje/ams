@@ -1,11 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+DELETE_MODE=false
+
+for arg in "$@"; do
+    if [ "$arg" = "--delete" ]; then
+        DELETE_MODE=true
+        break
+    fi
+done
+
 CLUSTER_NAME="ams"
 
 NAMESPACES=(
   kafka
-#  services
+  services
 #  databases
 )
 
@@ -27,6 +36,8 @@ echo ""
 echo "=== Stopping minikube ==="
 
 minikube stop
-minikube delete
+if [ "$DELETE_MODE" = true ]; then
+    minikube delete
+fi
 
 echo "Cluster removed"

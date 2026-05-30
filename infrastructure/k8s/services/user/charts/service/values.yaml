@@ -1,0 +1,59 @@
+service:
+  image:
+    repository: "ghcr.io/tvoe-zdorovje/ams/user-service"
+    tag: ""
+    pullPolicy: IfNotPresent
+    pullSecrets:
+      - name: github-registry
+
+  deployment:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 500m
+        memory: 670Mi
+      limits:
+        memory: 670Mi
+
+    readinessProbe:
+      httpGet:
+        path: /actuator/health/readiness
+        port: 8081
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+      successThreshold: 1
+
+    livenessProbe:
+      httpGet:
+        path: /actuator/health/liveness
+        port: 8081
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+      successThreshold: 1
+
+    startupProbe:
+      httpGet:
+        path: /actuator/health/readiness
+        port: 8081
+      initialDelaySeconds: 60
+      periodSeconds: 15
+      successThreshold: 1
+
+  service:
+    type: ClusterIP
+    ports:
+      - port: 8080
+        targetPort: 8081
+        protocol: TCP
+
+  cm:
+    env:
+# stored in secrets
+#      DBHOST: user_db
+#      DBPORT: 5432
+#      DBNAME: user_db
+
+  secrets:
+    - name: user-service-postgresql

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: ams-umbrella-lib
+description: A Helm library chart for umbrella Helm charts
+type: library
+version: 0.1.0

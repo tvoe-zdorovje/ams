@@ -1,5 +1,6 @@
 services:
   gateway:
+    image: ghcr.io/tvoe-zdorovje/ams/gateway:0.1.0
     build:
       context: gateway
       dockerfile: Dockerfile
@@ -61,8 +62,6 @@ services:
         condition: service_healthy
     volumes:
       - ./user-service/database/changelog:/liquibase/changelog
-      - ./user-service/database/test:/liquibase/tests
-      - ./postgres/test/_util:/liquibase/tests/_util
     command:
       - update
 

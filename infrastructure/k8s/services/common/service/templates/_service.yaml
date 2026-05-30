@@ -1,0 +1,24 @@
+{{- define "common.service.service" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+  annotations:
+    {{- include "default.annotations" . | indent 4 }}
+spec:
+  type: {{ .Values.service.service.type }}
+  ports:
+  {{- range $value := .Values.service.service.ports }}
+    - port: {{ $value.port }}
+      targetPort: {{ $value.targetPort }}
+      {{- if and (eq $.Values.service.service.type "NodePort") $value.nodePort }}
+      nodePort: {{ $value.nodePort }}
+      {{- end }}
+      protocol: {{ $value.protocol }}
+  {{- end }}
+  selector:
+    app: {{ .Release.Name }}
+{{- end }}

@@ -1,0 +1,21 @@
+apiVersion: v2
+name: user-service-app
+description: An umbrella Helm chart for user-service + postgresql
+type: application
+version: 0.1.0
+
+dependencies:
+  - name: service
+    version: ">=0.1.0"
+    repository: "file://charts/service"
+  - name: postgresql
+    version: "16.x.x"
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+    condition: postgresql.enabled
+  - name: liquibase
+    version: ">=0.1.0"
+    repository: "file://charts/liquibase"
+    condition: liquibase.enabled
+  - name: ams-umbrella-lib
+    version: "0.1.0"
+    repository: "file://../common/umbrella"
