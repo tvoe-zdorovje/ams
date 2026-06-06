@@ -34,7 +34,7 @@ dependencies {
     implementation(group = "io.confluent", name = "kafka-avro-serializer", version = confluentVersion)
     implementation(group = "org.apache.avro", name = "avro", version = apacheAvroVersion)
 
-    testAndDevelopmentOnly("org.springframework.boot:spring-boot-starter-jetty")
+    implementation("org.springframework.boot:spring-boot-starter-jetty")
 
     testImplementation(testFixtures(project(":common")))
 }

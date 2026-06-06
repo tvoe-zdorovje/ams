@@ -25,7 +25,7 @@ dependencies {
         exclude(group = "org.jetbrains.exposed")
     }
 
-    testAndDevelopmentOnly("org.springframework.boot:spring-boot-starter-jetty")
+    implementation("org.springframework.boot:spring-boot-starter-jetty")
 
     testImplementation(testFixtures(project(":common")))
 }

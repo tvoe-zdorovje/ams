@@ -26,9 +26,9 @@ val argon2JvmVersion: String by project
 dependencies {
     implementation(project(":common"))
 
-    implementation(group = "de.mkammerer", name = "argon2-jvm-nolibs", version = argon2JvmVersion)
+    implementation(group = "de.mkammerer", name = "argon2-jvm", version = argon2JvmVersion)
 
-    testAndDevelopmentOnly("org.springframework.boot:spring-boot-starter-jetty")
+    implementation("org.springframework.boot:spring-boot-starter-jetty")
 
     testImplementation(testFixtures(project(":common")))
 }
