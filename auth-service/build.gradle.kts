@@ -2,7 +2,7 @@ import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "unspecified"
+version = "0.1.0"
 
 plugins {
     kotlin("jvm")
@@ -35,10 +35,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
     }
-    testAndDevelopmentOnly("org.springframework.boot:spring-boot-starter-jetty")
+        implementation("org.springframework.boot:spring-boot-starter-jetty")
 
     implementation(databaseDriver)
-    implementation(group = "de.mkammerer", name = "argon2-jvm-nolibs", version = argon2JvmVersion)
+    implementation(group = "de.mkammerer", name = "argon2-jvm", version = argon2JvmVersion)
     implementation(group = "com.nimbusds", name = "nimbus-jose-jwt", version = nimbusJoseJwtVersion)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

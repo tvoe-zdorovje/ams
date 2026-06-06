@@ -3,7 +3,7 @@ import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "unspecified"
+version = "0.1.0"
 
 plugins {
     kotlin("jvm")
@@ -26,9 +26,9 @@ val argon2JvmVersion: String by project
 dependencies {
     implementation(project(":common"))
 
-    implementation(group = "de.mkammerer", name = "argon2-jvm-nolibs", version = argon2JvmVersion)
+    implementation(group = "de.mkammerer", name = "argon2-jvm", version = argon2JvmVersion)
 
-    testAndDevelopmentOnly("org.springframework.boot:spring-boot-starter-jetty")
+    implementation("org.springframework.boot:spring-boot-starter-jetty")
 
     testImplementation(testFixtures(project(":common")))
 }

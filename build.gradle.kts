@@ -1,5 +1,8 @@
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
+
 plugins {
     kotlin("jvm")
+    id("org.springframework.boot") apply false
     jacoco
 }
 
@@ -60,6 +63,20 @@ subprojects {
             }
 
             afterEvaluateExcludes()
+        }
+    }
+
+    // === Blueprint === //
+
+    plugins.withId("org.springframework.boot") {
+        tasks.named<BootBuildImage>("bootBuildImage") {
+            val exceptions = listOf(":common")
+            if (project.path in exceptions) {
+                enabled = false
+            } else {
+                imageName = "ghcr.io/tvoe-zdorovje/ams/${project.name}:${project.version}"
+                environment.put("BP_JVM_VERSION", "${project.property("jdkVersion")}.*")
+            }
         }
     }
 }

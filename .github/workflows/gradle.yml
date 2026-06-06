@@ -8,6 +8,11 @@
 
 name: build-N-test
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/ams
+  VERSION: ${{ github.sha }}
+
 on:
   push:
     branches: [ "master" ]
@@ -37,6 +42,16 @@ jobs:
       - name: Build and Test with Gradle Wrapper
         run: ./gradlew build test jacocoTestCoverageVerification
 
+      # Upload code coverage reports for review
+      - name: Upload JaCoCo coverage reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jacoco-reports
+          path: |
+            **/build/reports/jacoco/test/html/
+          retention-days: 7
+
   detekt:
 
     runs-on: ubuntu-latest
@@ -59,13 +74,109 @@ jobs:
       - name: run 'detekt' with Gradle Wrapper
         run: ./gradlew :buildSrc:detekt
 
-    # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
-    # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
-    #
-    # - name: Setup Gradle
-    #   uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-    #   with:
-    #     gradle-version: '8.9'
-    #
-    # - name: Build with Gradle 8.9
-    #   run: gradle build
+      # Upload detekt reports for review
+      - name: Upload Detekt reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: detekt-reports
+          path: |
+            buildSrc/build/reports/detekt/
+          retention-days: 7
+
+  # Determine which services have changed
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.detect.outputs.matrix }}
+      has-changes: ${{ steps.detect.outputs.has-changes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history to compare branches
+
+      - name: Detect changed services
+        id: detect
+        run: |
+          # All available services
+          ALL_SERVICES=("auth-service" "user-service" "brand-service" "studio-service" "appointment-service" "administration-service")
+          CHANGED_SERVICES=()
+          
+          # Determine base commit for comparison
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            BASE_REF="${{ github.base_ref }}"
+            DIFF_BASE="origin/$BASE_REF"
+          else
+            # For push events, compare with previous commit
+            DIFF_BASE="HEAD~1"
+          fi
+          
+          echo "Comparing changes from: $DIFF_BASE"
+          
+          # Check which services have changed
+          for service in "${ALL_SERVICES[@]}"; do
+            if git diff "$DIFF_BASE" --name-only | grep -q "^$service/"; then
+              echo "Service $service has changes"
+              CHANGED_SERVICES+=("$service")
+            fi
+          done
+          
+          # Also check if common or build files changed (rebuild all services)
+          if git diff "$DIFF_BASE" --name-only | grep -qE "^(common|build\.gradle\.kts|settings\.gradle\.kts|gradle\.properties|buildSrc)/"; then
+            echo "Common/build files changed, rebuilding all services"
+            CHANGED_SERVICES=("${ALL_SERVICES[@]}")
+          fi
+          
+          # Create JSON matrix output
+          if [[ ${#CHANGED_SERVICES[@]} -eq 0 ]]; then
+            echo "has-changes=false" >> $GITHUB_OUTPUT
+            echo "matrix={\"service\":[]}" >> $GITHUB_OUTPUT
+          else
+            SERVICES_JSON=$(printf '%s\n' "${CHANGED_SERVICES[@]}" | jq -R . | jq -s . | jq -c .)
+            echo "has-changes=true" >> $GITHUB_OUTPUT
+            echo "matrix={\"service\":$SERVICES_JSON}" >> $GITHUB_OUTPUT
+          fi
+
+  publish-image:
+    name: Publish Docker Images
+    needs: [ build-n-test, detekt, detect-changes ]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && needs.detect-changes.outputs.has-changes == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Build and push Docker image for ${{ matrix.service }}
+        env:
+          IMAGE_TAG: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service }}:latest
+          IMAGE_TAG_VERSION: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service }}:${{ env.VERSION }}
+        run: |
+          chmod +x gradlew
+          ./gradlew :${{ matrix.service }}:bootBuildImage \
+            --imageName=${{ env.IMAGE_TAG_VERSION }}
+          docker tag ${{ env.IMAGE_TAG_VERSION }} ${{ env.IMAGE_TAG }}
+          docker push ${{ env.IMAGE_TAG_VERSION }}
+          docker push ${{ env.IMAGE_TAG }}

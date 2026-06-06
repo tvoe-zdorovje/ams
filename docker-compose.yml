@@ -67,9 +67,7 @@ services:
       - update
 
   user-service:
-    build:
-      context: user-service
-      dockerfile: Dockerfile
+    image: ghcr.io/tvoe-zdorovje/ams/user-service:latest
     container_name: user-service
     restart: on-failure
     depends_on:
@@ -83,8 +81,6 @@ services:
       start_period: 50s
     ports:
       - "8081:8080"
-    volumes:
-      - ./user-service/build/libs/user-service.war:/var/lib/jetty/webapps/ROOT.war
     env_file:
       - user-service/.env
 
@@ -128,7 +124,7 @@ services:
       - update
 
   brand-service:
-    image: jetty:11-jdk17-alpine-eclipse-temurin
+    image: ghcr.io/tvoe-zdorovje/ams/brand-service:latest
     container_name: brand-service
     restart: on-failure
     depends_on:
@@ -142,8 +138,6 @@ services:
       start_period: 50s
     ports:
       - "8082:8080"
-    volumes:
-      - ./brand-service/build/libs/brand-service.war:/var/lib/jetty/webapps/ROOT.war
     env_file:
       - brand-service/.env
 
@@ -187,7 +181,7 @@ services:
       - update
   
   studio-service:
-    image: jetty:11-jdk17-alpine-eclipse-temurin
+    image: ghcr.io/tvoe-zdorovje/ams/studio-service:latest
     container_name: studio-service
     restart: on-failure
     depends_on:
@@ -201,8 +195,6 @@ services:
       timeout: 3s
       retries: 5
       start_period: 50s
-    volumes:
-      - ./studio-service/build/libs/studio-service.war:/var/lib/jetty/webapps/ROOT.war
     env_file:
       - studio-service/.env
 
@@ -258,7 +250,7 @@ services:
       - update
 
   administration-service:
-    image: jetty:11-jdk17-alpine-eclipse-temurin
+    image: ghcr.io/tvoe-zdorovje/ams/administration-service:latest
     container_name: administration-service
     restart: on-failure
     depends_on:
@@ -272,13 +264,11 @@ services:
       start_period: 50s
     ports:
       - "8084:8080"
-    volumes:
-      - ./administration-service/build/libs/administration-service.war:/var/lib/jetty/webapps/ROOT.war
     env_file:
       - administration-service/.env
   
   appointment-service:
-    image: jetty:11-jdk17-alpine-eclipse-temurin
+    image: ghcr.io/tvoe-zdorovje/ams/appointment-service:latest
     container_name: appointment-service
     restart: on-failure
     depends_on:
@@ -292,15 +282,11 @@ services:
       start_period: 50s
     ports:
       - "8085:8080"
-    volumes:
-      - ./appointment-service/build/libs/appointment-service.war:/var/lib/jetty/webapps/ROOT.war
     env_file:
       - appointment-service/.env
 
   auth-service:
-    build:
-      context: user-service
-      dockerfile: Dockerfile
+    image: ghcr.io/tvoe-zdorovje/ams/auth-service:latest
     container_name: auth-service
     restart: on-failure
     depends_on:
@@ -316,8 +302,6 @@ services:
       start_period: 50s
     ports:
       - "8086:8080"
-    volumes:
-      - ./auth-service/build/libs/auth-service.war:/var/lib/jetty/webapps/ROOT.war
     env_file:
       - auth-service/.env
 
