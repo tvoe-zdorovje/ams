@@ -3,7 +3,7 @@ import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "unspecified"
+version = "0.1.0"
 
 plugins {
     kotlin("jvm")
@@ -33,7 +33,7 @@ dependencies {
     implementation(group = "io.confluent", name = "kafka-avro-serializer", version = confluentVersion)
     implementation(group = "org.apache.avro", name = "avro", version = apacheAvroVersion)
 
-    testAndDevelopmentOnly("org.springframework.boot:spring-boot-starter-jetty")
+    implementation("org.springframework.boot:spring-boot-starter-jetty")
 
     testImplementation(testFixtures(project(":common")))
 }
