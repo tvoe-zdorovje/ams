@@ -74,7 +74,7 @@ subprojects {
             if (project.path in exceptions) {
                 enabled = false
             } else {
-                imageName = "ghcr.io/tvoe-zdorovje/ams/${project.name}"
+                imageName = "ghcr.io/tvoe-zdorovje/ams/${project.name}:${project.version}"
                 environment.put("BP_JVM_VERSION", "${project.property("jdkVersion")}.*")
             }
         }

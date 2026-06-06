@@ -2,7 +2,7 @@ import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "unspecified"
+version = "0.1.0"
 
 plugins {
     kotlin("jvm")
