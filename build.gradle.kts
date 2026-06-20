@@ -74,8 +74,12 @@ subprojects {
             if (project.path in exceptions) {
                 enabled = false
             } else {
+                createdDate = "now"
                 imageName = "ghcr.io/tvoe-zdorovje/ams/${project.name}:${project.version}"
                 environment.put("BP_JVM_VERSION", "${project.property("jdkVersion")}.*")
+                environment.put("BP_HEALTH_CHECKER_ENABLED", "true")
+                buildpacks.add("urn:cnb:builder:paketo-buildpacks/java")
+                buildpacks.add("docker.io/paketobuildpacks/health-checker:latest")
             }
         }
     }

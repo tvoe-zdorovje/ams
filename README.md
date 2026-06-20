@@ -1,23 +1,23 @@
-# ams
+# ams - WIP
 
-This project uses [Gradle](https://gradle.org/).
-To build and run the application, use the *Gradle* tool window by clicking the Gradle icon in the right-hand toolbar,
-or run it directly from the terminal:
+Run the project by Docker Compose
+- `docker compose up`
 
-* Run `./gradlew run` to build and run the application.
-* Run `./gradlew build` to only build the application.
-* Run `./gradlew check` to run all checks, including tests.
-* Run `./gradlew clean` to clean all build outputs.
+Stop all containers and remove all images and volumes
+- `.reset_docker.sh`
 
-Note the usage of the Gradle Wrapper (`./gradlew`).
-This is the suggested way to use Gradle in production projects.
+Run the project by k8s
+- `./infrastructure/k8s/start-cluster.sh`
 
-[Learn more about the Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html).
+Stop k8s cluster removing all namespaces
+- `./infrastructure/k8s/stop-cluster.sh`
 
-[Learn more about Gradle tasks](https://docs.gradle.org/current/userguide/command_line_interface.html#common_tasks).
+Use `--delete` flag to delete the cluster
+- `./infrastructure/k8s/stop-cluster.sh --delete`
 
-This project follows the suggested multi-module setup and consists of the `app` and `utils` subprojects.
-The shared build logic was extracted to a convention plugin located in `buildSrc`.
 
-This project uses a version catalog (see `gradle/libs.versions.toml`) to declare and version dependencies
-and both a build cache and a configuration cache (see `gradle.properties`).
+Build docker images
+- `./build-docker-images.sh --liquibase --latest --push`
+- `--liquibase` flag includes liquibase images
+- `--latest` flag tags images as latest
+- `--push` pushes images to the remote repository

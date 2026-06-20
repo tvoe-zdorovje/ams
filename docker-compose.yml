@@ -73,7 +73,7 @@ services:
       liquibase_user_db:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5
@@ -117,8 +117,6 @@ services:
         condition: service_healthy
     volumes:
       - ./brand-service/database/changelog:/liquibase/changelog
-      - ./brand-service/database/test:/liquibase/tests
-      - ./postgres/test/_util:/liquibase/tests/_util
     command:
       - update
 
@@ -130,7 +128,7 @@ services:
       liquibase_brand_db:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5
@@ -174,8 +172,6 @@ services:
         condition: service_healthy
     volumes:
       - ./studio-service/database/changelog:/liquibase/changelog
-      - ./studio-service/database/test:/liquibase/tests
-      - ./postgres/test/_util:/liquibase/tests/_util
     command:
       - update
   
@@ -189,7 +185,7 @@ services:
     ports:
       - "8083:8080"
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5
@@ -227,8 +223,6 @@ services:
         condition: service_healthy
     volumes:
       - ./administration-service/database/changelog:/liquibase/changelog
-      - ./administration-service/database/test:/liquibase/tests
-      - ./postgres/test/_util:/liquibase/tests/_util
     command:
       - update
 
@@ -243,8 +237,6 @@ services:
         condition: service_healthy
     volumes:
       - ./appointment-service/database/changelog:/liquibase/changelog
-      - ./appointment-service/database/test:/liquibase/tests
-      - ./postgres/test/_util:/liquibase/tests/_util
     command:
       - update
 
@@ -256,7 +248,7 @@ services:
       liquibase_administration_db:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5
@@ -274,7 +266,7 @@ services:
       liquibase_administration_db:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5
@@ -294,7 +286,7 @@ services:
       liquibase_administration_db:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5

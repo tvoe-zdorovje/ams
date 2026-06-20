@@ -4,4 +4,4 @@ databaseChangeLog:
       author: anatolyloyko
       changes:
         - sqlFile:
-            path: changelog/0.0.1/01_init_appointments_tables.sql
+            path: 0.0.1/01_init_appointments_tables.sql
