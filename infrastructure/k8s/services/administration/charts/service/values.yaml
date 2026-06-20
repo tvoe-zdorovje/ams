@@ -1,6 +1,6 @@
 service:
   image:
-    repository: "ghcr.io/tvoe-zdorovje/ams/user-service"
+    repository: "ghcr.io/tvoe-zdorovje/ams/administration-service"
     tag: ""
     pullPolicy: IfNotPresent
     pullSecrets:
@@ -50,10 +50,15 @@ service:
 
   cm:
     env:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:29092"
+      KAFKA_SCHEMA_REGISTRY_URL: "http://schema-registry.kafka.svc.cluster.local:8081"
+      KAFKA_GROUP_ID: "administration-service"
+      KAFKA_TOPIC_BRAND: "v1.brands.brand"
+      KAFKA_TOPIC_STUDIO: "v1.studios.studio"
 # stored in secrets
-#      DBHOST: user_db
+#      DBHOST: administration_db
 #      DBPORT: 5432
-#      DBNAME: user_db
+#      DBNAME: administration_db
 
   secrets:
-    - name: user-service-postgresql
+    - name: administration-service-postgresql

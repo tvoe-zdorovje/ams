@@ -5,7 +5,7 @@ postgresql:
     repository: bitnamilegacy/postgresql
     tag: 15.4.0-debian-11-r45
   auth:
-    existingSecret: "user-service-postgresql"
+    existingSecret: "administration-service-postgresql"
   primary:
     persistence:
       enabled: true
@@ -41,36 +41,36 @@ postgresql:
       failureThreshold: 10
       successThreshold: 1
     initdb:
-      scriptsSecret: user-postgres-init-scripts
+      scriptsSecret: administration-postgres-init-scripts
 
 service:
   secrets:
-    - name: user-service-postgresql
+    - name: administration-service-postgresql
 
 liquibase:
   enabled: true
   secrets:
-    - name: user-service-liquibase
+    - name: administration-service-liquibase
 
 global:
   secrets:
-    - name: user-service-postgresql
+    - name: administration-service-postgresql
       type: Opaque
       data:
-        DBHOST: "user-service-postgresql" # <release-name>-postgresql
+        DBHOST: "administration-service-postgresql" # <release-name>-postgresql
         DBPORT: "5432"
-        DBNAME: "user_db"
-        database: "user_db"
-        DBUSER: "ussportal"
-        username: "ussportal"
-        DBPASS: "ussportal"
-        password: "ussportal"
+        DBNAME: "administration_db"
+        database: "administration_db"
+        DBUSER: "adsportal"
+        username: "adsportal"
+        DBPASS: "adsportal"
+        password: "adsportal"
         postgres-password: "pass"
-    - name: user-service-liquibase
+    - name: administration-service-liquibase
       type: Opaque
       data:
-        PGHOST: "user-service-postgresql" # <release-name>-postgresql
+        PGHOST: "administration-service-postgresql" # <release-name>-postgresql
         PGPORT: "5432"
-        PGUSER: "ussliquibase"
-        PGPASSWORD: "ussliquibase"
-        PGDATABASE: "user_db"
+        PGUSER: "adsliquibase"
+        PGPASSWORD: "adsliquibase"
+        PGDATABASE: "administration_db"
