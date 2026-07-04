@@ -134,8 +134,8 @@ cd "$SERVICES_DIR"
 
 SERVICES=(
   "administration:8181:5441"
-#  "appointment:8182:5442"
-#  "brand:8183:5443"
+  "appointment:8182:5442"
+  "brand:8183:5443"
 #  "studio:8184:5444"
   "user:8185:5445"
 )
