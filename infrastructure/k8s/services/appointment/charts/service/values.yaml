@@ -1,0 +1,59 @@
+service:
+  image:
+    repository: "ghcr.io/tvoe-zdorovje/ams/appointment-service"
+    tag: ""
+    pullPolicy: IfNotPresent
+    pullSecrets:
+      - name: github-registry
+
+  deployment:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 500m
+        memory: 670Mi
+      limits:
+        memory: 670Mi
+
+    readinessProbe:
+      httpGet:
+        path: /actuator/health/readiness
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+      successThreshold: 1
+
+    livenessProbe:
+      httpGet:
+        path: /actuator/health/liveness
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+      successThreshold: 1
+
+    startupProbe:
+      httpGet:
+        path: /actuator/health/readiness
+        port: 8080
+      initialDelaySeconds: 60
+      periodSeconds: 15
+      successThreshold: 1
+
+  service:
+    type: ClusterIP
+    ports:
+      - port: 8080
+        targetPort: 8080
+        protocol: TCP
+
+  cm:
+    env:
+# stored in secrets
+#      DBHOST: appointment_db
+#      DBPORT: 5432
+#      DBNAME: appointment_db
+
+  secrets:
+    - name: appointment-service-postgresql

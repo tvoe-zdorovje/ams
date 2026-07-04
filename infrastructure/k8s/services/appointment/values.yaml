@@ -1,0 +1,76 @@
+postgresql:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 15.4.0-debian-11-r45
+  auth:
+    existingSecret: "appointment-service-postgresql"
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+      accessModes:
+        - ReadWriteOnce
+      storage: 1Gi
+      mountPath: /bitnami/postgresql
+      storageClass: standard
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 560
+      failureThreshold: 6
+      successThreshold: 1
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6
+      successThreshold: 1
+    startupProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 10
+      successThreshold: 1
+    initdb:
+      scriptsSecret: appointment-postgres-init-scripts
+
+service:
+  secrets:
+    - name: appointment-service-postgresql
+
+liquibase:
+  enabled: true
+  secrets:
+    - name: appointment-service-liquibase
+
+global:
+  secrets:
+    - name: appointment-service-postgresql
+      type: Opaque
+      data:
+        DBHOST: "appointment-service-postgresql" # <release-name>-postgresql
+        DBPORT: "5432"
+        DBNAME: "appointment_db"
+        database: "appointment_db"
+        DBUSER: "apsportal"
+        username: "apsportal"
+        DBPASS: "apsportal"
+        password: "apsportal"
+        postgres-password: "pass"
+    - name: appointment-service-liquibase
+      type: Opaque
+      data:
+        PGHOST: "appointment-service-postgresql" # <release-name>-postgresql
+        PGPORT: "5432"
+        PGUSER: "apsliquibase"
+        PGPASSWORD: "apsliquibase"
+        PGDATABASE: "appointment_db"
