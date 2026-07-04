@@ -1,0 +1,64 @@
+service:
+  image:
+    repository: "ghcr.io/tvoe-zdorovje/ams/studio-service"
+    tag: ""
+    pullPolicy: IfNotPresent
+    pullSecrets:
+      - name: github-registry
+
+  deployment:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 500m
+        memory: 670Mi
+      limits:
+        memory: 670Mi
+
+    readinessProbe:
+      httpGet:
+        path: /actuator/health/readiness
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+      successThreshold: 1
+
+    livenessProbe:
+      httpGet:
+        path: /actuator/health/liveness
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+      successThreshold: 1
+
+    startupProbe:
+      httpGet:
+        path: /actuator/health/readiness
+        port: 8080
+      initialDelaySeconds: 60
+      periodSeconds: 15
+      successThreshold: 1
+
+  service:
+    type: ClusterIP
+    ports:
+      - port: 8080
+        targetPort: 8080
+        protocol: TCP
+
+  cm:
+    env:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:29092"
+      KAFKA_SCHEMA_REGISTRY_URL: "http://schema-registry.kafka.svc.cluster.local:8081"
+      KAFKA_STUDIO_EVENTS_TOPIC: v1.studios.studio
+      KAFKA_STUDIO_EVENTS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_STUDIO_EVENTS_TOPIC_PARTITIONS_COUNT: 3
+# stored in secrets
+#      DBHOST: studio_db
+#      DBPORT: 5432
+#      DBNAME: studio_db
+
+  secrets:
+    - name: studio-service-postgresql

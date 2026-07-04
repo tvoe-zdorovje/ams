@@ -1,0 +1,76 @@
+postgresql:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 15.4.0-debian-11-r45
+  auth:
+    existingSecret: "studio-service-postgresql"
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+      accessModes:
+        - ReadWriteOnce
+      storage: 1Gi
+      mountPath: /bitnami/postgresql
+      storageClass: standard
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 560
+      failureThreshold: 6
+      successThreshold: 1
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6
+      successThreshold: 1
+    startupProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 10
+      successThreshold: 1
+    initdb:
+      scriptsSecret: studio-postgres-init-scripts
+
+service:
+  secrets:
+    - name: studio-service-postgresql
+
+liquibase:
+  enabled: true
+  secrets:
+    - name: studio-service-liquibase
+
+global:
+  secrets:
+    - name: studio-service-postgresql
+      type: Opaque
+      data:
+        DBHOST: "studio-service-postgresql" # <release-name>-postgresql
+        DBPORT: "5432"
+        DBNAME: "studio_db"
+        database: "studio_db"
+        DBUSER: "stsportal"
+        username: "stsportal"
+        DBPASS: "stsportal"
+        password: "stsportal"
+        postgres-password: "pass"
+    - name: studio-service-liquibase
+      type: Opaque
+      data:
+        PGHOST: "studio-service-postgresql" # <release-name>-postgresql
+        PGPORT: "5432"
+        PGUSER: "stsliquibase"
+        PGPASSWORD: "stsliquibase"
+        PGDATABASE: "studio_db"
