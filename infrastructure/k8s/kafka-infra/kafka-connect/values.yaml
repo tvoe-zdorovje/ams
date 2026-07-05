@@ -14,6 +14,7 @@ kafkaConnect:
       - name: github-registry
 
   build:
+    enable: false
     output:
       type: docker
       image: ghcr.io/tvoe-zdorovje/ams/kafka-connect:strimzi-4.2.0
@@ -91,9 +92,11 @@ connectors:
     class: io.debezium.connector.postgresql.PostgresConnector
     tasksMax: 1
     state: running
+    autoRestart:
+      enabled: true
     config:
       plugin.name: pgoutput
-      database.hostname: user_db
+      database.hostname: user-service-postgresql.services.svc.cluster.local
       database.port: 5432
       database.user: ussdebezium
       database.password: ussdebezium
@@ -109,7 +112,7 @@ connectors:
       slot.name: postgres_debezium
       publication.name: user_outbox_publication
       publication.autocreate.mode: disabled
-      snapshot.mode: never
+      snapshot.mode: initial
       topic.creation.enable: true
       topic.creation.default.partitions: 3
       topic.creation.default.replication.factor: 1
@@ -139,7 +142,7 @@ connectors:
     state: running
     config:
       topics: v1.users.user
-      connection.url: jdbc:postgresql://administration_db:5432/administration_db
+      connection.url: jdbc:postgresql://administration-service-postgresql.services.svc.cluster.local:5432/administration_db
       connection.username: adsdebezium
       connection.password: adsdebezium
       dialect.name: PostgreSqlDatabaseDialect

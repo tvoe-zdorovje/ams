@@ -18,6 +18,10 @@ spec:
   configStorageTopic: {{ .Values.kafkaConnect.configStorageTopic | quote }}
   offsetStorageTopic: {{ .Values.kafkaConnect.offsetStorageTopic | quote }}
   statusStorageTopic: {{ .Values.kafkaConnect.statusStorageTopic | quote }}
+  {{- if not .Values.kafkaConnect.build.enable }}
+  image: {{ .Values.kafkaConnect.build.output.image | quote }}
+  {{- end }}
+  {{- if .Values.kafkaConnect.build.enable }}
   build:
     output:
       type: {{ .Values.kafkaConnect.build.output.type | quote }}
@@ -35,6 +39,7 @@ spec:
       {{- end }}
     plugins:
       {{- toYaml .Values.kafkaConnect.build.plugins | nindent 6 }}
+  {{- end }}
   config:
     {{- toYaml .Values.kafkaConnect.config | nindent 4 }}
   {{- with .Values.kafkaConnect.resources }}

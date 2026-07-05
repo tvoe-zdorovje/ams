@@ -95,10 +95,15 @@ helm install schema-registry ./kafka-infra/schema-registry -n kafka
 echo ""
 echo "== 📤 Install Kafka-Connect =="
 
-KAFKA_CONNECT_IMAGE="quay.io/strimzi/buildah:1.0.1"
+KAFKA_CONNECT_IMAGE="ghcr.io/tvoe-zdorovje/ams/kafka-connect:strimzi-4.2.0"
 echo ""
 echo "📥 load $KAFKA_CONNECT_IMAGE to the minikube"
-minikube image load "$KAFKA_CONNECT_IMAGE" # in order to speed up schema-registry startup
+minikube image load "$KAFKA_CONNECT_IMAGE" # in order to speed up Kafka Connect startup
+
+KAFKA_CONNECT_BUILD_IMAGE="quay.io/strimzi/buildah:1.0.1"
+echo ""
+echo "📥 load $KAFKA_CONNECT_BUILD_IMAGE to the minikube"
+minikube image load "$KAFKA_CONNECT_BUILD_IMAGE" # in order to speed up Kafka Connect Build startup
 
 helm install kafka-connect ./kafka-infra/kafka-connect -n kafka
 
