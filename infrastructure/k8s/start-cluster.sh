@@ -95,10 +95,11 @@ helm install schema-registry ./kafka-infra/schema-registry -n kafka
 echo ""
 echo "== 📤 Install Kafka-Connect =="
 
-KAFKA_CONNECT_IMAGE="ghcr.io/tvoe-zdorovje/ams/kafka-connect:strimzi-4.2.0"
-echo ""
-echo "📥 load $KAFKA_CONNECT_IMAGE to the minikube"
-minikube image load "$KAFKA_CONNECT_IMAGE" # in order to speed up Kafka Connect startup
+# FIXME smth wrong happens
+#KAFKA_CONNECT_IMAGE="ghcr.io/tvoe-zdorovje/ams/kafka-connect:strimzi-4.2.0"
+#echo ""
+#echo "📥 load $KAFKA_CONNECT_IMAGE to the minikube"
+#minikube image load "$KAFKA_CONNECT_IMAGE" # in order to speed up Kafka Connect startup
 
 KAFKA_CONNECT_BUILD_IMAGE="quay.io/strimzi/buildah:1.0.1"
 echo ""
@@ -138,6 +139,7 @@ cd "$SCRIPT_DIR"
 cd "$SERVICES_DIR"
 
 SERVICES=(
+  "auth:8180:0000"
   "administration:8181:5441"
   "appointment:8182:5442"
   "brand:8183:5443"
@@ -157,40 +159,55 @@ minikube image load "$POSTGRESQL_IMAGE" # in order to speed up liquibase initCon
 for entry in "${SERVICES[@]}"; do
   IFS=':' read -r service servicePort dbPort <<< "$entry"
 
+  WITH_DB=true
+  if [ "$dbPort" = "0000" ]; then
+    WITH_DB=false
+  fi
+
   SERVICE_VERSION=$(grep '^appVersion:' "$SERVICES_DIR/$service/charts/service/Chart.yaml" | sed -E 's/^appVersion:[[:space:]]*//; s/^"//; s/"$//')
   SERVICE_IMAGE="ghcr.io/tvoe-zdorovje/ams/$service-service:$SERVICE_VERSION"
   echo ""
   echo "📥 load $SERVICE_IMAGE to the minikube"
   minikube image load "$SERVICE_IMAGE" # in order to speed up service startup
-  LIQUIBASE_VERSION=$(grep '^appVersion:' "$SERVICES_DIR/$service/charts/liquibase/Chart.yaml" | sed -E 's/^appVersion:[[:space:]]*//; s/^"//; s/"$//')
-  LIQUIBASE_IMAGE="ghcr.io/tvoe-zdorovje/ams/$service-service-liquibase:$LIQUIBASE_VERSION"
-  echo ""
-  echo "📥 load $LIQUIBASE_IMAGE to the minikube"
-  minikube image load "$LIQUIBASE_IMAGE" # in order to speed up liquibase startup
 
-  echo ""
-  echo "== 🧩 Generate [ $service ] DB init scripts secret =="
-  cd "./$service"
-  kubectl create secret generic "$service-postgres-init-scripts" \
-    --from-file=01-init.sql="$PROJECT_DIR/$service-service/database/init_db.sql" \
-    --dry-run=client -o yaml > ./templates/init-scripts_secret.yaml
+  if [ "$WITH_DB" = true ]; then
+    LIQUIBASE_VERSION=$(grep '^appVersion:' "$SERVICES_DIR/$service/charts/liquibase/Chart.yaml" | sed -E 's/^appVersion:[[:space:]]*//; s/^"//; s/"$//')
+    LIQUIBASE_IMAGE="ghcr.io/tvoe-zdorovje/ams/$service-service-liquibase:$LIQUIBASE_VERSION"
+    echo ""
+    echo "📥 load $LIQUIBASE_IMAGE to the minikube"
+    minikube image load "$LIQUIBASE_IMAGE" # in order to speed up liquibase startup
+
+    echo ""
+    echo "== 🧩 Generate [ $service ] DB init scripts secret =="
+    cd "./$service"
+    kubectl create secret generic "$service-postgres-init-scripts" \
+      --from-file=01-init.sql="$PROJECT_DIR/$service-service/database/init_db.sql" \
+      --dry-run=client -o yaml > ./templates/init-scripts_secret.yaml
+
+    cd "$SERVICES_DIR"
+  fi
 
   echo ""
   echo "== 📥 Install [ $service ] Service =="
 
-  cd "./charts/service"
+  cd "./$service/charts/service"
   helm dependency update
-  cd "../liquibase"
-  helm dependency update
+  if [ "$WITH_DB" = true ]; then
+    cd "../liquibase"
+    helm dependency update
+  fi
   cd ../..
   helm dependency update
 
   RELEASE_NAME="$service-service"
   helm install "$RELEASE_NAME" . -n "$NAMESPACE" --timeout 30m
 
-  echo "Port forward for $service: $servicePort -> 8080   $dbPort:5432"
+  echo ":: Port forward for $service: $servicePort -> 8080"
   kubectl port-forward -n services "service/$service-service" "$servicePort:8080" &
-  kubectl port-forward -n services "service/$service-service-postgresql" "$dbPort:5432" &
+  if [ "$WITH_DB" = true ]; then
+    echo ":: Port forward for $service: $dbPort:5432"
+    kubectl port-forward -n services "service/$service-service-postgresql" "$dbPort:5432" &
+  fi
 
   cd "$SERVICES_DIR"
 done

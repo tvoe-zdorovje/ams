@@ -1,0 +1,13 @@
+apiVersion: v2
+name: auth-service-app
+description: An umbrella Helm chart for auth-service
+type: application
+version: 0.1.0
+
+dependencies:
+  - name: service
+    version: ">=0.1.0"
+    repository: "file://charts/service"
+  - name: ams-umbrella-lib
+    version: "0.1.0"
+    repository: "file://../common/umbrella"

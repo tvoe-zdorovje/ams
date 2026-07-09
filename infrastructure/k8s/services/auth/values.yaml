@@ -1,0 +1,11 @@
+service:
+  secrets:
+    - name: auth-service-database-creds
+
+global:
+  secrets:
+    - name: auth-service-database-creds
+      type: Opaque
+      data:
+        DBUSER: "ausportal"
+        DBPASS: "ausportal"
