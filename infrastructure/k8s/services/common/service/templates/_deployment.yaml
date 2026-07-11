@@ -92,11 +92,30 @@ spec:
           {{- end }}
           {{- end }}
           volumeMounts:
+          {{- if .Values.service.volumes }}
+          {{- range .Values.service.volumes }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+          {{- end }}
+          {{- else }}
             - mountPath: /tmp
               name: tmp-directory
+          {{- end }}
       volumes:
-        - name: tmp-directory
-          emptyDir: { }
+        {{- if .Values.service.volumes }}
+        {{- range .Values.service.volumes }}
+          - name: {{ .name }}
+            {{- if .claimName }}
+            persistentVolumeClaim:
+              claimName: {{ .claimName }}
+            {{- else }}
+            emptyDir: { }
+            {{- end }}
+        {{- end }}
+        {{- else }}
+          - name: tmp-directory
+            emptyDir: { }
+        {{- end }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

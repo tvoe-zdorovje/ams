@@ -22,10 +22,10 @@ services:
     ports:
       - "4000:8080"
     volumes:
-      - ./gateway/apollo/router/router.yaml:/dist/config/router.yaml
-      - ./gateway/apollo/router/supergraph-config.yaml:/tmp/app/supergraph-config.yaml
-      - ./gateway/apollo/router/plugin/:/tmp/app/plugin/
-      - ./graphql:/tmp/app/schemas/service
+      - ./gateway/apollo/router/build/:/dist/mnt/:ro
+    environment:
+      APOLLO_ROUTER_SUPERGRAPH_PATH: /dist/mnt/schema/supergraph.graphql
+      APOLLO_ROUTER_CONFIG_PATH: /dist/mnt/config/router.yaml
     env_file:
       - gateway/.env
 

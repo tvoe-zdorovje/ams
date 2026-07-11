@@ -14,10 +14,11 @@ spec:
   {{- range $value := .Values.service.service.ports }}
     - port: {{ $value.port }}
       targetPort: {{ $value.targetPort }}
+      protocol: {{ $value.protocol }}
+      name: {{ $value.name | default "service" }}
       {{- if and (eq $.Values.service.service.type "NodePort") $value.nodePort }}
       nodePort: {{ $value.nodePort }}
       {{- end }}
-      protocol: {{ $value.protocol }}
   {{- end }}
   selector:
     app: {{ .Release.Name }}
