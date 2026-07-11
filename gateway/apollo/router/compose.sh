@@ -17,6 +17,9 @@ for service in administration appointment auth brand studio user; do
   sourceDir="/tmp/app/schemas/service"
   output="/tmp/app/schemas/$service$ext"
 
+  echo ""
+  echo "Compose $output"
+
   # clear the output file
   > "$output"
 
@@ -38,4 +41,4 @@ done
 
 /rover supergraph compose \
   --elv2-license accept \
-  --config /tmp/app/supergraph-config.yaml > /tmp/app/supergraph.graphql
+  --config /tmp/app/supergraph-config.yaml > /tmp/app/schemas/supergraph.graphql

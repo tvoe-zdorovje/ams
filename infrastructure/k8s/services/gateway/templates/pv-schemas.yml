@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-schemas-pv
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+  annotations:
+    {{- include "default.annotations" . | indent 4}}
+spec:
+  accessModes:
+    - {{ .Values.service.persistence.accessModes }}
+  capacity:
+    storage: {{ .Values.service.persistence.storage }}
+  hostPath:
+    path: {{ .Values.service.persistence.path }}
+  storageClassName: {{ .Values.service.persistence.storageClass }}

@@ -212,6 +212,26 @@ for entry in "${SERVICES[@]}"; do
   cd "$SERVICES_DIR"
 done
 
+echo ""
+echo "== 📥 Install [ Gateway ] Service =="
+
+echo ""
+echo " 📥 Mount graphql directory"
+nohup minikube mount "$PROJECT_DIR/graphql":"/mnt/schemas" &
+
+SERVICE="gateway"
+SERVICE_VERSION=$(grep '^appVersion:' "$SERVICES_DIR/$SERVICE/Chart.yaml" | sed -E 's/^appVersion:[[:space:]]*//; s/^"//; s/"$//')
+SERVICE_IMAGE="ghcr.io/tvoe-zdorovje/ams/$SERVICE:$SERVICE_VERSION"
+echo ""
+echo "📥 load $SERVICE_IMAGE to the minikube"
+minikube image load "$SERVICE_IMAGE" # in order to speed up service startup
+
+cd "$SERVICE"
+helm dependency update
+
+RELEASE_NAME="$SERVICE"
+helm install "$RELEASE_NAME" . -n "$NAMESPACE" --timeout 30m
+
 cd "$SCRIPT_DIR"
 
 echo ""

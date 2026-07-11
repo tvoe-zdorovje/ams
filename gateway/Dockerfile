@@ -19,14 +19,17 @@ ENV ROVER_ELV2_LICENSE=accept
 
 RUN mkdir -p /tmp/app/schemas
 COPY --from=rust_builder --chmod=755 /root/.rover/bin/rover /rover
-COPY --chmod=755 apollo/router/compose.sh /tmp/app/schemas/compose.sh
+COPY --chmod=755 apollo/router/compose.sh /tmp/app/compose.sh
+COPY apollo/router/router.yaml /dist/config/router.yaml
+# shitty but it's okay due to my willing to re-implement the service from scratch FIXME
+COPY apollo/router/supergraph-config.yaml /tmp/app/supergraph-config.yaml
 
 COPY --from=go_builder /app/proxy/build/proxy /proxy
 #COPY --from=go_builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 ENTRYPOINT exec sh -c "\
-  /tmp/app/schemas/compose.sh && \
-  ./router --supergraph /tmp/app/supergraph.graphql --dev & \
+  /tmp/app/compose.sh && \
+  ./router --supergraph /tmp/app/schemas/supergraph.graphql --dev & \
   /proxy \
 "
 
