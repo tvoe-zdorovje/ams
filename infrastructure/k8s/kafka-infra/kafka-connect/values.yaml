@@ -14,7 +14,7 @@ kafkaConnect:
       - name: github-registry
 
   build:
-    enable: true
+    enable: false
     output:
       type: docker
       image: ghcr.io/tvoe-zdorovje/ams/kafka-connect:strimzi-4.2.0

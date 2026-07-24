@@ -1,0 +1,117 @@
+services:
+  administration_db:
+    image: postgres:17.2-alpine3.21
+    container_name: administration_db
+    restart: on-failure
+    ports:
+      - "5441:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - administration_db_volume:/var/lib/postgresql/data
+      - ./administration-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_administration_db.sql
+    env_file:
+      - administration-service/.env
+
+  appointment_db:
+    image: postgres:17.2-alpine3.21
+    container_name: appointment_db
+    restart: on-failure
+    ports:
+      - "5442:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - appointment_db_volume:/var/lib/postgresql/data
+      - ./appointment-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_appointment_db.sql
+    env_file:
+      - appointment-service/.env
+
+  brand_db:
+    image: postgres:17.2-alpine3.21
+    container_name: brand_db
+    restart: on-failure
+    ports:
+      - "5443:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - brand_db_volume:/var/lib/postgresql/data
+      - ./brand-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      - ./brand-service/database/pg_service.conf:/var/lib/postgresql/.pg_service.conf
+    env_file:
+      - brand-service/.env
+
+  studio_db:
+    image: postgres:17.2-alpine3.21
+    container_name: studio_db
+    restart: on-failure
+    ports:
+      - "5444:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - studio_db_volume:/var/lib/postgresql/data
+      - ./studio-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      - ./studio-service/database/pg_service.conf:/var/lib/postgresql/.pg_service.conf
+    env_file:
+      - studio-service/.env
+
+  user_db:
+    image: postgres:17.2-alpine3.21
+    container_name: user_db
+    restart: on-failure
+    ports:
+      - "5445:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "PGPASSWORD=$DBPASS pg_isready -U $DBUSER -d $DBNAME" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - user_db_volume:/var/lib/postgresql/data
+      - ./user-service/database/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    env_file:
+      - user-service/.env
+    command: >
+      -c wal_level=logical
+      -c max_wal_senders=1
+      -c max_replication_slots=1
+
+  liquibase_brand_db:
+    image: liquibase/liquibase:latest-alpine
+    container_name: liquibase_brand_db
+    restart: on-failure
+    env_file:
+      - brand-service/.env
+    depends_on:
+      brand_db:
+        condition: service_healthy
+    volumes:
+      - ./brand-service/database/changelog:/liquibase/changelog
+    command:
+      - update
+
+volumes:
+  administration_db_volume:
+  appointment_db_volume:
+  brand_db_volume:
+  studio_db_volume:
+  user_db_volume:

@@ -37,7 +37,7 @@ echo "=== Stopping minikube ==="
 
 minikube stop
 if [ "$DELETE_MODE" = true ]; then
-    minikube delete
+    minikube delete --purge
 fi
 
 echo "Cluster removed"

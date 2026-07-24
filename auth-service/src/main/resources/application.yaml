@@ -1,5 +1,12 @@
 debug: false
+server:
+    port: ${SERVICE_PORT:8180}
+    shutdown: graceful
 spring:
+    application:
+        name: auth-service
+    lifecycle:
+        timeout-per-shutdown-phase: 30s
     main:
         allow-bean-definition-overriding: false
     output:
@@ -11,12 +18,12 @@ spring:
     datasource:
         user-db:
             driver-class-name: org.postgresql.Driver
-            jdbcUrl: jdbc:postgresql://${USSDBHOST:localhost}:${USSDBPORT:5441}/${USSDBNAME:user_db}
+            jdbcUrl: jdbc:postgresql://${USSDBHOST:localhost}:${USSDBPORT:5432}/${USSDBNAME:user_db}
             username: ${DBUSER:ussportal}
             password: ${DBPASS:ussportal}
         administration-db:
             driver-class-name: org.postgresql.Driver
-            jdbcUrl: jdbc:postgresql://${ADSDBHOST:localhost}:${ADSDBPORT:5444}/${ADSDBNAME:administration_db}
+            jdbcUrl: jdbc:postgresql://${ADSDBHOST:localhost}:${ADSDBPORT:5432}/${ADSDBNAME:administration_db}
             username: ${DBUSER:adsportal}
             password: ${DBPASS:adsportal}
 
