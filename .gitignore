@@ -41,3 +41,9 @@ bin/
 
 
 /log/
+/infrastructure/k8s/secrets/
+/infrastructure/k8s/services/*/templates/init-scripts_secret.yaml
+/infrastructure/k8s/services/*/Chart.lock
+/infrastructure/k8s/services/*/charts/*.tgz
+/infrastructure/k8s/services/*/charts/*/charts/*.tgz
+/infrastructure/k8s/services/*/charts/*/Chart.lock

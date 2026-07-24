@@ -1,0 +1,26 @@
+liquibase:
+  image:
+    repository: "ghcr.io/tvoe-zdorovje/ams/studio-service-liquibase"
+    tag: ""
+    pullPolicy: IfNotPresent
+    pullSecrets:
+      - name: github-registry
+
+  initContainer:
+    image:
+      repository: "postgres"
+      tag: "17"
+      pullPolicy: IfNotPresent
+
+  hook:
+    helm.sh/hook: "post-install"
+    helm.sh/hook-weight: "5"
+    helm.sh/hook-delete-policy: "hook-succeeded"
+
+  changelogFile: "changelog.yaml"
+
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 600
+
+  secrets:
+    - name: studio-service-liquibase

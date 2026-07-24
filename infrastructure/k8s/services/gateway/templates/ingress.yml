@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+  annotations:
+    {{- include "default.annotations" . | indent 4 }}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: {{ .Values.service.ingress.host }}
+      http:
+        paths:
+          - path: {{ .Values.service.ingress.path }}
+            pathType: {{ .Values.service.ingress.pathType }}
+            backend:
+              service:
+                name: {{ .Release.Name }}
+                port:
+                  number: {{ .Values.service.ingress.port }}

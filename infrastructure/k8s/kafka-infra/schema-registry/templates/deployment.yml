@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "default.labels" . | nindent 4 }}
+  annotations:
+    {{- include "default.annotations" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.schemaRegistry.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-env.yml") . | sha256sum }}
+      labels:
+        {{- include "default.labels" . | nindent 8 }}
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: schema-registry
+          image: "{{ .Values.schemaRegistry.image.repository }}:{{ .Values.schemaRegistry.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.schemaRegistry.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.schemaRegistry.service.port }}
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-env
+          {{- with .Values.schemaRegistry.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.schemaRegistry.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.schemaRegistry.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.schemaRegistry.startupProbe }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.schemaRegistry.affinity }}
+      affinity:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}

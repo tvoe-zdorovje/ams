@@ -1,0 +1,32 @@
+federation_version: =2.5.1
+
+subgraphs:
+  administration:
+    routing_url: 127.0.0.1:8080
+    schema:
+      file: ./schemas/administration.graphqls
+
+  appointments:
+    routing_url: 127.0.0.1:8080
+    schema:
+      file: ./schemas/appointment.graphqls
+
+  brands:
+    routing_url: 127.0.0.1:8080
+    schema:
+      file: ./schemas/brand.graphqls
+
+  studios:
+    routing_url: 127.0.0.1:8080
+    schema:
+      file: ./schemas/studio.graphqls
+
+  users:
+    routing_url: 127.0.0.1:8080
+    schema:
+      file: ./schemas/user.graphqls
+
+  auth:
+    routing_url: 127.0.0.1:8080
+    schema:
+      file: ./schemas/auth.graphqls

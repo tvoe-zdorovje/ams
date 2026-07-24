@@ -1,0 +1,11 @@
+apiVersion: v2
+name: liquibase
+description: A Helm chart for applying liquibase migrations
+type: application
+version: 0.1.0
+appVersion: "0.0.1"
+
+dependencies:
+  - name: ams-liquibase-lib
+    version: "0.1.0"
+    repository: "file://../../../common/liquibase"

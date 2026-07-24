@@ -1,0 +1,60 @@
+kafka:
+  listeners:
+    - name: plain
+      port: 29092
+      type: internal
+      tls: false
+
+  config:
+    default.replication.factor: 1
+    min.insync.replicas: 1
+    offsets.topic.replication.factor: 1
+    offsets.topic.num.partitions: 1
+    num.partitions: 1
+    group.initial.rebalance.delay.ms: 0
+    transaction.state.log.min.isr: 1
+    transaction.state.log.replication.factor: 1
+    auto.create.topics.enable: false
+
+  livenessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    failureThreshold: 3
+    successThreshold: 1
+
+  readinessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    failureThreshold: 3
+    successThreshold: 1
+
+  startupProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    successThreshold: 1
+
+  nodePool:
+    replicas: 1
+    roles:
+      - controller
+      - broker
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+    storage:
+      type: persistent-claim
+      size: 256Mi
+      deleteClaim: false
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - "{{ .Release.Name }}"
+            topologyKey: kubernetes.io/hostname
+
+  entityOperator: {}

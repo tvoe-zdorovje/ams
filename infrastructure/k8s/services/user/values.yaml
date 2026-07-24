@@ -1,0 +1,95 @@
+postgresql:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 15.4.0-debian-11-r45
+  auth:
+    existingSecret: "user-service-postgresql"
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+      accessModes:
+        - ReadWriteOnce
+      storage: 1Gi
+      mountPath: /bitnami/postgresql
+      storageClass: standard
+    # https://github.com/bitnami/charts/issues/16623
+    # haven't found better solution than overriding entire config -_-
+    configuration: |-
+      port = '5432'
+      hot_standby = 'on'
+      fsync = 'on'
+      shared_preload_libraries = 'pgaudit'
+      pgaudit.log_catalog = 'off'
+      log_connections = 'false'
+      log_disconnections = 'false'
+      log_hostname = 'false'
+      client_min_messages = 'error'
+      listen_addresses = '*'
+
+      wal_level = logical
+      max_wal_senders = 1
+      max_replication_slots = 1
+      max_wal_size = '100MB'
+      wal_keep_size = '32MB'
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 560
+      failureThreshold: 6
+      successThreshold: 1
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6
+      successThreshold: 1
+    startupProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 10
+      successThreshold: 1
+    initdb:
+      scriptsSecret: user-postgres-init-scripts
+
+service:
+  secrets:
+    - name: user-service-postgresql
+
+liquibase:
+  enabled: true
+  secrets:
+    - name: user-service-liquibase
+
+global:
+  secrets:
+    - name: user-service-postgresql
+      type: Opaque
+      data:
+        DBHOST: "user-service-postgresql" # <release-name>-postgresql
+        DBPORT: "5432"
+        DBNAME: "user_db"
+        database: "user_db"
+        DBUSER: "ussportal"
+        username: "ussportal"
+        DBPASS: "ussportal"
+        password: "ussportal"
+        postgres-password: "pass"
+    - name: user-service-liquibase
+      type: Opaque
+      data:
+        PGHOST: "user-service-postgresql" # <release-name>-postgresql
+        PGPORT: "5432"
+        PGUSER: "ussliquibase"
+        PGPASSWORD: "ussliquibase"
+        PGDATABASE: "user_db"

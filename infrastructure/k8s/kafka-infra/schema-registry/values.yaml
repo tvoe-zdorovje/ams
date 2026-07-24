@@ -1,0 +1,58 @@
+schemaRegistry:
+  replicas: 1
+
+  image:
+    repository: confluentinc/cp-schema-registry
+    tag: ""
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 8081
+
+  resources:
+    requests:
+      cpu: 125m
+      memory: 256Mi
+
+  livenessProbe:
+    tcpSocket:
+      port: 8081
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    failureThreshold: 3
+    successThreshold: 1
+
+  readinessProbe:
+    tcpSocket:
+      port: 8081
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    failureThreshold: 3
+    successThreshold: 1
+
+  startupProbe:
+    tcpSocket:
+      port: 8081
+    initialDelaySeconds: 50
+    periodSeconds: 15
+    successThreshold: 1
+
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - "{{ .Release.Name }}"
+          topologyKey: kubernetes.io/hostname
+
+  cm:
+    env:
+        SCHEMA_REGISTRY_HOST_NAME: schema-registry
+        SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-kafka-bootstrap:29092
+        SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+        SCHEMA_REGISTRY_KAFKASTORE_TOPIC: _schemas
+        SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR: 1

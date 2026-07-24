@@ -1,5 +1,6 @@
 services:
   gateway:
+    image: ghcr.io/tvoe-zdorovje/ams/gateway:0.1.0
     build:
       context: gateway
       dockerfile: Dockerfile
@@ -21,10 +22,10 @@ services:
     ports:
       - "4000:8080"
     volumes:
-      - ./gateway/apollo/router/router.yaml:/dist/config/router.yaml
-      - ./gateway/apollo/router/supergraph-config.yaml:/tmp/app/supergraph-config.yaml
-      - ./gateway/apollo/router/plugin/:/tmp/app/plugin/
-      - ./graphql:/tmp/app/schemas/service
+      - ./gateway/apollo/router/build/:/dist/mnt/:ro
+    environment:
+      APOLLO_ROUTER_SUPERGRAPH_PATH: /dist/mnt/schema/supergraph.graphql
+      APOLLO_ROUTER_CONFIG_PATH: /dist/mnt/config/router.yaml
     env_file:
       - gateway/.env
 
@@ -61,8 +62,6 @@ services:
         condition: service_healthy
     volumes:
       - ./user-service/database/changelog:/liquibase/changelog
-      - ./user-service/database/test:/liquibase/tests
-      - ./postgres/test/_util:/liquibase/tests/_util
     command:
       - update
 
@@ -74,7 +73,7 @@ services:
       liquibase_user_db:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5
@@ -118,8 +117,6 @@ services:
         condition: service_healthy
     volumes:
       - ./brand-service/database/changelog:/liquibase/changelog
-      - ./brand-service/database/test:/liquibase/tests
-      - ./postgres/test/_util:/liquibase/tests/_util
     command:
       - update
 
@@ -131,7 +128,7 @@ services:
       liquibase_brand_db:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5
@@ -175,8 +172,6 @@ services:
         condition: service_healthy
     volumes:
       - ./studio-service/database/changelog:/liquibase/changelog
-      - ./studio-service/database/test:/liquibase/tests
-      - ./postgres/test/_util:/liquibase/tests/_util
     command:
       - update
   
@@ -190,7 +185,7 @@ services:
     ports:
       - "8083:8080"
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5
@@ -228,8 +223,6 @@ services:
         condition: service_healthy
     volumes:
       - ./administration-service/database/changelog:/liquibase/changelog
-      - ./administration-service/database/test:/liquibase/tests
-      - ./postgres/test/_util:/liquibase/tests/_util
     command:
       - update
 
@@ -244,8 +237,6 @@ services:
         condition: service_healthy
     volumes:
       - ./appointment-service/database/changelog:/liquibase/changelog
-      - ./appointment-service/database/test:/liquibase/tests
-      - ./postgres/test/_util:/liquibase/tests/_util
     command:
       - update
 
@@ -257,7 +248,7 @@ services:
       liquibase_administration_db:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5
@@ -275,7 +266,7 @@ services:
       liquibase_administration_db:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5
@@ -295,7 +286,7 @@ services:
       liquibase_administration_db:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep '\"status\":\"UP\"'" ]
+      test: ["CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc"]
       interval: 30s
       timeout: 3s
       retries: 5
@@ -368,7 +359,7 @@ services:
     image: ams/kafka-connect:8.0.3-debezium-3.4.1
     build:
       context: .
-      dockerfile: kafka/connect/Dockerfile
+      dockerfile: infrastructure/kafka/connect/Dockerfile
       args:
         DEBEZIUM_VERSION: 3.4.1.Final
     hostname: kafka-connect

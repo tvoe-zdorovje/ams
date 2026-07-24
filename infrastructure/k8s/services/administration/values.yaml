@@ -1,0 +1,76 @@
+postgresql:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 15.4.0-debian-11-r45
+  auth:
+    existingSecret: "administration-service-postgresql"
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+      accessModes:
+        - ReadWriteOnce
+      storage: 1Gi
+      mountPath: /bitnami/postgresql
+      storageClass: standard
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 560
+      failureThreshold: 6
+      successThreshold: 1
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6
+      successThreshold: 1
+    startupProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 10
+      successThreshold: 1
+    initdb:
+      scriptsSecret: administration-postgres-init-scripts
+
+service:
+  secrets:
+    - name: administration-service-postgresql
+
+liquibase:
+  enabled: true
+  secrets:
+    - name: administration-service-liquibase
+
+global:
+  secrets:
+    - name: administration-service-postgresql
+      type: Opaque
+      data:
+        DBHOST: "administration-service-postgresql" # <release-name>-postgresql
+        DBPORT: "5432"
+        DBNAME: "administration_db"
+        database: "administration_db"
+        DBUSER: "adsportal"
+        username: "adsportal"
+        DBPASS: "adsportal"
+        password: "adsportal"
+        postgres-password: "pass"
+    - name: administration-service-liquibase
+      type: Opaque
+      data:
+        PGHOST: "administration-service-postgresql" # <release-name>-postgresql
+        PGPORT: "5432"
+        PGUSER: "adsliquibase"
+        PGPASSWORD: "adsliquibase"
+        PGDATABASE: "administration_db"
