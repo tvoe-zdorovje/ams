@@ -7,6 +7,9 @@ chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 deploymentTime: {{ now | date "02.01.2006 15:04:05" }}
 {{- end }}
 
+{{- define "default.configmap.annotations" }}
+{{- end }}
+
 {{- define "required.container.parameters" }}
 terminationMessagePolicy: FallbackToLogsOnError
 securityContext:

@@ -1,1 +1,189 @@
-{{- include "common.service.deployment" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+  annotations:
+    {{- include "default.annotations" . | indent 4}}
+spec:
+  replicas: {{ .Values.service.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ (.Values.service.deployment.rollingUpdate | default dict).maxSurge | default 1 }}
+      maxUnavailable: {{ (.Values.service.deployment.rollingUpdate | default dict).maxUnavailable | default 1 }}
+  template:
+    metadata:
+      labels:
+        {{- include "default.labels" . | indent 8 }}
+      annotations:
+        {{- if .Values.service.cm }}
+        checksum/gateway-config: {{ include (print $.Template.BasePath "/configmap-gateway-env.yml") . | sha256sum }}
+        checksum/router-config: {{ include (print $.Template.BasePath "/configmap-router-env.yml") . | sha256sum }}
+        {{- end }}
+    spec:
+      {{- with .Values.service.deployment.imagePullSecrets }}
+      imagePullSecrets:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Release.Name }}-router
+          {{- include "required.container.parameters" . | indent 10  }}
+          image: {{ .Values.service.deployment.router.image.repository }}:{{ .Values.service.deployment.router.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.service.deployment.router.image.pullPolicy }}
+          {{- if .Values.service.deployment.router.command }}
+          args:
+          {{ toYaml .Values.service.deployment.router.command.args | indent 12 }}
+          {{- end }}
+          ports:
+          {{- range $value := .Values.service.deployment.router.ports }}
+            - containerPort: {{ $value.port }}
+              protocol: {{ $value.protocol }}
+          {{- end }}
+          {{- if or .Values.service.cm.router (.Values.service.secrets | default dict).router }}
+          envFrom:
+          {{- if .Values.service.cm.router.env }}
+            - configMapRef:
+                name: {{ .Release.Name }}-router-env
+          {{- end }}
+          {{- if (.Values.service.secrets | default dict).router }}
+            {{- range $secret := .Values.service.secrets.router }}
+            - secretRef:
+                name: {{ $secret.name }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.service.deployment.router.livenessProbe }}
+          livenessProbe:
+            {{ toYaml .Values.service.deployment.router.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.router.readinessProbe }}
+          readinessProbe:
+            {{ toYaml .Values.service.deployment.router.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.router.startupProbe }}
+          startupProbe:
+            {{ toYaml .Values.service.deployment.router.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.router.resources }}
+          resources:
+          {{- if .Values.service.deployment.router.resources.requests }}
+            requests:
+          {{- if .Values.service.deployment.router.resources.requests.cpu }}
+              cpu: {{ .Values.service.deployment.router.resources.requests.cpu | default "125m" }}
+          {{- end }}
+          {{- if .Values.service.deployment.router.resources.requests.memory }}
+              memory: {{ .Values.service.deployment.router.resources.requests.memory | default "256Mi" }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.service.deployment.router.resources.limits }}
+            limits:
+          {{- if .Values.service.deployment.router.resources.limits.cpu }}
+              cpu: {{ .Values.service.deployment.router.resources.limits.cpu }}
+          {{- end }}
+          {{- if .Values.service.deployment.router.resources.limits.memory }}
+              memory: {{ .Values.service.deployment.router.resources.limits.memory }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.service.deployment.router.volumes }}
+          volumeMounts:
+            {{- range .Values.service.deployment.router.volumes }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+          {{- end }}
+        - name: {{ .Release.Name }}-service
+          {{- include "required.container.parameters" . | indent 10  }}
+          image: {{ .Values.service.deployment.gateway.image.repository }}:{{ .Values.service.deployment.gateway.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.service.deployment.gateway.image.pullPolicy }}
+          {{- if .Values.service.deployment.gateway.command }}
+          args:
+          {{ toYaml .Values.service.deployment.gateway.command.args | indent 12 }}
+          {{- end }}
+          ports:
+          {{- range $value := .Values.service.deployment.gateway.ports }}
+            - containerPort: {{ $value.port }}
+              protocol: {{ $value.protocol }}
+          {{- end }}
+          {{- if or .Values.service.cm.gateway (.Values.service.secrets | default dict).gateway }}
+          envFrom:
+          {{- if .Values.service.cm.gateway.env }}
+            - configMapRef:
+                name: {{ .Release.Name }}-gateway-env
+          {{- end }}
+          {{- if (.Values.service.secrets | default dict).gateway }}
+            {{- range $secret := .Values.service.secrets.gateway }}
+            - secretRef:
+                name: {{ $secret.name }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.service.deployment.gateway.livenessProbe }}
+          livenessProbe:
+            {{ toYaml .Values.service.deployment.gateway.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.gateway.readinessProbe }}
+          readinessProbe:
+            {{ toYaml .Values.service.deployment.gateway.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.gateway.startupProbe }}
+          startupProbe:
+            {{ toYaml .Values.service.deployment.gateway.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.gateway.resources }}
+          resources:
+          {{- if .Values.service.deployment.gateway.resources.requests }}
+            requests:
+          {{- if .Values.service.deployment.gateway.resources.requests.cpu }}
+              cpu: {{ .Values.service.deployment.gateway.resources.requests.cpu | default "125m" }}
+          {{- end }}
+          {{- if .Values.service.deployment.gateway.resources.requests.memory }}
+              memory: {{ .Values.service.deployment.gateway.resources.requests.memory | default "256Mi" }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.service.deployment.gateway.resources.limits }}
+            limits:
+          {{- if .Values.service.deployment.gateway.resources.limits.cpu }}
+              cpu: {{ .Values.service.deployment.gateway.resources.limits.cpu }}
+          {{- end }}
+          {{- if .Values.service.deployment.gateway.resources.limits.memory }}
+              memory: {{ .Values.service.deployment.gateway.resources.limits.memory }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.service.deployment.gateway.volumes }}
+          volumeMounts:
+            {{- range .Values.service.deployment.gateway.volumes }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+          {{- end }}
+      {{- if or .Values.service.deployment.router.volumes .Values.service.deployment.gateway.volumes }}
+      volumes:
+        {{- if .Values.service.deployment.router.volumes }}
+          {{- range .Values.service.deployment.router.volumes }}
+            {{- include "deployment.container.volume" . | indent 10 }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.service.deployment.gateway.volumes }}
+          {{- range .Values.service.deployment.gateway.volumes }}
+            {{- include "deployment.container.volume" . | indent 10 }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Release.Name }}
+              topologyKey: "kubernetes.io/hostname"

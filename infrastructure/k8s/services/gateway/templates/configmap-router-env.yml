@@ -1,16 +1,13 @@
-{{- define "common.service.configmap.env" }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ .Release.Name }}-env
+  name: {{ .Release.Name }}-router-env
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "default.labels" . | indent 4 }}
   annotations:
     {{- include "default.configmap.annotations" . | indent 4 }}
 data:
-  {{- range $key, $value := .Values.service.cm.env }}
+  {{- range $key, $value := .Values.service.cm.router.env }}
   {{ $key }}: {{ $value | quote }}
   {{- end }}
-
-{{- end }}

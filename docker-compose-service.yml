@@ -1,9 +1,23 @@
 services:
-  gateway:
-    image: ghcr.io/tvoe-zdorovje/ams/gateway:0.1.1
-    build:
-      context: gateway
-      dockerfile: Dockerfile
+  router:
+    image: ghcr.io/apollographql/router:v2.2.0
+    container_name: router
+    restart: on-failure
+    depends_on:
+      gateway-service:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./gateway/apollo/router/build/:/dist/mnt/:ro
+    environment:
+      APOLLO_ROUTER_SUPERGRAPH_PATH: /dist/mnt/schema/supergraph.graphql
+      APOLLO_ROUTER_CONFIG_PATH: /dist/mnt/config/router.yaml
+    env_file:
+      - gateway/.env
+
+  gateway-service:
+    image: ghcr.io/tvoe-zdorovje/ams/gateway-service:0.2.0
     container_name: gateway
     restart: on-failure
     depends_on:
@@ -19,13 +33,14 @@ services:
         condition: service_healthy
       user_db:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "/layers/paketo-buildpacks_health-checker/thc/bin/thc" ]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
     ports:
-      - "4000:8080"
-    volumes:
-      - ./gateway/apollo/router/build/:/dist/mnt/:ro
-    environment:
-      APOLLO_ROUTER_SUPERGRAPH_PATH: /dist/mnt/schema/supergraph.graphql
-      APOLLO_ROUTER_CONFIG_PATH: /dist/mnt/config/router.yaml
+      - "8100:8100"
     env_file:
       - gateway/.env
 

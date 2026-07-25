@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ .Release.Name }}-config-pv
+  name: {{ .Release.Name }}-router-config-pv
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "default.labels" . | indent 4 }}

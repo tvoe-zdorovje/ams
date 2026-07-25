@@ -1,30 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TAG_LATEST=false
-PUSH_IMAGES=false
-LIQUIBASE=false
-
-for arg in "$@"; do
-  if [ "$arg" = "--latest" ]; then
-    TAG_LATEST=true
-  fi
-  if [ "$arg" = "--push" ]; then
-    PUSH_IMAGES=true
-  fi
-  if [ "$arg" = "--liquibase" ]; then
-    LIQUIBASE=true
-  fi
-done
-
-if command -v readlink >/dev/null && readlink -f "$0" >/dev/null 2>&1; then
-  SCRIPT_PATH="$(readlink -f "$0")"
-else
-  SCRIPT_PATH="$0"
-fi
-
-PROJECT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
-
 SERVICES=(
   administration
   appointment
@@ -35,28 +11,71 @@ SERVICES=(
   user
 )
 
+TAG_LATEST=false
+PUSH_IMAGES=false
+LIQUIBASE=false
+SERVICES_FROM_ARGS=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --latest)
+      TAG_LATEST=true
+      shift
+      ;;
+    --push)
+      PUSH_IMAGES=true
+      shift
+      ;;
+    --liquibase)
+      LIQUIBASE=true
+      shift
+      ;;
+    --services)
+      SERVICES_FROM_ARGS="$2"
+      shift 2
+      ;;
+    *)
+      echo "Unknown arg: $1"
+      shift
+      ;;
+  esac
+done
+
+if [[ -n "$SERVICES_FROM_ARGS" ]]; then
+  IFS=',' read -r -a SERVICES <<< "$SERVICES_FROM_ARGS"
+fi
+
+echo "Services: ${SERVICES[@]}"
+echo "TAG_LATEST=$TAG_LATEST, PUSH_IMAGES=$PUSH_IMAGES, LIQUIBASE=$LIQUIBASE"
+
+if command -v readlink >/dev/null && readlink -f "$0" >/dev/null 2>&1; then
+  SCRIPT_PATH="$(readlink -f "$0")"
+else
+  SCRIPT_PATH="$0"
+fi
+
+PROJECT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+
 ALL_IMAGES=()
 
 for service in "${SERVICES[@]}"; do
   echo ""
   echo "♨️  Build $service-service image"
   if [ "$service" = "gateway" ]; then
-    # TODO
-    echo ""
-    echo "💔 Gateway service is not supported yet"
-    continue
+    TASK="gateway:gateway-service:bootBuildImage"
   else
-    ./gradlew ":$service-service:bootBuildImage"
+    TASK=":$service-service:bootBuildImage"
+  fi
 
-      OUTPUT=$(./gradlew ":$service:bootBuildImage" 2>&1 | tee /dev/tty)
+  ./gradlew "$TASK"
+  OUTPUT=$(./gradlew "$TASK" 2>&1 | tee /dev/tty)
 
-      SUCCESS_LABEL="Successfully built image"
-      SERVICE_IMAGE_NAME=$(echo "$OUTPUT" | grep -o "$SUCCESS_LABEL '[^']*'" | tail -1 | sed "s/.*'\(.*\)'.*/\1/")
+  SUCCESS_LABEL="Successfully built image"
+  SERVICE_IMAGE_NAME=$(echo "$OUTPUT" | grep -o "$SUCCESS_LABEL '[^']*'" | tail -1 | sed "s/.*'\(.*\)'.*/\1/")
 
-      if [[ -z "$SERVICE_IMAGE_NAME" ]]; then
-          echo "💔  Something went wrong"
-          exit 1
-      fi
+  if [[ -z "$SERVICE_IMAGE_NAME" ]]; then
+      echo "💔  Something went wrong"
+      exit 1
   fi
 
 
@@ -64,7 +83,11 @@ for service in "${SERVICES[@]}"; do
     "$SERVICE_IMAGE_NAME"
   )
 
-  if [[ "$LIQUIBASE" = true && "$service" != "auth" ]]; then
+  BUILD_LIQUIBASE_FOR_SERVICE=$LIQUIBASE
+  if [[ "$service" = "gateway" || "$service" = "auth" ]]; then
+    BUILD_LIQUIBASE_FOR_SERVICE=false
+  fi
+  if [[ "$BUILD_LIQUIBASE_FOR_SERVICE" = true ]]; then
     cd "$PROJECT_DIR/$service-service/database"
     LIQUIBASE_IMAGE_VERSION=$(grep -oE '[0-9]+\.[0-9]+\.[0-9]+' ./changelog/changelog.yaml | tail -1)
     LIQUIBASE_IMAGE_NAME="${SERVICE_IMAGE_NAME%:*}-liquibase:$LIQUIBASE_IMAGE_VERSION"

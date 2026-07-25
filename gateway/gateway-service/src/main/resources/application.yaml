@@ -1,5 +1,5 @@
 server:
-  port: ${GATEWAY_SERVICE_PORT:4000}
+  port: ${GATEWAY_SERVICE_PORT:8100}
   shutdown: graceful
   netty:
     connection-timeout: 3s
@@ -15,7 +15,7 @@ spring:
         connect-timeout: 3000
         response-timeout: 5s
       default-filters:
-        - RewritePath=/(?<service>[^/]+)/(?<remaining>.*), /${remaining}
+        - StripPrefix=1
 #             Cannot be used: there are no ways to determine whether the operation is idempotent
 #                 since all services are configured to use POST method for both mutations and queries
 #            - name: Retry
@@ -27,8 +27,16 @@ spring:
 #                  burstCapacity: 20
 #                  requestedTokens: 1
       routes:
+        - id: auth-service-route
+          uri: ${AUTH_SERVICE_HOST:http://http://localhost:8180}
+          predicates:
+            - Path=/auth/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: authServiceCircuitBreaker
         - id: administration-service-route
-          uri: ${ADMINISTRATION_SERVICE_HOST:http://administration-service:8080}
+          uri: ${ADMINISTRATION_SERVICE_HOST:http://localhost:8181}
           predicates:
             - Path=/administration/**
           filters:
@@ -36,23 +44,15 @@ spring:
               args:
                 name: administrationServiceCircuitBreaker
         - id: appointment-service-route
-          uri: ${APPOINTMENTS_SERVICE_HOST:http://appointment-service:8080}
+          uri: ${APPOINTMENT_SERVICE_HOST:http://localhost:8182}
           predicates:
             - Path=/appointment/**
           filters:
             - name: CircuitBreaker
               args:
                 name: appointmentServiceCircuitBreaker
-        - id: auth-service-route
-          uri: ${AUTH_SERVICE_HOST:http://auth-service:8080}
-          predicates:
-            - Path=/auth/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: authServiceCircuitBreaker
         - id: brand-service-route
-          uri: ${BRANDS_SERVICE_HOST:http://brand-service:8080}
+          uri: ${BRAND_SERVICE_HOST:http://localhost:8183}
           predicates:
             - Path=/brand/**
           filters:
@@ -60,7 +60,7 @@ spring:
               args:
                 name: brandServiceCircuitBreaker
         - id: studio-service-route
-          uri: ${STUDIOS_SERVICE_HOST:http://studio-service:8080}
+          uri: ${STUDIO_SERVICE_HOST:http://localhost:8184}
           predicates:
             - Path=/studio/**
           filters:
@@ -68,7 +68,7 @@ spring:
               args:
                 name: studioServiceCircuitBreaker
         - id: user-service-route
-          uri: ${USERS_SERVICE_HOST:http://user-service:8080}
+          uri: ${USER_SERVICE_HOST:http://localhost:8185}
           predicates:
             - Path=/user/**
           filters:
@@ -104,3 +104,17 @@ resilience4j:
     configs:
       default:
         timeout-duration: 5s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
