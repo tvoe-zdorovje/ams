@@ -14,6 +14,12 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${JWKS_URI:http://localhost:8180/.well-known/jwks}
+  data:
+    redis:
+      connect-timeout: 3s
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 3s
   cloud:
     gateway:
       httpclient:
@@ -24,13 +30,12 @@ spring:
 #             Cannot be used: there are no ways to determine whether the operation is idempotent
 #                 since all services are configured to use POST method for both mutations and queries
 #            - name: Retry
-#             TODO https://javaops.ru/view/cloudjava/gateway_service_1/filter
-#            - name: RequestRateLimiter
-#              args:
-#                redis-rate-limiter:
-#                  replenishRate: 10
-#                  burstCapacity: 20
-#                  requestedTokens: 1
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter:
+              replenishRate: 10
+              burstCapacity: 20
+              requestedTokens: 1
       routes:
         - id: auth-service-route
           uri: ${AUTH_SERVICE_HOST:http://localhost:8180}

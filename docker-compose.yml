@@ -1,5 +1,6 @@
 include:
   - docker-compose-database.yml
-  - docker-compose-migration.yml
+  - docker-compose-infrastructure.yml
   - docker-compose-kafka.yml
+  - docker-compose-migration.yml
   - docker-compose-service.yml

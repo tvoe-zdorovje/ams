@@ -7,6 +7,7 @@ import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
 
 @Configuration
 @EnableWebFluxSecurity
@@ -19,6 +20,7 @@ class SecurityConfig {
             .anyExchange().authenticated()
     }
         .oauth2ResourceServer { it.jwt(Customizer.withDefaults()) }
+        .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
         .csrf(ServerHttpSecurity.CsrfSpec::disable)
         .build()
 }
