@@ -9,6 +9,11 @@ spring:
     name: gateway-service
   lifecycle:
     timeout-per-shutdown-phase: 30s
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWKS_URI:http://localhost:8180/.well-known/jwks}
   cloud:
     gateway:
       httpclient:
@@ -28,7 +33,7 @@ spring:
 #                  requestedTokens: 1
       routes:
         - id: auth-service-route
-          uri: ${AUTH_SERVICE_HOST:http://http://localhost:8180}
+          uri: ${AUTH_SERVICE_HOST:http://localhost:8180}
           predicates:
             - Path=/auth/**
           filters:
@@ -118,3 +123,4 @@ management:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: TRACE
