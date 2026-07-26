@@ -50,6 +50,7 @@ service:
 
   cm:
     env:
+      SERVICE_PORT: 8080
       KAFKA_BOOTSTRAP_SERVERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:29092"
       KAFKA_SCHEMA_REGISTRY_URL: "http://schema-registry.kafka.svc.cluster.local:8081"
       KAFKA_STUDIO_EVENTS_TOPIC: v1.studios.studio

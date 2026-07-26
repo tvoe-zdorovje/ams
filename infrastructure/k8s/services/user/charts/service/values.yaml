@@ -50,6 +50,7 @@ service:
 
   cm:
     env:
+      SERVICE_PORT: 8080
 # stored in secrets
 #      DBHOST: user_db
 #      DBPORT: 5432

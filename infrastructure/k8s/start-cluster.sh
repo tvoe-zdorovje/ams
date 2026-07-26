@@ -221,14 +221,19 @@ echo "== 📥 Install [ Gateway ] Service =="
 
 SERVICE="gateway"
 SERVICE_VERSION=$(grep '^appVersion:' "$SERVICES_DIR/$SERVICE/Chart.yaml" | sed -E 's/^appVersion:[[:space:]]*//; s/^"//; s/"$//')
-SERVICE_IMAGE="ghcr.io/tvoe-zdorovje/ams/$SERVICE:$SERVICE_VERSION"
+SERVICE_IMAGE="ghcr.io/tvoe-zdorovje/ams/$SERVICE-service:$SERVICE_VERSION"
+echo ""
+echo "📥 load $SERVICE_IMAGE to the minikube"
+minikube image load "$SERVICE_IMAGE" # in order to speed up service startup
+
+SERVICE_IMAGE="ghcr.io/apollographql/router:v2.2.0"
 echo ""
 echo "📥 load $SERVICE_IMAGE to the minikube"
 minikube image load "$SERVICE_IMAGE" # in order to speed up service startup
 
 echo ""
 echo " 📥 Mount graphql directory"
-nohup minikube mount "$PROJECT_DIR/$SERVICE/apollo/router/build/":"/gateway/build/" &
+nohup minikube mount "$PROJECT_DIR/$SERVICE/apollo/router/build/":"/gateway/router/build/" &
 
 cd "$SERVICE"
 helm dependency update

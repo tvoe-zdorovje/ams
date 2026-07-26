@@ -50,6 +50,7 @@ service:
 
   cm:
     env:
+      SERVICE_PORT: 8080
       THC_PORT: 8080
       THC_PATH: "/actuator/health/readiness"
 

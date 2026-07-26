@@ -1,3 +1,4 @@
+# deprecated
 FROM ghcr.io/apollographql/router:v2.2.0
 
 ENV ROVER_ELV2_LICENSE=accept

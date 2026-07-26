@@ -7,7 +7,7 @@ metadata:
   labels:
     {{- include "default.labels" . | indent 4 }}
   annotations:
-    {{- include "default.annotations" . | indent 4 }}
+    {{- include "default.configmap.annotations" . | indent 4 }}
 data:
   {{- range $key, $value := .Values.service.cm.env }}
   {{ $key }}: {{ $value | quote }}

@@ -1,0 +1,8 @@
+services:
+  redis:
+    image: redis:7.4.10-alpine
+    hostname: redis
+    container_name: redis
+    restart: on-failure
+    ports:
+      - "6379:6379"

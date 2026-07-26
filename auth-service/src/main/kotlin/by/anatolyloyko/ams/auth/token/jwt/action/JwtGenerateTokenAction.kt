@@ -31,11 +31,13 @@ class JwtGenerateTokenAction(
 ) : GenerateTokenAction {
     override fun invoke(tokenData: TokenData): String {
         val rsaKey = keyManager.getKey()
+        val subject = tokenData.userId.toString()
         val claims = JWTClaimsSet
             .Builder()
             .issueTime(Date())
             .expirationTime(Date(System.currentTimeMillis() + timeOfLife))
-            .jwtID("${rsaKey.keyID}-${tokenData.userId}-${UUID.randomUUID()}")
+            .jwtID("${rsaKey.keyID}-$subject-${UUID.randomUUID()}")
+            .subject(subject)
             .claim(CLAIM_DATA, tokenData)
             .build()
 
