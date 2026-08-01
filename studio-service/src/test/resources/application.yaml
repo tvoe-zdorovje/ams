@@ -1,4 +1,7 @@
 spring:
+  cloud:
+    config:
+      enabled: false
   output:
     ansi:
       enabled: always
@@ -16,9 +19,9 @@ ams:
   kafka:
     topic:
       studio:
-        name: ${KAFKA_STUDIO_EVENTS_TOPIC:v1.studios.studio}
-        partitions: ${KAFKA_STUDIO_EVENTS_TOPIC_PARTITIONS_COUNT:3}
-        replicas: ${KAFKA_STUDIO_EVENTS_TOPIC_REPLICATION_FACTOR:1}
+        name: v1.studios.studio
+        partitions: 3
+        replicas: 1
 
     props:
       nack-cooldown: 100ms

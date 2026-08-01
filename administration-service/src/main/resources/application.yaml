@@ -1,67 +1,7 @@
-debug: false
-server:
-    port: ${SERVICE_PORT:8181}
-    shutdown: graceful
 spring:
-    application:
-        name: administration-service
-    lifecycle:
-        timeout-per-shutdown-phase: 30s
-    main:
-        allow-bean-definition-overriding: false
-    output:
-        ansi:
-            enabled: always
-    graphql:
-        graphiql:
-            enabled: true
-    datasource:
-        driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://${DBHOST:localhost}:${DBPORT:5432}/${DBNAME:administration_db}
-        username: ${DBUSER:adsportal}
-        password: ${DBPASS:adsportal}
-    kafka:
-        bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-        consumer:
-            group-id: ${KAFKA_GROUP_ID:administration-service}
-            key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
-            value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-            auto-offset-reset: earliest
-            enable-auto-commit: false
-            properties:
-                schema.registry.url: ${KAFKA_SCHEMA_REGISTRY_URL:http://localhost:8081}
-                specific.avro.reader: true
-        listener:
-            ack-mode: manual
-            missing-topics-fatal: false
-
-ams:
-    kafka:
-        topic:
-            brand:
-                name: ${KAFKA_TOPIC_BRAND:v1.brands.brand}
-            studio:
-                name: ${KAFKA_TOPIC_STUDIO:v1.studios.studio}
-        props:
-            nack-cooldown: 100ms
-
-management:
-    endpoints:
-        web:
-            exposure:
-                include: health
-    endpoint:
-        health:
-            probes:
-                enabled: true
-
-logging:
-    pattern:
-        console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){cyan} - %clr(%-5level){yellow} %clr(%logger{36}){green} - %msg%n"
-    level:
-        org.jooq: DEBUG
-        org.springframework: INFO
-        by.anatolyloyko: DEBUG
-        org.zalando.logbook.Logbook: TRACE
-    file:
-        name: log/administration-service.log
+  application:
+    name: administration-service
+  config:
+    activate:
+      on-profile: "!local"
+    import: ${SPRING_CONFIG_IMPORT}

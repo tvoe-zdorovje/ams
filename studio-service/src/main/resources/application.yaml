@@ -1,63 +1,7 @@
-debug: false
-server:
-    port: ${SERVICE_PORT:8184}
-    shutdown: graceful
 spring:
-    application:
-        name: studio-service
-    lifecycle:
-        timeout-per-shutdown-phase: 30s
-    main:
-        allow-bean-definition-overriding: false
-    output:
-        ansi:
-            enabled: always
-    graphql:
-        graphiql:
-            enabled: true
-    datasource:
-        driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://${DBHOST:localhost}:${DBPORT:5432}/${DBNAME:studio_db}
-        username: ${DBUSER:stsportal}
-        password: ${DBPASS:stsportal}
-    kafka:
-        bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-        producer:
-            key-serializer: org.apache.kafka.common.serialization.LongSerializer
-            value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-            properties:
-                schema.registry.url: ${KAFKA_SCHEMA_REGISTRY_URL:http://localhost:8081}
-                enable.idempotence: false
-                acks: all
-
-ams:
-    kafka:
-        topic:
-            studio:
-                name: ${KAFKA_STUDIO_EVENTS_TOPIC:v1.studios.studio}
-                replicas: ${KAFKA_STUDIO_EVENTS_TOPIC_REPLICATION_FACTOR:3}
-                partitions: ${KAFKA_STUDIO_EVENTS_TOPIC_PARTITIONS_COUNT:1}
-
-        props:
-            nack-cooldown: 100ms
-
-management:
-    endpoints:
-        web:
-            exposure:
-                include: health
-    endpoint:
-        health:
-            probes:
-                enabled: true
-
-logging:
-    pattern:
-        console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){cyan} - %clr(%-5level){yellow} %clr(%logger{36}){green} - %msg%n"
-    level:
-        org.jooq: DEBUG
-        org.springframework: INFO
-        by.anatolyloyko: DEBUG
-        org.zalando.logbook.Logbook: TRACE
-    file:
-        name: log/studio-service.log
+  application:
+    name: studio-service
+  config:
+    activate:
+      on-profile: "!local"
+    import: ${SPRING_CONFIG_IMPORT}

@@ -1,7 +1,7 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "0.1.0"
+version = "0.1.1"
 
 plugins {
     `java-library`
@@ -37,6 +37,9 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-actuator")
     api("org.springframework.boot:spring-boot-starter-logging")
     api("org.springframework.boot:spring-boot-starter-graphql")
+    api("org.springframework.boot:spring-boot-starter-aop")
+    api("org.springframework.cloud:spring-cloud-starter-config")
+    api("org.springframework.retry:spring-retry")
     api("org.springframework.boot:spring-boot-starter-web") {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
     }
@@ -66,6 +69,12 @@ dependencies {
     testFixturesApi(group = "com.ninja-squad", name = "springmockk", version = springMockkVersion)
 
     testFixturesApi("com.h2database", "h2", h2Version)
+}
+
+dependencyManagement { // doesn't affect child services, see root build.gradle.kts
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
 }
 
 tasks.withType<JacocoCoverageVerification> {

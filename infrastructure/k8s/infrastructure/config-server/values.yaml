@@ -1,0 +1,57 @@
+service:
+  deployment:
+    replicas: 1
+    configServer:
+      image:
+        repository: "springcloud/spring-cloud-kubernetes-configserver"
+        tag: ""
+        pullPolicy: IfNotPresent
+      resources:
+        requests:
+          cpu: 500m
+          memory: 888Mi
+        limits:
+          memory: 888Mi
+      ports:
+        - port: 8888
+          protocol: TCP
+      readinessProbe:
+        httpGet:
+          path: /actuator/health/readiness
+          port: 8888
+        initialDelaySeconds: 30
+        periodSeconds: 15
+        failureThreshold: 3
+        successThreshold: 1
+      livenessProbe:
+        httpGet:
+          path: /actuator/health/liveness
+          port: 8888
+        initialDelaySeconds: 30
+        periodSeconds: 15
+        failureThreshold: 3
+        successThreshold: 1
+      volumes:
+        - name: tmp-directory
+          mountPath: /tmp
+
+  service:
+    type: ClusterIP
+    ports:
+      - port: 8888
+        targetPort: 8888
+        protocol: TCP
+        name: config-server
+
+  cm:
+    configServer:
+      env:
+        SPRING_CLOUD_KUBERNETES_CONFIG_ENABLED: false
+        SPRING_CLOUD_KUBERNETES_SECRETS_ENABLED: false
+        SPRING_CLOUD_KUBERNETES_ENABLED: false
+        SPRING_PROFILES_ACTIVE: git
+        SPRING_CLOUD_CONFIG_SERVER_GIT_URI: "https://github.com/tvoe-zdorovje/ams.git"
+        SPRING_CLOUD_CONFIG_SERVER_GIT_SEARCH_PATHS: "/config,/config/{application}"
+        SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL: "master"
+        LOGGING_LEVEL_ROOT: INFO
+        SERVER_PORT: 8888

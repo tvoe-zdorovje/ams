@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: appointment-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DBHOST}:${DBPORT}/${DBNAME}
+    username: ${DBUSER}
+    password: ${DBPASS}

@@ -19,7 +19,7 @@ CLUSTER_NAME="ams"
 echo "=== 👨🏻‍🔧 Starting Kubernetes cluster 🆕 ==="
 
 if ! minikube status >/dev/null 2>&1; then
-  minikube start --cpus=6 --memory=8g
+  minikube start --cpus=6 --memory=12g
 else
   echo "Minikube already running"
 fi
@@ -116,7 +116,10 @@ helm install kafka-connect ./kafka-infra/kafka-connect -n kafka
 # === INFRASTRUCTURE ===
 
 echo ""
-echo "== ️️⚙️ Installing infrastructure components =="
+echo "== ️️📥 Creating INFRASTRUCTURE namespace =="
+
+INF_DIR="$PROJECT_DIR/infrastructure/k8s/infrastructure"
+cd "$INF_DIR"
 
 NAMESPACE="infrastructure"
 if ! kubectl get namespace "$NAMESPACE" >/dev/null 2>&1; then
@@ -126,12 +129,29 @@ else
   echo "Namespace already exists: $NAMESPACE"
 fi
 
+SERVICE="redis"
+
 echo ""
-echo "== ️️⚙️ Installing redis =="
+echo "== ️️📥 Install [$SERVICE] =="
 
-cd "$PROJECT_DIR/infrastructure/k8s/infrastructure/redis"
+cd "$INF_DIR/$SERVICE"
 
-helm install redis oci://registry-1.docker.io/bitnamicharts/redis -f values.yaml -n "$NAMESPACE"
+helm install "$SERVICE" oci://registry-1.docker.io/bitnamicharts/redis -f values.yaml -n "$NAMESPACE"
+
+SERVICE="config-server"
+
+echo ""
+echo "== ️️📥 Install [$SERVICE] =="
+cd "$INF_DIR/$SERVICE"
+
+SERVICE_VERSION=$(grep '^appVersion:' "$INF_DIR/$SERVICE/Chart.yaml" | sed -E 's/^appVersion:[[:space:]]*//; s/^"//; s/"$//')
+SERVICE_IMAGE="springcloud/spring-cloud-kubernetes-configserver:$SERVICE_VERSION"
+echo ""
+echo "📥 load $SERVICE_IMAGE to the minikube"
+minikube image load "$SERVICE_IMAGE" # in order to speed up service startup
+
+RELEASE_NAME="$SERVICE"
+helm install "$RELEASE_NAME" . -n "$NAMESPACE" --timeout 5m
 
 cd $SCRIPT_DIR
 

@@ -6,3 +6,19 @@ services:
     restart: on-failure
     ports:
       - "6379:6379"
+
+  config-server:
+    image: springcloud/spring-cloud-kubernetes-configserver:5.0.2-SNAPSHOT
+    hostname: config-server
+    container_name: config-server
+    restart: on-failure
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_CLOUD_KUBERNETES_CONFIG_ENABLED: false
+      SPRING_CLOUD_KUBERNETES_SECRETS_ENABLED: false
+      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: "https://github.com/tvoe-zdorovje/ams.git"
+      SPRING_CLOUD_CONFIG_SERVER_GIT_SEARCH_PATHS: "/config,/config/{application}"
+      SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL: "master"
+      LOGGING_LEVEL_ROOT: INFO
+      SERVER_PORT: 8888

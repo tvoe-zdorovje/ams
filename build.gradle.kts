@@ -1,3 +1,4 @@
+import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
@@ -81,6 +82,14 @@ subprojects {
                 buildpacks.add("urn:cnb:builder:paketo-buildpacks/java")
                 buildpacks.add("docker.io/paketobuildpacks/health-checker:latest")
             }
+        }
+    }
+
+    apply(plugin = "io.spring.dependency-management")
+
+    configure<DependencyManagementExtension> {
+        imports {
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
         }
     }
 }

@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: studio-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DBHOST}:${DBPORT}/${DBNAME}
+    username: ${DBUSER}
+    password: ${DBPASS}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        schema.registry.url: ${KAFKA_SCHEMA_REGISTRY_URL}
+        enable.idempotence: false
+        acks: all
+
+ams:
+  kafka:
+    topic:
+      studio:
+        name: ${KAFKA_STUDIO_EVENTS_TOPIC:v1.studios.studio}
+        replicas: ${KAFKA_STUDIO_EVENTS_TOPIC_REPLICATION_FACTOR}
+        partitions: ${KAFKA_STUDIO_EVENTS_TOPIC_PARTITIONS_COUNT}
+
+    props:
+      nack-cooldown: 100ms

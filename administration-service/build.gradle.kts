@@ -3,7 +3,7 @@ import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "0.1.0"
+version = "0.1.1"
 
 plugins {
     kotlin("jvm")
