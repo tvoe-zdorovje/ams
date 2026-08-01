@@ -1,0 +1,27 @@
+architecture: standalone
+auth:
+  enabled: false
+  password: "my-strong-redis-password"
+
+master:
+  persistence:
+    enabled: true
+    size: 8Mi
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 256Mi
+      cpu: 500m
+
+service:
+  type: ClusterIP
+  port: 6379
+
+metrics:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+
+updateStrategy: RollingUpdate

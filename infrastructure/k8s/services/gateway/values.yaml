@@ -118,3 +118,7 @@ service:
         STUDIO_SERVICE_HOST: "http://studio-service:8080"
         USER_SERVICE_HOST: "http://user-service:8080"
         JWKS_URI: "http://auth-service:8080/.well-known/jwks"
+
+        THC_PORT: 8080
+        REDIS_HOST: redis-master.infrastructure.svc.cluster.local
+        REDIS_PORT: 6379
