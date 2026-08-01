@@ -113,6 +113,28 @@ minikube image load "$KAFKA_CONNECT_BUILD_IMAGE" # in order to speed up Kafka Co
 helm install kafka-connect ./kafka-infra/kafka-connect -n kafka
 
 
+# === INFRASTRUCTURE ===
+
+echo ""
+echo "== ️️⚙️ Installing infrastructure components =="
+
+NAMESPACE="infrastructure"
+if ! kubectl get namespace "$NAMESPACE" >/dev/null 2>&1; then
+  echo "Creating namespace: $NAMESPACE"
+  kubectl create namespace "$NAMESPACE"
+else
+  echo "Namespace already exists: $NAMESPACE"
+fi
+
+echo ""
+echo "== ️️⚙️ Installing redis =="
+
+cd "$PROJECT_DIR/infrastructure/k8s/infrastructure/redis"
+
+helm install redis oci://registry-1.docker.io/bitnamicharts/redis -f values.yaml -n "$NAMESPACE"
+
+cd $SCRIPT_DIR
+
 # === SERVICES ===
 
 echo ""
@@ -124,11 +146,11 @@ SECRETS=(
 )
 
 if ! kubectl get namespace "$NAMESPACE" >/dev/null 2>&1; then
-    echo "Creating namespace: $NAMESPACE"
-    kubectl create namespace "$NAMESPACE"
-  else
-    echo "Namespace already exists: $NAMESPACE"
-  fi
+  echo "Creating namespace: $NAMESPACE"
+  kubectl create namespace "$NAMESPACE"
+else
+  echo "Namespace already exists: $NAMESPACE"
+fi
 
 echo ""
 echo "== 🛡️ Applying secrets =="

@@ -15,7 +15,7 @@ CLUSTER_NAME="ams"
 NAMESPACES=(
   kafka
   services
-#  databases
+  infrastructure
 )
 
 STRIMZI_RELEASE="strimzi"
