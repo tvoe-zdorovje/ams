@@ -17,7 +17,7 @@ services:
       - gateway/.env
 
   gateway-service:
-    image: ghcr.io/tvoe-zdorovje/ams/gateway-service:0.2.0
+    image: ghcr.io/tvoe-zdorovje/ams/gateway-service:0.2.1
     container_name: gateway
     restart: on-failure
     depends_on:

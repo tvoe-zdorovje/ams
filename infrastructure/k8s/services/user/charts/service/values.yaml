@@ -11,9 +11,9 @@ service:
     resources:
       requests:
         cpu: 500m
-        memory: 670Mi
+        memory: 888Mi
       limits:
-        memory: 670Mi
+        memory: 888Mi
 
     readinessProbe:
       httpGet:
@@ -50,7 +50,15 @@ service:
 
   cm:
     env:
-      SERVICE_PORT: 8080
+      SERVER_PORT: 8080
+
+      SPRING_CONFIG_IMPORT: "configserver:http://config-server.infrastructure.svc.cluster.local:8888"
+      SPRING_CLOUD_CONFIG_FAIL_FAST: true
+      SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS: 10
+      SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 15000
+      SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.2
+      SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 1000
+      SPRING_CLOUD_CONFIG_LABEL: master
 # stored in secrets
 #      DBHOST: user_db
 #      DBPORT: 5432

@@ -2,7 +2,7 @@ import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "0.1.0"
+version = "0.1.1"
 
 plugins {
     kotlin("jvm")
@@ -32,6 +32,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-logging")
     implementation("org.springframework.boot:spring-boot-starter-graphql")
     implementation("org.springframework.boot:spring-boot-starter-jooq")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.springframework.retry:spring-retry")
+    implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
     }
@@ -49,6 +52,12 @@ dependencies {
     testImplementation(group = "io.mockk", name = "mockk", version = mockkVersion)
     testImplementation(group = "com.ninja-squad", name = "springmockk", version = springMockkVersion)
     testImplementation(kotlin("test"))
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
 }
 
 sourceSets {

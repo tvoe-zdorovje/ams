@@ -1,0 +1,41 @@
+debug: false
+server:
+  port: 8182
+  shutdown: graceful
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  main:
+    allow-bean-definition-overriding: false
+  output:
+    ansi:
+       nabled: always
+  graphql:
+    graphiql:
+      enabled: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5442/administration_dbappointment_db
+    username: apsportal
+    password: apsportal
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){cyan} - %clr(%-5level){yellow} %clr(%logger{36}){green} - %msg%n"
+  level:
+    org.jooq: DEBUG
+    org.springframework: INFO
+    by.anatolyloyko: DEBUG
+    org.zalando.logbook.Logbook: TRACE
+  file:
+    name: log/appointment-service.log

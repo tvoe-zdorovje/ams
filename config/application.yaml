@@ -1,0 +1,37 @@
+# common config (for dev only!!)
+debug: false
+server:
+  port: ${SERVER_PORT}
+  shutdown: graceful
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  main:
+    allow-bean-definition-overriding: false
+  output:
+    ansi:
+      enabled: always
+  graphql:
+    graphiql:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm}){cyan} - %clr(%-5level){yellow} %clr(%logger{36}){green} - %msg%n"
+  level:
+    org.jooq: DEBUG
+    org.springframework: INFO
+    by.anatolyloyko: DEBUG
+    org.zalando.logbook.Logbook: TRACE
+  file:
+    name: ${APPLICATION_LOG_FILE:/tmp/log/application.log}

@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: auth-service
+  datasource:
+    user-db:
+      driver-class-name: org.postgresql.Driver
+      jdbcUrl: jdbc:postgresql://${USSDBHOST}:${USSDBPORT}/${USSDBNAME}
+      username: ${DBUSER}
+      password: ${DBPASS}
+    administration-db:
+      driver-class-name: org.postgresql.Driver
+      jdbcUrl: jdbc:postgresql://${ADSDBHOST}:${ADSDBPORT}/${ADSDBNAME}
+      username: ${DBUSER}
+      password: ${DBPASS}
+
+jwt:
+  time-of-life: 300000 # 5 minutes
+  algorithm: RS256
+  private-key:
+    kid-format: "kid-%d"
+    rotation:
+      vault-size: 2
+      period: 3600000 # 60 minutes

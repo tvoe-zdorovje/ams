@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+  annotations:
+    {{- include "default.annotations" . | indent 4}}
+spec:
+  replicas: {{ .Values.service.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ (.Values.service.deployment.rollingUpdate | default dict).maxSurge | default 1 }}
+      maxUnavailable: {{ (.Values.service.deployment.rollingUpdate | default dict).maxUnavailable | default 1 }}
+  template:
+    metadata:
+      labels:
+        {{- include "default.labels" . | indent 8 }}
+      annotations:
+        {{- if .Values.service.cm }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-env.yml") . | sha256sum }}
+        {{- end }}
+    spec:
+      {{- with .Values.service.deployment.imagePullSecrets }}
+      imagePullSecrets:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Release.Name }}
+          {{- include "required.container.parameters" . | indent 10  }}
+          image: {{ .Values.service.deployment.configServer.image.repository }}:{{ .Values.service.deployment.configServer.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.service.deployment.configServer.image.pullPolicy }}
+          {{- if .Values.service.deployment.configServer.command }}
+          args:
+          {{ toYaml .Values.service.deployment.configServer.command.args | indent 12 }}
+          {{- end }}
+          ports:
+          {{- range $value := .Values.service.deployment.configServer.ports }}
+            - containerPort: {{ $value.port }}
+              protocol: {{ $value.protocol }}
+          {{- end }}
+          {{- if or .Values.service.cm.configServer (.Values.service.secrets | default dict).configServer }}
+          envFrom:
+          {{- if .Values.service.cm.configServer.env }}
+            - configMapRef:
+                name: {{ .Release.Name }}-env
+          {{- end }}
+          {{- if (.Values.service.secrets | default dict).configServer }}
+            {{- range $secret := .Values.service.secrets.configServer }}
+            - secretRef:
+                name: {{ $secret.name }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.service.deployment.configServer.livenessProbe }}
+          livenessProbe:
+            {{ toYaml .Values.service.deployment.configServer.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.configServer.readinessProbe }}
+          readinessProbe:
+            {{ toYaml .Values.service.deployment.configServer.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.configServer.startupProbe }}
+          startupProbe:
+            {{ toYaml .Values.service.deployment.configServer.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.service.deployment.configServer.resources }}
+          resources:
+          {{- if .Values.service.deployment.configServer.resources.requests }}
+            requests:
+          {{- if .Values.service.deployment.configServer.resources.requests.cpu }}
+              cpu: {{ .Values.service.deployment.configServer.resources.requests.cpu | default "125m" }}
+          {{- end }}
+          {{- if .Values.service.deployment.configServer.resources.requests.memory }}
+              memory: {{ .Values.service.deployment.configServer.resources.requests.memory | default "256Mi" }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.service.deployment.configServer.resources.limits }}
+            limits:
+          {{- if .Values.service.deployment.configServer.resources.limits.cpu }}
+              cpu: {{ .Values.service.deployment.configServer.resources.limits.cpu }}
+          {{- end }}
+          {{- if .Values.service.deployment.configServer.resources.limits.memory }}
+              memory: {{ .Values.service.deployment.configServer.resources.limits.memory }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.service.deployment.configServer.volumes }}
+          volumeMounts:
+            {{- range .Values.service.deployment.configServer.volumes }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+          {{- end }}
+      {{- if .Values.service.deployment.configServer.volumes }}
+      volumes:
+        {{- range .Values.service.deployment.configServer.volumes }}
+        - name: {{ .name }}
+          {{- if .claimName }}
+          persistentVolumeClaim:
+            claimName: {{ .claimName }}
+          {{- else }}
+          emptyDir: { }
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Release.Name }}
+              topologyKey: "kubernetes.io/hostname"
