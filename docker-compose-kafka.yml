@@ -26,7 +26,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       KAFKA_LOG_DIRS: '/var/lib/kafka/data/log'
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
       CLUSTER_ID: 'qtYbt-BeTuCoNnuqDxqY6Q'
     healthcheck:
       test: [ "CMD-SHELL", "kafka-cluster cluster-id --bootstrap-server kafka:29092" ]
