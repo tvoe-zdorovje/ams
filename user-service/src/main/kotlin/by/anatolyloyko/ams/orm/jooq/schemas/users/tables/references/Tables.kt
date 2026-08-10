@@ -5,7 +5,6 @@ package by.anatolyloyko.ams.orm.jooq.schemas.users.tables.references
 
 
 import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.User
-import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.UserPassword
 
 
 
@@ -13,8 +12,3 @@ import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.UserPassword
  * The table <code>users.user</code>.
  */
 val USER: User = User.USER
-
-/**
- * The table <code>users.user_password</code>.
- */
-val USER_PASSWORD: UserPassword = UserPassword.USER_PASSWORD

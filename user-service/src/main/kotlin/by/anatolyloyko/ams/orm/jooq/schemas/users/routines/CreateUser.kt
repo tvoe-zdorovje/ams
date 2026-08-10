@@ -26,9 +26,9 @@ open class CreateUser : AbstractRoutine<Long>("create_user", Users.USERS, SQLDat
         val RETURN_VALUE: Parameter<Long?> = Internal.createParameter("RETURN_VALUE", SQLDataType.BIGINT, false, false)
 
         /**
-         * The parameter <code>users.create_user.i_password</code>.
+         * The parameter <code>users.create_user.i_idp_uuid</code>.
          */
-        val I_PASSWORD: Parameter<String?> = Internal.createParameter("i_password", SQLDataType.CLOB, false, false)
+        val I_IDP_UUID: Parameter<String?> = Internal.createParameter("i_idp_uuid", SQLDataType.VARCHAR, false, false)
 
         /**
          * The parameter <code>users.create_user.i_first_name</code>.
@@ -48,23 +48,23 @@ open class CreateUser : AbstractRoutine<Long>("create_user", Users.USERS, SQLDat
 
     init {
         returnParameter = CreateUser.RETURN_VALUE
-        addInParameter(CreateUser.I_PASSWORD)
+        addInParameter(CreateUser.I_IDP_UUID)
         addInParameter(CreateUser.I_FIRST_NAME)
         addInParameter(CreateUser.I_LAST_NAME)
         addInParameter(CreateUser.I_PHONE_NUMBER)
     }
 
     /**
-     * Set the <code>i_password</code> parameter IN value to the routine
+     * Set the <code>i_idp_uuid</code> parameter IN value to the routine
      */
-    fun setIPassword(value: String?): Unit = setValue(CreateUser.I_PASSWORD, value)
+    fun setIIdpUuid(value: String?): Unit = setValue(CreateUser.I_IDP_UUID, value)
 
     /**
-     * Set the <code>i_password</code> parameter to the function to be used with
+     * Set the <code>i_idp_uuid</code> parameter to the function to be used with
      * a {@link org.jooq.Select} statement
      */
-    fun setIPassword(field: Field<String?>): Unit {
-        setField(CreateUser.I_PASSWORD, field)
+    fun setIIdpUuid(field: Field<String?>): Unit {
+        setField(CreateUser.I_IDP_UUID, field)
     }
 
     /**
