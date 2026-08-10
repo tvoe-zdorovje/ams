@@ -21,6 +21,8 @@ spring:
       port: 6379
       timeout: 3s
   cloud:
+    config:
+      enabled: false
     gateway:
       httpclient:
         connect-timeout: 3000
