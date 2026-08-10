@@ -21,7 +21,6 @@ kotlin {
 }
 
 val databaseDriver: String by project
-val argon2JvmVersion: String by project
 val nimbusJoseJwtVersion: String by project
 val mockkVersion: String by project
 val springMockkVersion: String by project
@@ -41,7 +40,7 @@ dependencies {
         implementation("org.springframework.boot:spring-boot-starter-jetty")
 
     implementation(databaseDriver)
-    implementation(group = "de.mkammerer", name = "argon2-jvm", version = argon2JvmVersion)
+    implementation(group = "de.mkammerer", name = "argon2-jvm", version = "2.12")
     implementation(group = "com.nimbusds", name = "nimbus-jose-jwt", version = nimbusJoseJwtVersion)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

@@ -4,7 +4,7 @@ import by.anatolyloyko.ams.user.model.User
 
 const val USER_ID = 100000001413121100
 
-const val USER_PASSWORD = "strong_password"
+const val EXTERNAL_USER_ID = "some-uuid"
 
 val NEW_USER = User(
     firstName = "Alexey",
