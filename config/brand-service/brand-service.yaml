@@ -25,4 +25,4 @@ ams:
         replicas: ${KAFKA_BRAND_EVENTS_TOPIC_REPLICATION_FACTOR}
     
     props:
-      nack-cooldown: 100ms
+      nack-cooldown: ${KAFKA_NACK_COOLDOWN:100ms}

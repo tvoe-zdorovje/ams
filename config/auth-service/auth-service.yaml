@@ -12,12 +12,37 @@ spring:
       jdbcUrl: jdbc:postgresql://${ADSDBHOST}:${ADSDBPORT}/${ADSDBNAME}
       username: ${DBUSER}
       password: ${DBPASS}
+  data:
+    redis:
+      connect-timeout: 3s
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      timeout: 3s
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      group-id: ${KAFKA_GROUP_ID}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: latest
+      enable-auto-commit: false
+    listener:
+      ack-mode: manual
+      missing-topics-fatal: false
+
+ams:
+  kafka:
+    topic:
+      keycloak-events:
+        name: ${KAFKA_KEYCLOAK_EVENTS_TOPIC}
+    props:
+      nack-cooldown: ${KAFKA_NACK_COOLDOWN:100ms}
 
 jwt:
-  time-of-life: 300000 # 5 minutes
+  time-of-life: ${JWT_TTL}
   algorithm: RS256
   private-key:
     kid-format: "kid-%d"
     rotation:
-      vault-size: 2
-      period: 3600000 # 60 minutes
+      vault-size: ${VAULT_SIZE}
+      period: ${JWKS_ROTATION_PERIOD}

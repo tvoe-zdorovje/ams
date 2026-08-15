@@ -6,6 +6,7 @@ services:
     restart: on-failure
     ports:
       - "9092:9092"
+      - "29092:29092"
     environment: # temporary here
       KAFKA_BROKER_ID: 1
       KAFKA_NODE_ID: 1

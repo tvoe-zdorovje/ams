@@ -25,4 +25,4 @@ ams:
         partitions: ${KAFKA_STUDIO_EVENTS_TOPIC_PARTITIONS_COUNT}
 
     props:
-      nack-cooldown: 100ms
+      nack-cooldown: ${KAFKA_NACK_COOLDOWN:100ms}

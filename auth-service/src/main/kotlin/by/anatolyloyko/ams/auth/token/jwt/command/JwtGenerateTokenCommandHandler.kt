@@ -20,6 +20,6 @@ class JwtGenerateTokenCommandHandler(
      * {@inheritDoc}
      */
     override fun handle(command: GenerateTokenCommand): String = generateTokenAction(
-        tokenDataFinder.findByUserId(command.input.userId)
+        tokenDataFinder.findByUserId(command.input.user.id)
     )
 }
