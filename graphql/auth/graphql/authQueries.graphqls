@@ -1,3 +1,0 @@
-extend type AuthQueries {
-    _empty: String @deprecated(reason: "Temporary placeholder")
-}

@@ -25,8 +25,3 @@ subgraphs:
     routing_url: 127.0.0.1:8080
     schema:
       file: ./schemas/user.graphqls
-
-  auth:
-    routing_url: 127.0.0.1:8080
-    schema:
-      file: ./schemas/auth.graphqls

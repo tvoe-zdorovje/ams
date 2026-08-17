@@ -33,14 +33,6 @@ spring:
               burstCapacity: 20
               requestedTokens: 1
       routes:
-        - id: auth-service-route
-          uri: ${AUTH_SERVICE_HOST}
-          predicates:
-            - Path=/auth/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: authServiceCircuitBreaker
         - id: administration-service-route
           uri: ${ADMINISTRATION_SERVICE_HOST}
           predicates:
@@ -97,8 +89,6 @@ resilience4j:
       administrationServiceCircuitBreaker:
         base-config: default
       appointmentServiceCircuitBreaker:
-        base-config: default
-      authServiceCircuitBreaker:
         base-config: default
       brandServiceCircuitBreaker:
         base-config: default

@@ -16,7 +16,6 @@ headers:
           named: "Authorization"
 
 override_subgraph_url:
-  auth: ${env.AUTH_SERVICE_SUBGRAPH}
   administration: ${env.ADMINISTRATION_SERVICE_SUBGRAPH}
   appointments: ${env.APPOINTMENT_SERVICE_SUBGRAPH}
   brands: ${env.BRAND_SERVICE_SUBGRAPH}
