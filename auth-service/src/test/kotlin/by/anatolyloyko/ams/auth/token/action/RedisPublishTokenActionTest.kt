@@ -12,6 +12,8 @@ private const val TIME_TO_LIVE = 300000L
 
 private const val KEY = "708e421b-d2c5-42b9-9114-dc2b9109bb49"
 
+private const val KEY_PREFIX = "preifx:"
+
 private const val TOKEN = "access-token"
 
 class RedisPublishTokenActionTest {
@@ -21,7 +23,7 @@ class RedisPublishTokenActionTest {
         every { opsForValue() } returns valueOperations
     }
 
-    private val action = RedisPublishTokenAction(redis, TIME_TO_LIVE)
+    private val action = RedisPublishTokenAction(redis, TIME_TO_LIVE, KEY_PREFIX)
 
     @Test
     fun `must publish token to redis with prefixed key and ttl`() {

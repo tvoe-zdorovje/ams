@@ -9,7 +9,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${JWKS_URI}
+          jwk-set-uri: ${ams.auth-server.jwks-uri}
   data:
     redis:
       connect-timeout: 3s
@@ -100,6 +100,16 @@ resilience4j:
     configs:
       default:
         timeout-duration: 5s
+
+ams:
+  auth-server:
+    jwks-uri: ${JWKS_URI}
+    auth-uri: ${AUTH_URI}
+    token-uri: ${TOKEN_URI}
+  redis:
+    topic:
+      user-tokens:
+        key-prefix: ${REDIS_USER_TOKENS_KEY_PREFIX}
 
 logging:
   level:

@@ -31,6 +31,10 @@ spring:
       missing-topics-fatal: false
 
 ams:
+  redis:
+    topic:
+      user-tokens:
+        key-prefix: ${REDIS_USER_TOKENS_KEY_PREFIX}
   kafka:
     topic:
       keycloak-events:

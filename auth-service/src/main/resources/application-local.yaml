@@ -43,6 +43,10 @@ spring:
       missing-topics-fatal: false
 
 ams:
+  redis:
+    topic:
+      user-tokens:
+        key-prefix: "auth:token:userID:"
   kafka:
     topic:
       keycloak-events:

@@ -13,7 +13,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8180/.well-known/jwks
+          jwk-set-uri: ${ams.auth-server.jwks-uri}
   data:
     redis:
       connect-timeout: 3s
@@ -117,7 +117,19 @@ management:
       probes:
         enabled: true
 
+ams:
+  auth-server:
+    keycloak-uidc-ep: http://keycloak:8123/realms/ams/protocol/openid-connect
+    jwks-uri: ${ams.auth-server.keycloak-uidc-ep}/certs
+    auth-uri: ${ams.auth-server.keycloak-uidc-ep}/auth
+    token-uri: ${ams.auth-server.keycloak-uidc-ep}/token
+  redis:
+    topic:
+      user-tokens:
+        key-prefix: "auth:token:userID:"
+
 logging:
   level:
+    org.springframework: DEBUG
     org.springframework.cloud.gateway: DEBUG
     org.springframework.security: TRACE
