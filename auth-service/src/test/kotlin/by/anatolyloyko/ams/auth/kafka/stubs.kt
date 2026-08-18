@@ -31,9 +31,9 @@ val REFRESH_TOKEN_KEYCLOAK_EVENT_PAYLOAD = """
     }
     """.trimIndent()
 
-val UPDATE_ROLE_ADMINISTRATION_USER_EVENT_PAYLOAD = """
+val UPDATE_ROLES_ADMINISTRATION_USER_EVENT_PAYLOAD = """
     {
-      "type": "UPDATE_ROLE",
+      "type": "UPDATE_ROLES",
       "userId": "$USER_ID",
       "truncated": "..."
     }

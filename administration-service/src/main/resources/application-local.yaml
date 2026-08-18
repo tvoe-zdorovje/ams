@@ -20,6 +20,12 @@ spring:
     password: adsportal
   kafka:
     bootstrap-servers: localhost:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        enable.idempotence: false
+        acks: 1
     consumer:
       group-id: administration-service
       key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
@@ -40,6 +46,8 @@ ams:
         name: v1.brands.brand
       studio:
         name: v1.studios.studio
+      administration-user:
+        name: v1.administration.user
     props:
       nack-cooldown: 100ms
 

@@ -23,7 +23,7 @@ private const val TOKEN = "access-token"
 
 private val GENERATE_TOKEN_COMMAND = GenerateTokenCommand(GenerateTokenCommandInput(USER))
 
-private val EVENT_TYPES = listOf("UPDATE_ROLE")
+private val EVENT_TYPES = listOf("UPDATE_ROLES")
 
 class AdministrationUserEventsKafkaListenerTest : WithAssertions {
     private val userFinder = mockk<UserFinder> {
@@ -48,7 +48,7 @@ class AdministrationUserEventsKafkaListenerTest : WithAssertions {
 
     @Test
     fun `must generate and publish token and acknowledge update-role events`() {
-        listener.onAdministrationEvent(record(UPDATE_ROLE_ADMINISTRATION_USER_EVENT_PAYLOAD), acknowledgment)
+        listener.onAdministrationEvent(record(UPDATE_ROLES_ADMINISTRATION_USER_EVENT_PAYLOAD), acknowledgment)
 
         verifyOrder {
             userFinder.byId(USER_ID)
@@ -86,7 +86,7 @@ class AdministrationUserEventsKafkaListenerTest : WithAssertions {
         val unknownExternalUserId = 123L
         every { userFinder.byId(unknownExternalUserId) } returns null
 
-        val payload = UPDATE_ROLE_ADMINISTRATION_USER_EVENT_PAYLOAD
+        val payload = UPDATE_ROLES_ADMINISTRATION_USER_EVENT_PAYLOAD
             .replace(USER_ID.toString(), unknownExternalUserId.toString())
         listener.onAdministrationEvent(record(payload), acknowledgment)
 
