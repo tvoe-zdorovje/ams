@@ -2,6 +2,7 @@ package by.anatolyloyko.ams.auth.kafka
 
 import by.anatolyloyko.ams.auth.IDP_USER_ID
 import by.anatolyloyko.ams.auth.USER
+import by.anatolyloyko.ams.auth.USER_ID
 import by.anatolyloyko.ams.auth.token.action.PublishTokenAction
 import by.anatolyloyko.ams.auth.token.command.GenerateTokenCommand
 import by.anatolyloyko.ams.auth.token.command.TokenCommandHandler
@@ -13,6 +14,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.assertj.core.api.WithAssertions
 import org.junit.jupiter.api.Test
 import org.springframework.kafka.support.Acknowledgment
 import java.time.Duration
@@ -21,11 +23,11 @@ private const val TOKEN = "access-token"
 
 private val GENERATE_TOKEN_COMMAND = GenerateTokenCommand(GenerateTokenCommandInput(USER))
 
-private val EVENT_TYPES = listOf("CODE_TO_TOKEN", "REFRESH_TOKEN")
+private val EVENT_TYPES = listOf("UPDATE_ROLE")
 
-class KeycloakEventsKafkaListenerTest {
+class AdministrationUserEventsKafkaListenerTest : WithAssertions {
     private val userFinder = mockk<UserFinder> {
-        every { byIdpUUID(IDP_USER_ID) } returns USER
+        every { byId(USER_ID) } returns USER
     }
 
     private val tokenCommandHandler = mockk<TokenCommandHandler> {
@@ -36,7 +38,7 @@ class KeycloakEventsKafkaListenerTest {
 
     private val acknowledgment = mockk<Acknowledgment>(relaxed = true)
 
-    private val listener = KeycloakEventsKafkaListener(
+    private val listener = AdministrationUserEventsKafkaListener(
         objectMapper = ObjectMapper(),
         userFinder = userFinder,
         tokenCommandHandler = tokenCommandHandler,
@@ -45,24 +47,11 @@ class KeycloakEventsKafkaListenerTest {
     )
 
     @Test
-    fun `must generate and publish token and acknowledge code-to-token events`() {
-        listener.onKeycloakEvent(record(CODE_TO_TOKEN_KEYCLOAK_EVENT_PAYLOAD), acknowledgment)
+    fun `must generate and publish token and acknowledge update-role events`() {
+        listener.onAdministrationEvent(record(UPDATE_ROLE_ADMINISTRATION_USER_EVENT_PAYLOAD), acknowledgment)
 
         verifyOrder {
-            userFinder.byIdpUUID(IDP_USER_ID)
-            tokenCommandHandler.handle(GENERATE_TOKEN_COMMAND)
-            publishTokenAction(IDP_USER_ID, TOKEN)
-            acknowledgment.acknowledge()
-        }
-        verify(exactly = 0) { acknowledgment.nack(any<Duration>()) }
-    }
-
-    @Test
-    fun `must generate and publish token and acknowledge refresh-token events`() {
-        listener.onKeycloakEvent(record(REFRESH_TOKEN_KEYCLOAK_EVENT_PAYLOAD), acknowledgment)
-
-        verifyOrder {
-            userFinder.byIdpUUID(IDP_USER_ID)
+            userFinder.byId(USER_ID)
             tokenCommandHandler.handle(GENERATE_TOKEN_COMMAND)
             publishTokenAction(IDP_USER_ID, TOKEN)
             acknowledgment.acknowledge()
@@ -72,10 +61,10 @@ class KeycloakEventsKafkaListenerTest {
 
     @Test
     fun `must ignore unknown event and acknowledge message`() {
-        listener.onKeycloakEvent(record("""{"type":"UNKNOWN"}"""), acknowledgment)
+        listener.onAdministrationEvent(record("""{"type":"UNKNOWN"}"""), acknowledgment)
 
         verify(exactly = 1) { acknowledgment.acknowledge() }
-        verify(exactly = 0) { userFinder.byIdpUUID(any()) }
+        verify(exactly = 0) { userFinder.byId(any()) }
         verify(exactly = 0) { tokenCommandHandler.handle(any()) }
         verify(exactly = 0) { publishTokenAction(any(), any()) }
         verify(exactly = 0) { acknowledgment.nack(any<Duration>()) }
@@ -83,10 +72,10 @@ class KeycloakEventsKafkaListenerTest {
 
     @Test
     fun `must nack invalid json`() {
-        listener.onKeycloakEvent(record("not-json"), acknowledgment)
+        listener.onAdministrationEvent(record("not-json"), acknowledgment)
 
         verify(exactly = 0) { acknowledgment.acknowledge() }
-        verify(exactly = 0) { userFinder.byIdpUUID(any()) }
+        verify(exactly = 0) { userFinder.byId(any()) }
         verify(exactly = 0) { tokenCommandHandler.handle(any()) }
         verify(exactly = 0) { publishTokenAction(any(), any()) }
         verify(exactly = 1) { acknowledgment.nack(any<Duration>()) }
@@ -94,13 +83,14 @@ class KeycloakEventsKafkaListenerTest {
 
     @Test
     fun `must nack when no user found`() {
-        val unknownExternalUserId = "96738aa3-a681-4620-8006-8d07e3774239"
-        every { userFinder.byIdpUUID(unknownExternalUserId) } returns null
+        val unknownExternalUserId = 123L
+        every { userFinder.byId(unknownExternalUserId) } returns null
 
-        val payload = REFRESH_TOKEN_KEYCLOAK_EVENT_PAYLOAD.replace(IDP_USER_ID, unknownExternalUserId)
-        listener.onKeycloakEvent(record(payload), acknowledgment)
+        val payload = UPDATE_ROLE_ADMINISTRATION_USER_EVENT_PAYLOAD
+            .replace(USER_ID.toString(), unknownExternalUserId.toString())
+        listener.onAdministrationEvent(record(payload), acknowledgment)
 
-        verify(exactly = 1) { userFinder.byIdpUUID(unknownExternalUserId) }
+        verify(exactly = 1) { userFinder.byId(unknownExternalUserId) }
         verify(exactly = 0) { acknowledgment.acknowledge() }
         verify(exactly = 0) { tokenCommandHandler.handle(any()) }
         verify(exactly = 0) { publishTokenAction(any(), any()) }

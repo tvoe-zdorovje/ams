@@ -51,6 +51,10 @@ ams:
     topic:
       keycloak-events:
         name: v1.keycloak.events
+        event-types: "CODE_TO_TOKEN, REFRESH_TOKEN"
+      administration-user:
+        name: v1.administration.user
+        event-types: "UPDATE_ROLE"
     props:
       nack-cooldown: 100ms
 

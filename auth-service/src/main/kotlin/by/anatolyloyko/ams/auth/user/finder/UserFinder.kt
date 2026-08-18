@@ -7,6 +7,12 @@ import by.anatolyloyko.ams.auth.user.model.User
  */
 interface UserFinder {
     /**
+     * Finds user data by internal user ID.
+     *
+     * @return found user data or null
+     */
+    fun byId(id: Long): User?
+    /**
      * Finds user data by external Identity Provider UUID.
      *
      * @return found user data or null

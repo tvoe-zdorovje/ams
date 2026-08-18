@@ -39,6 +39,10 @@ ams:
     topic:
       keycloak-events:
         name: ${KAFKA_KEYCLOAK_EVENTS_TOPIC}
+        event-types: ${KAFKA_KEYCLOAK_EVENTS_LIST}
+      administration-user:
+        name: ${KAFKA_ADMINISTRATION_USER_EVENTS_TOPIC}
+        event-types: ${KAFKA_ADMINISTRATION_USER_EVENTS_LIST}
     props:
       nack-cooldown: ${KAFKA_NACK_COOLDOWN:100ms}
 
