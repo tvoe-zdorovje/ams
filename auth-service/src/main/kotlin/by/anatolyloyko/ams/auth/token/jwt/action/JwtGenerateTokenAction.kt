@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 import java.util.Date
 import java.util.UUID
 
-private const val CLAIM_DATA = "data"
+private const val CLAIM_PERMISSIONS = "permissions"
 
 /**
  * {@inheritDoc}
@@ -38,7 +38,7 @@ class JwtGenerateTokenAction(
             .expirationTime(Date(System.currentTimeMillis() + timeOfLife))
             .jwtID("${rsaKey.keyID}-$subject-${UUID.randomUUID()}")
             .subject(subject)
-            .claim(CLAIM_DATA, tokenData)
+            .claim(CLAIM_PERMISSIONS, tokenData.getPermissionsMap())
             .build()
 
         val header = JWSHeader.Builder(JWSAlgorithm.parse(algorithm))

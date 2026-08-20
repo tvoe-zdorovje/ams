@@ -1,8 +1,5 @@
 package by.anatolyloyko.ams.common.infrastructure.testing
 
-import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_AUTHORIZATION
-import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_AUTHORIZATION_PREFIX
-import by.anatolyloyko.ams.common.infrastructure.graphql.auth.model.LoggedUserTokenData
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.graphql.execution.ErrorType.FORBIDDEN
 import org.springframework.graphql.execution.ErrorType.UNAUTHORIZED
@@ -84,7 +81,7 @@ fun WebGraphQlTester.loginAs(
     userId: Long,
     permissions: Map<Long, Collection<String>> = emptyMap()
 ): WebGraphQlTester = mutate()
-    .headers { it[HEADER_AUTHORIZATION] = "$HEADER_AUTHORIZATION_PREFIX${mockJWT(userId, permissions)}" }
+    .headers { it["Authorization"] = "Bearer ${mockJWT(userId, permissions)}" }
     .build()
 
 fun WebGraphQlTester.loginAs(
@@ -98,12 +95,8 @@ fun WebGraphQlTester.loginAs(
 
 @OptIn(ExperimentalEncodingApi::class)
 private fun mockJWT(userId: Long, permissions: Map<Long, Collection<String>>): String {
-    val permissionsJson = jacksonObjectMapper().writeValueAsString(
-        permissions.mapValues { entry ->
-            entry.value.map { LoggedUserTokenData.Permission(-1, it) }
-        }
-    )
-    val jwtPayload = """ { "data": { "userId": $userId, "permissions": $permissionsJson } } """
+    val permissionsJson = jacksonObjectMapper().writeValueAsString(permissions)
+    val jwtPayload = """ { "sub": $userId, "permissions": $permissionsJson } """
     val encodedJwtPayload = Base64.encode(jwtPayload.toByteArray())
 
     return "headers.$encodedJwtPayload.signature"

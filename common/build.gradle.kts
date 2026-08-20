@@ -33,6 +33,8 @@ val h2Version: String by project
 dependencies {
     api(kotlin("stdlib"))
 
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+
     api("org.springframework.boot:spring-boot-starter")
     api("org.springframework.boot:spring-boot-starter-actuator")
     api("org.springframework.boot:spring-boot-starter-logging")
@@ -44,6 +46,7 @@ dependencies {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
     }
     api("org.springframework.boot:spring-boot-starter-jooq")
+    api("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     api(
         group = "org.jetbrains.exposed",
@@ -64,6 +67,7 @@ dependencies {
     }
     testFixturesApi("org.springframework.graphql:spring-graphql-test")
     testFixturesApi("org.springframework.boot:spring-boot-starter-webflux")
+    testFixturesApi("io.projectreactor:reactor-test")
 
     testFixturesApi(group = "io.mockk", name = "mockk", version = mockkVersion)
     testFixturesApi(group = "com.ninja-squad", name = "springmockk", version = springMockkVersion)

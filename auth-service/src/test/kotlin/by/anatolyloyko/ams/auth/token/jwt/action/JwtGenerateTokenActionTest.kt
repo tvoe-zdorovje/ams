@@ -22,7 +22,7 @@ class JwtGenerateTokenActionTest : WithAssertions {
         .keyID("key-id")
         .generate()
 
-    private val keyManager = mockk<KeyManager>() {
+    private val keyManager = mockk<KeyManager> {
         every { getKey() } returns rsaKey
     }
 
@@ -54,17 +54,10 @@ class JwtGenerateTokenActionTest : WithAssertions {
         assertThat(claims.expirationTime).isEqualTo(Date(claims.issueTime.time + TIME_OF_LIFE))
         val uuidRegex = "\\w{8}(?:-\\w{4}){3}-\\w{12}"
         assertThat(claims.jwtid).matches("^${rsaKey.keyID}-${expectedTokenData.userId}-$uuidRegex$")
-        val actualTokenData = claims.getJSONObjectClaim("data")
-        assertThat(actualTokenData["userId"]).isEqualTo(expectedTokenData.userId)
-        val actualTokenDataPermissions = actualTokenData["permissions"] as Map<String, Any>
-        expectedTokenData.permissions.forEach { (entityId, permissions) ->
-            val actualTokenDataPermissionList = actualTokenDataPermissions["$entityId"] as List<Map<String, Any>>
-            permissions.forEachIndexed { index, permission ->
-                val actualTokenDataPermission = actualTokenDataPermissionList[index]
-                assertThat(actualTokenDataPermission["id"]).isEqualTo(permission.id)
-                assertThat(actualTokenDataPermission["name"]).isEqualTo(permission.name)
-            }
-        }
+        assertThat(claims.subject).isEqualTo(expectedTokenData.userId.toString())
+        val actualPermissionsClaim: Map<String, Any> = claims.getJSONObjectClaim("permissions")
+        val expectedPermissionsClaim = expectedTokenData.getPermissionsMap().mapKeys { it.key.toString() }
+        assertThat(actualPermissionsClaim).isEqualTo(expectedPermissionsClaim)
 
         verify(exactly = 1) { keyManager.getKey() }
     }

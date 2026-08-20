@@ -1,14 +1,12 @@
 package by.anatolyloyko.ams.common.infrastructure.graphql.auth.model
 
 /**
- * Represents the authenticated user performing a request.
+ * Represents an authenticated user performing a request.
  *
- * This object is used to pass user-related information, such as the user ID,
- * through the GraphQL context and into resolvers. It enables domain logic
- * to be executed on behalf of the authenticated user.
+ * This object is used to pass user-related information, such as the user ID, into GraphQL resolvers.
+ * It enables actions to be performed on behalf of the authenticated user.
  *
- * @see [LoggedUserGraphQlInterceptor]
- * @see [LoggedUserArgumentResolver]
+ * @see [by.anatolyloyko.ams.common.infrastructure.graphql.auth.LoggedUserArgumentResolver]
  */
 open class LoggedUser(
     val id: Long

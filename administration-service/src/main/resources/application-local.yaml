@@ -13,6 +13,11 @@ spring:
   graphql:
     graphiql:
       enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8180/.well-known/jwks
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5441/administration_db
