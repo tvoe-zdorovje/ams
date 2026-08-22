@@ -8,22 +8,20 @@ import by.anatolyloyko.ams.administration.permission.finder.PermissionFinder
 import by.anatolyloyko.ams.administration.role.query.GetRoleQuery
 import by.anatolyloyko.ams.administration.role.query.input.GetRoleQueryInput
 import by.anatolyloyko.ams.common.infrastructure.service.query.QueryGateway
-import by.anatolyloyko.ams.common.infrastructure.testing.expectForbidden
-import by.anatolyloyko.ams.common.infrastructure.testing.expectUnauthorized
-import by.anatolyloyko.ams.common.infrastructure.testing.get
-import by.anatolyloyko.ams.common.infrastructure.testing.loginAs
-import by.anatolyloyko.ams.common.infrastructure.testing.matches
+import by.anatolyloyko.ams.commontest.graphql.GraphQLTest
+import by.anatolyloyko.ams.commontest.graphql.expectForbidden
+import by.anatolyloyko.ams.commontest.graphql.expectUnauthenticated
+import by.anatolyloyko.ams.commontest.graphql.get
+import by.anatolyloyko.ams.commontest.graphql.loginAs
+import by.anatolyloyko.ams.commontest.graphql.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verifyOrder
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.graphql.test.tester.WebGraphQlTester
 
-@SpringBootTest
-@AutoConfigureHttpGraphQlTester
+@GraphQLTest
 class RoleQueriesResolverTest {
     @Autowired
     lateinit var graphQlTester: WebGraphQlTester
@@ -66,13 +64,13 @@ class RoleQueriesResolverTest {
     }
 
     @Test
-    fun `must return error when unauthorized`() {
+    fun `must return error when unauthenticated`() {
         graphQlTester
             .documentName("role/getRole")
             .variable("roleId", ROLE.id)
             .variable("organizationId", STUDIO_ID)
             .execute()
-            .expectUnauthorized()
+            .expectUnauthenticated()
     }
 
     @Test

@@ -1,20 +1,20 @@
 package by.anatolyloyko.ams.administration.permission.graphql.resolver
 
 import by.anatolyloyko.ams.administration.PERMISSION
+import by.anatolyloyko.ams.administration.USER_ID
 import by.anatolyloyko.ams.administration.permission.finder.PermissionFinder
-import by.anatolyloyko.ams.common.infrastructure.testing.get
-import by.anatolyloyko.ams.common.infrastructure.testing.matches
+import by.anatolyloyko.ams.commontest.graphql.GraphQLTest
+import by.anatolyloyko.ams.commontest.graphql.get
+import by.anatolyloyko.ams.commontest.graphql.loginAs
+import by.anatolyloyko.ams.commontest.graphql.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.graphql.test.tester.WebGraphQlTester
 
-@SpringBootTest
-@AutoConfigureHttpGraphQlTester
+@GraphQLTest
 class PermissionQueriesResolverTest {
     @Autowired
     lateinit var graphQlTester: WebGraphQlTester
@@ -27,6 +27,7 @@ class PermissionQueriesResolverTest {
         every { permissionFinder.findAll() } returns listOf(PERMISSION)
 
         val result = graphQlTester
+            .loginAs(USER_ID)
             .documentName("permission/getAllPermissions")
             .execute()
 

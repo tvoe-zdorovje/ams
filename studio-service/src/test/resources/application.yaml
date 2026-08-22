@@ -1,34 +1,13 @@
 spring:
+  profiles:
+    active: local, h2
   cloud:
     config:
       enabled: false
   output:
     ansi:
       enabled: always
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: testuser
-    password: testpassword
-  jooq:
-    sql-dialect: h2
   kafka:
     listener:
       auto-startup: false
-ams:
-  kafka:
-    topic:
-      studio:
-        name: v1.studios.studio
-        partitions: 3
-        replicas: 1
-
-    props:
-      nack-cooldown: 100ms
-logging:
-  pattern:
-    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){cyan} - %clr(%-5level){yellow} %clr(%logger{36}){green} - %msg%n"
-  level:
-    org.jooq: DEBUG
-    by.anatolyloyko: DEBUG
-    org.springframework: INFO
+    admin.auto-create: false

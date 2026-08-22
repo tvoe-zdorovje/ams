@@ -1,6 +1,5 @@
 package by.anatolyloyko.ams.common.infrastructure.graphql.directive
 
-import by.anatolyloyko.ams.common.infrastructure.exception.AccessDeniedException
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.CONTEXT_AUTHENTICATION
 import graphql.language.ArrayValue
 import graphql.language.StringValue
@@ -37,7 +36,7 @@ private const val JWT_PERMISSIONS_CLAIM = "permissions"
  *
  * Works with [org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken] implementation.
  * 
- * If the user lacks any of the required permissions, the [AccessDeniedException] is thrown.
+ * If the user lacks any of the required permissions, the [AuthorizationDeniedException] is thrown.
  */
 class RequiresPermissionsDirective : SchemaDirectiveWiring {
     override fun onField(
@@ -86,7 +85,8 @@ class RequiresPermissionsDirective : SchemaDirectiveWiring {
 
         return authentication
             .token
-            .getClaim<Map<String, Set<String>>>(JWT_PERMISSIONS_CLAIM)[organizationId.toString()]
+            .getClaim<Map<String, Collection<String>>>(JWT_PERMISSIONS_CLAIM)[organizationId.toString()]
+            ?.toSet()
             ?: emptySet()
     }
 }

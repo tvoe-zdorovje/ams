@@ -35,7 +35,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-jetty")
 
-    testImplementation(testFixtures(project(":common")))
+    testImplementation(project(":common-test"))
 }
 
 sourceSets {

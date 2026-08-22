@@ -1,12 +1,9 @@
-package by.anatolyloyko.ams.common.infrastructure.testing
+package by.anatolyloyko.ams.commontest.graphql
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.graphql.execution.ErrorType.FORBIDDEN
 import org.springframework.graphql.execution.ErrorType.UNAUTHORIZED
 import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.graphql.test.tester.WebGraphQlTester
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
  * Provides a more convenient way to access a specific path in the GraphQL response.
@@ -93,20 +90,16 @@ fun WebGraphQlTester.loginAs(
     permissions = mapOf(organizationId to permissions.asList())
 )
 
-@OptIn(ExperimentalEncodingApi::class)
-private fun mockJWT(userId: Long, permissions: Map<Long, Collection<String>>): String {
-    val permissionsJson = jacksonObjectMapper().writeValueAsString(permissions)
-    val jwtPayload = """ { "sub": $userId, "permissions": $permissionsJson } """
-    val encodedJwtPayload = Base64.encode(jwtPayload.toByteArray())
-
-    return "headers.$encodedJwtPayload.signature"
-}
+private fun mockJWT(userId: Long, permissions: Map<Long, Collection<String>>): String = RsaJwtTestUtils.generateJwt(
+    sub = userId.toString(),
+    claims = mapOf("permissions" to permissions)
+)
 
 /**
  * Expects the [org.springframework.graphql.execution.ErrorType.UNAUTHORIZED] error in the response.
  */
-fun GraphQlTester.Response.expectUnauthorized(): GraphQlTester.Errors =
-    errors().expect { it.message == "Authorization required" && it.errorType == UNAUTHORIZED }
+fun GraphQlTester.Response.expectUnauthenticated(): GraphQlTester.Errors =
+    errors().expect { it.errorType == UNAUTHORIZED }
 
 /**
  * * Expects the [org.springframework.graphql.execution.ErrorType.FORBIDDEN] error in the response.

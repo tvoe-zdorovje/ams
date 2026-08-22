@@ -1,6 +1,5 @@
 package by.anatolyloyko.ams.common.infrastructure.graphql
 
-import by.anatolyloyko.ams.common.infrastructure.exception.AuthorizationException
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.CONTEXT_AUTHENTICATION
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.LoggedUserArgumentResolver
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.Principal
@@ -11,6 +10,7 @@ import io.mockk.mockk
 import org.assertj.core.api.WithAssertions
 import org.junit.jupiter.api.Test
 import org.springframework.core.MethodParameter
+import org.springframework.security.authentication.InternalAuthenticationServiceException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 
 class LoggedUserArgumentResolverTest : WithAssertions {
@@ -62,7 +62,7 @@ class LoggedUserArgumentResolverTest : WithAssertions {
         }
 
         assertThatThrownBy { resolver.resolveArgument(methodParameter, environment) }
-            .isInstanceOf(AuthorizationException::class.java)
+            .isInstanceOf(InternalAuthenticationServiceException::class.java)
             .hasMessage("Authentication name (sub) is missing or invalid.")
     }
 
@@ -74,7 +74,7 @@ class LoggedUserArgumentResolverTest : WithAssertions {
         }
 
         assertThatThrownBy { resolver.resolveArgument(methodParameter, environment) }
-            .isInstanceOf(AuthorizationException::class.java)
+            .isInstanceOf(InternalAuthenticationServiceException::class.java)
             .hasMessage("Authentication name (sub) is missing or invalid.")
     }
 }

@@ -8,6 +8,6 @@ package by.anatolyloyko.ams.common.infrastructure.graphql.auth.model
  *
  * @see [by.anatolyloyko.ams.common.infrastructure.graphql.auth.LoggedUserArgumentResolver]
  */
-open class LoggedUser(
+data class LoggedUser(
     val id: Long
 )
