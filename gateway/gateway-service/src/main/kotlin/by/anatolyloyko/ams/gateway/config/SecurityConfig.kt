@@ -1,6 +1,6 @@
 package by.anatolyloyko.ams.gateway.config
 
-import by.anatolyloyko.ams.gateway.filter.TokenExchangeWebFilter
+import by.anatolyloyko.ams.gateway.filter.TokenExchangeWebFilterFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -12,6 +12,7 @@ import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
+import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher
 import reactor.core.publisher.Mono
 
 @Configuration
@@ -23,14 +24,17 @@ class SecurityConfig(
     private val tokenUri: String,
 ) {
     @Bean
+    fun actuatorSecurityWebFilterChain(): SecurityWebFilterChain = ServerHttpSecurity.http()
+        .securityMatcher(PathPatternParserServerWebExchangeMatcher("/actuator/**"))
+        .authorizeExchange { it.anyExchange().permitAll() }
+        .build()
+
+    @Bean
     fun securityWebFilterChain(
         http: ServerHttpSecurity,
-        tokenExchangeWebFilter: TokenExchangeWebFilter
-    ): SecurityWebFilterChain = http.authorizeExchange {
-        it
-            .pathMatchers("/actuator/**").permitAll()
-            .anyExchange().authenticated()
-    }
+        tokenExchangeWebFilterFactory: TokenExchangeWebFilterFactory
+    ): SecurityWebFilterChain = http
+        .authorizeExchange { it.anyExchange().authenticated() }
         .oauth2ResourceServer {
             it.jwt(Customizer.withDefaults())
                 .authenticationEntryPoint { exchange, exception ->
@@ -53,6 +57,6 @@ class SecurityConfig(
         }
         .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
         .csrf(ServerHttpSecurity.CsrfSpec::disable)
-        .addFilterAfter(tokenExchangeWebFilter, SecurityWebFiltersOrder.AUTHORIZATION)
+        .addFilterAfter(tokenExchangeWebFilterFactory.build(), SecurityWebFiltersOrder.AUTHORIZATION)
         .build()
 }

@@ -5,6 +5,9 @@ server:
 spring:
   application:
     name: studio-service
+  cloud:
+    config:
+      enabled: false
   lifecycle:
     timeout-per-shutdown-phase: 30s
   main:

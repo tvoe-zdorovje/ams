@@ -42,7 +42,6 @@ import reactor.kotlin.core.publisher.toMono
  * @see Ordered
  * @see ReactiveStringRedisTemplate
  */
-@Component
 class TokenExchangeWebFilter(
     private val redisTemplate: ReactiveStringRedisTemplate,
     @param:Value("\${ams.redis.topic.user-tokens.key-prefix}")

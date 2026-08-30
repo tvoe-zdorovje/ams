@@ -75,6 +75,13 @@ abstract class TokenProviderKafkaEventHandler<ID_TYPE>(
             val payload = objectMapper.readTree(record.value())
             val eventType = extractEventType(payload)
             if (!canHandle(eventType)) {
+                log.debug(
+                    "Consumed event [type={}, topic={}, key={}]. Supported event types: {}",
+                    eventType,
+                    record.topic(),
+                    record.key(),
+                    eventTypes
+                )
                 return acknowledgment.acknowledge()
             }
 

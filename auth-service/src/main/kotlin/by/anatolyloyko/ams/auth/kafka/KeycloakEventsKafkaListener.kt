@@ -25,7 +25,7 @@ class KeycloakEventsKafkaListener(
     objectMapper: ObjectMapper,
     tokenCommandHandler: TokenCommandHandler,
     publishTokenAction: PublishTokenAction,
-    @Value("#{'\${ams.kafka.topic.administration-user.event-types}'.split(',')}")
+    @Value("#{'\${ams.kafka.topic.keycloak-events.event-types}'.split(',')}")
     eventTypes: List<String>
 ): TokenProviderKafkaEventHandler<String>(objectMapper, tokenCommandHandler, publishTokenAction, eventTypes) {
     /**
