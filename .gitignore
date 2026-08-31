@@ -47,3 +47,6 @@ bin/
 /infrastructure/k8s/services/*/charts/*.tgz
 /infrastructure/k8s/services/*/charts/*/charts/*.tgz
 /infrastructure/k8s/services/*/charts/*/Chart.lock
+
+/infrastructure/k8s/infrastructure/*/charts/*.tgz
+/infrastructure/k8s/infrastructure/*/Chart.lock

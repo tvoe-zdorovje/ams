@@ -28,6 +28,17 @@ echo ""
 echo "Enable the ingress addon"
 minikube addons enable ingress
 
+
+POSTGRESQL_IMAGE="docker.io/bitnamilegacy/postgresql:15.4.0-debian-11-r45"
+echo ""
+echo "📥 load $POSTGRESQL_IMAGE to the minikube"
+minikube image load "$POSTGRESQL_IMAGE" # in order to speed up postgres startup
+POSTGRESQL_IMAGE="postgres:17"
+echo ""
+echo "📥 load $POSTGRESQL_IMAGE to the minikube"
+minikube image load "$POSTGRESQL_IMAGE" # in order to speed up liquibase initContainer startup
+
+
 # === KAFKA ===
 
 echo ""
@@ -118,6 +129,17 @@ helm install kafka-connect ./kafka-infra/kafka-connect -n kafka
 echo ""
 echo "== ️️📥 Creating INFRASTRUCTURE namespace =="
 
+SECRETS=(
+  ./secrets/github-secret.yaml
+)
+
+echo ""
+echo "== 🛡️ Applying secrets =="
+
+for path in "${SECRETS[@]}"; do
+    kubectl apply -f "$path" -n "$NAMESPACE"
+done
+
 INF_DIR="$PROJECT_DIR/infrastructure/k8s/infrastructure"
 cd "$INF_DIR"
 
@@ -149,6 +171,31 @@ SERVICE_IMAGE="springcloud/spring-cloud-kubernetes-configserver:$SERVICE_VERSION
 echo ""
 echo "📥 load $SERVICE_IMAGE to the minikube"
 minikube image load "$SERVICE_IMAGE" # in order to speed up service startup
+
+RELEASE_NAME="$SERVICE"
+helm install "$RELEASE_NAME" . -n "$NAMESPACE" --timeout 5m
+
+cd $SCRIPT_DIR
+
+SERVICE="keycloak"
+
+echo ""
+echo "== ️️📥 Install [$SERVICE] =="
+cd "$INF_DIR/$SERVICE"
+
+SERVICE_VERSION=$(grep '^appVersion:' "$INF_DIR/$SERVICE/Chart.yaml" | sed -E 's/^appVersion:[[:space:]]*//; s/^"//; s/"$//')
+SERVICE_IMAGE="ghcr.io/tvoe-zdorovje/ams/keycloak:$SERVICE_VERSION"
+echo ""
+echo "📥 load $SERVICE_IMAGE to the minikube"
+minikube image load "$SERVICE_IMAGE" # in order to speed up service startup
+
+echo ""
+echo "== 🧩 Generate [ $service ] DB init scripts secret =="
+kubectl create secret generic "$service-postgres-init-scripts" \
+  --from-file=01-init.sql="$PROJECT_DIR/infrastructure/$service/database/init_db.sql" \
+  --dry-run=client -o yaml > ./templates/init-scripts_secret.yaml
+
+helm dependency update
 
 RELEASE_NAME="$SERVICE"
 helm install "$RELEASE_NAME" . -n "$NAMESPACE" --timeout 5m
@@ -192,15 +239,6 @@ SERVICES=(
   "studio:8184:5444"
   "user:8185:5445"
 )
-
-POSTGRESQL_IMAGE="docker.io/bitnamilegacy/postgresql:15.4.0-debian-11-r45"
-echo ""
-echo "📥 load $POSTGRESQL_IMAGE to the minikube"
-minikube image load "$POSTGRESQL_IMAGE" # in order to speed up postgres startup
-POSTGRESQL_IMAGE="postgres:17"
-echo ""
-echo "📥 load $POSTGRESQL_IMAGE to the minikube"
-minikube image load "$POSTGRESQL_IMAGE" # in order to speed up liquibase initContainer startup
 
 for entry in "${SERVICES[@]}"; do
   IFS=':' read -r service servicePort dbPort <<< "$entry"

@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "default.labels" . | indent 4 }}
+  annotations:
+    {{- include "default.annotations" . | indent 4}}
+spec:
+  replicas: {{ .Values.keycloak.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ (.Values.keycloak.deployment.rollingUpdate | default dict).maxSurge | default 1 }}
+      maxUnavailable: {{ (.Values.keycloak.deployment.rollingUpdate | default dict).maxUnavailable | default 1 }}
+  template:
+    metadata:
+      labels:
+        {{- include "default.labels" . | indent 8 }}
+      annotations:
+        {{- if .Values.keycloak.cm }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-env.yml") . | sha256sum }}
+        {{- end }}
+    spec:
+      {{- with .Values.keycloak.deployment.imagePullSecrets }}
+      imagePullSecrets:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Release.Name }}
+          {{- include "required.container.parameters" . | indent 10  }}
+          image: {{ .Values.keycloak.deployment.image.repository }}:{{ .Values.keycloak.deployment.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.keycloak.deployment.image.pullPolicy }}
+          {{- if .Values.keycloak.deployment.command.args }}
+          args:
+            {{ toYaml .Values.keycloak.deployment.command.args | nindent 12 }}
+          {{- end }}
+          ports:
+          {{- range $value := .Values.keycloak.deployment.ports }}
+            - containerPort: {{ $value.port }}
+              protocol: {{ $value.protocol }}
+          {{- end }}
+          {{- if or .Values.keycloak.cm .Values.keycloak.secrets }}
+          envFrom:
+          {{- if .Values.keycloak.cm }}
+            - configMapRef:
+                name: {{ .Release.Name }}-env
+          {{- end }}
+          {{- if .Values.keycloak.secrets }}
+            {{- range $secret := .Values.keycloak.secrets }}
+            - secretRef:
+                name: {{ $secret.name }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.keycloak.deployment.livenessProbe }}
+          livenessProbe:
+            {{ toYaml .Values.keycloak.deployment.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.keycloak.deployment.readinessProbe }}
+          readinessProbe:
+            {{ toYaml .Values.keycloak.deployment.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.keycloak.deployment.startupProbe }}
+          startupProbe:
+            {{ toYaml .Values.keycloak.deployment.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.keycloak.deployment.resources }}
+          resources:
+          {{- if .Values.keycloak.deployment.resources.requests }}
+            requests:
+          {{- if .Values.keycloak.deployment.resources.requests.cpu }}
+              cpu: {{ .Values.keycloak.deployment.resources.requests.cpu | default "125m" }}
+          {{- end }}
+          {{- if .Values.keycloak.deployment.resources.requests.memory }}
+              memory: {{ .Values.keycloak.deployment.resources.requests.memory | default "256Mi" }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.keycloak.deployment.resources.limits }}
+            limits:
+          {{- if .Values.keycloak.deployment.resources.limits.cpu }}
+              cpu: {{ .Values.keycloak.deployment.resources.limits.cpu }}
+          {{- end }}
+          {{- if .Values.keycloak.deployment.resources.limits.memory }}
+              memory: {{ .Values.keycloak.deployment.resources.limits.memory }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          volumeMounts:
+            - name: {{ .Values.keycloak.realm.volume.name }}
+              mountPath: {{ .Values.keycloak.realm.volume.mountPath }}
+              subPath: {{ .Values.keycloak.realm.volume.subPath }}
+      volumes:
+        - name: {{ .Values.keycloak.realm.volume.name }}
+          configMap:
+            name: {{ .Release.Name }}-realm
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Release.Name }}
+              topologyKey: "kubernetes.io/hostname"

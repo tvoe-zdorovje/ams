@@ -56,6 +56,7 @@ service:
       KAFKA_GROUP_ID: "administration-service"
       KAFKA_TOPIC_BRAND: "v1.brands.brand"
       KAFKA_TOPIC_STUDIO: "v1.studios.studio"
+      KAFKA_ADMINISTRATION_USER_EVENTS_TOPIC: "v1.administration.user"
 
       SPRING_CONFIG_IMPORT: "configserver:http://config-server.infrastructure.svc.cluster.local:8888"
       SPRING_CLOUD_CONFIG_FAIL_FAST: true
@@ -63,7 +64,9 @@ service:
       SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 15000
       SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.2
       SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 1000
-      SPRING_CLOUD_CONFIG_LABEL: master
+      SPRING_CLOUD_CONFIG_LABEL: AUS-6758551 # FIXME change to master
+
+      JWKS_URI: "http://auth-service:8080/.well-known/jwks"
 # stored in secrets
 #      DBHOST: administration_db
 #      DBPORT: 5432

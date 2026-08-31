@@ -1,0 +1,12 @@
+apiVersion: v2
+name: keycloak
+description: An Helm chart for deploying keycloak + postgresql
+type: application
+version: 0.1.0
+appVersion: "26.7.1-1.0"
+
+dependencies:
+  - name: postgresql
+    version: "16.x.x"
+    repository: "oci://registry-1.docker.io/bitnamicharts"
+    condition: postgresql.enabled
