@@ -38,13 +38,13 @@ class AuthContextGraphQlInterceptorTest : WithAssertions {
 
         StepVerifier.create(monoResult)
             .assertNext {
-                val configurerCaptor = mutableListOf<BiFunction<ExecutionInput, ExecutionInput.Builder, ExecutionInput>>()
+                val captor = mutableListOf<BiFunction<ExecutionInput, ExecutionInput.Builder, ExecutionInput>>()
                 verify {
-                    request.configureExecutionInput(capture(configurerCaptor))
+                    request.configureExecutionInput(capture(captor))
                 }
 
                 val executionInputBuilder = ExecutionInput.Builder().query("query")
-                val graphQLContext = configurerCaptor[0]
+                val graphQLContext = captor[0]
                     .apply(mockk(), executionInputBuilder)
                     .graphQLContext
                 val graphQlContextAuthentication = graphQLContext

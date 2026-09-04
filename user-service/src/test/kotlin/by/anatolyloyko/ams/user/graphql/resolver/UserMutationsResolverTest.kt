@@ -11,7 +11,6 @@ import by.anatolyloyko.ams.user.command.CreateUserCommand
 import by.anatolyloyko.ams.user.command.UpdateUserCommand
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.graphql.test.tester.WebGraphQlTester
@@ -25,11 +24,11 @@ class UserMutationsResolverTest {
     lateinit var commandGateway: CommandGateway
 
     @Test
-    @Disabled
     fun `must create user`() {
         every { commandGateway.handle(any<CreateUserCommand>()) } returns USER_ID
 
         val result = graphQlTester
+            .loginAs(USER_ID)
             .documentName("user/createUser")
             .variable("externalId", EXTERNAL_USER_ID)
             .variable("firstName", "Alexey")

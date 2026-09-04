@@ -1,3 +1,6 @@
+import org.gradle.kotlin.dsl.withType
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 group = "by.anatolyloyko.ams"
 version = "0.0.1-SNAPSHOT"
 
@@ -37,4 +40,11 @@ dependencies {
     api("com.h2database", "h2", h2Version)
 }
 
-tasks.register("prepareKotlinBuildScriptModel"){}
+tasks.register("prepareKotlinBuildScriptModel"){
+    description = "a great fix I googled"
+}
+
+tasks.withType<BootJar> {
+    enabled = false
+}
+

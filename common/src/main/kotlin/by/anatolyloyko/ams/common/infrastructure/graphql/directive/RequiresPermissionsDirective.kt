@@ -11,15 +11,15 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.authorization.AuthorizationDeniedException
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 
-private const val DIRECTIVE_NAME = "requiresPermissions"
+internal const val DIRECTIVE_NAME = "requiresPermissions"
 
-private const val DIRECTIVE_ARGUMENT_NAME = "permissions"
+internal const val DIRECTIVE_ARGUMENT_NAME = "permissions"
 
-private const val INPUT_ARGUMENT_NAME_ORGANIZATION_ID = "organizationId"
+internal const val INPUT_ARGUMENT_NAME_ORGANIZATION_ID = "organizationId"
 
 private val INPUT_NAMES = setOf("request", "input", "payload")
 
-private const val JWT_PERMISSIONS_CLAIM = "permissions"
+internal const val JWT_PERMISSIONS_CLAIM = "permissions"
 
 /**
  * Handles the GraphQL `@requiresPermissions` directive.
@@ -34,8 +34,8 @@ private const val JWT_PERMISSIONS_CLAIM = "permissions"
  * 3. Determines authentication's authorities within the scope of the provided `organizationId` argument.
  * 4. Validates that the user has all the required permissions specified by the directive.
  *
- * Works with [org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken] implementation.
- * 
+ * Works with [org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken] implementation
+ *
  * If the user lacks any of the required permissions, the [AuthorizationDeniedException] is thrown.
  */
 class RequiresPermissionsDirective : SchemaDirectiveWiring {
@@ -47,7 +47,6 @@ class RequiresPermissionsDirective : SchemaDirectiveWiring {
 
         return environment.setFieldDataFetcher { dataFetchingEnv ->
             val organizationId = dataFetchingEnv.getOrganizationId()
-
 
             val permissions = dataFetchingEnv.getAuthenticationPermissionsFor(organizationId)
             if (!permissions.containsAll(requiredPermissions)) {

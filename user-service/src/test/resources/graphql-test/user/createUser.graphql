@@ -1,5 +1,5 @@
 mutation CreateUser(
-    $password: String!
+    $externalId: String!
     $firstName: String!
     $lastName: String!
     $phoneNumber: String!
@@ -7,7 +7,7 @@ mutation CreateUser(
     users {
         createUser(
             request: {
-                password: $password
+                externalId: $externalId
                 firstName: $firstName
                 lastName: $lastName
                 phoneNumber: $phoneNumber

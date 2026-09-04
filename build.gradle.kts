@@ -35,7 +35,9 @@ subprojects {
                         fileTree(it) {
                             exclude(
                                 "**/orm/*/schemas/**",
-                                "**/*ApplicationKt*"
+                                "**/*ApplicationKt*",
+                                "**/config/*Config*",
+                                "**/config/*Configuration*",
                             )
                         }
                     }

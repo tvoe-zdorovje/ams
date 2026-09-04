@@ -12,8 +12,7 @@ import io.mockk.verify
 import org.assertj.core.api.WithAssertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-
-private const val HASHED_PASSWORD = "hashedPassword"
+import org.junit.jupiter.api.assertThrows
 
 class CreateUserCommandHandlerTest : WithAssertions {
     private val createUserAction = mockk<CreateUserAction> {
@@ -41,5 +40,10 @@ class CreateUserCommandHandlerTest : WithAssertions {
                 externalId = EXTERNAL_USER_ID,
             )
         }
+    }
+
+    @Test
+    fun `must throw not implemented error`() {
+        assertThrows<NotImplementedError> { handler.handle(command) }
     }
 }
