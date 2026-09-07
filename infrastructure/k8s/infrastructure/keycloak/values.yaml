@@ -4,7 +4,7 @@ keycloak:
       path: "files/realms/ams-realm.json"
     volume:
       name: keycloak-import-realm-volume
-      mountPath: "/opt/keycloak/data/import"
+      mountPath: "/opt/keycloak/data/import/ams-realm.json"
       subPath: "ams-realm.json"
 
   deployment:
@@ -22,23 +22,25 @@ keycloak:
     resources:
       requests:
         cpu: 125m
-        memory: 256Mi
+        memory: 512Mi
       limits:
-        memory: 256Mi
+        memory: 1024Mi
     ports:
       - port: 8080
+        protocol: TCP
+      - port: 9000
         protocol: TCP
     startupProbe:
       httpGet:
         path: /health/ready
-        port: 8080
+        port: 9000
       initialDelaySeconds: 40
       periodSeconds: 15
       successThreshold: 1
     readinessProbe:
       httpGet:
         path: /health/ready
-        port: 8080
+        port: 9000
       initialDelaySeconds: 30
       periodSeconds: 15
       failureThreshold: 3
@@ -46,7 +48,7 @@ keycloak:
     livenessProbe:
       httpGet:
         path: /health/live
-        port: 8080
+        port: 9000
       initialDelaySeconds: 30
       periodSeconds: 15
       failureThreshold: 3
@@ -58,6 +60,11 @@ keycloak:
       - port: 80
         targetPort: 8080
         protocol: TCP
+        name: service
+      - port: 9000
+        targetPort: 9000
+        protocol: TCP
+        name: healthcheck
 
   ingress:
     host: keycloak.ams.by
@@ -77,12 +84,12 @@ keycloak:
 #
 #      KEYCLOAK_ADMIN: admin
 #      KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HOSTNAME: keycloak # TODO
+      KC_HOSTNAME: keycloak.ams.by
       KC_HEALTH_ENABLED: true
       KC_HTTP_ENABLED: true
 
       # kafka spi
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_BOOTSTRAP_SERVERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:29092"
       KAFKA_TOPIC: v1.keycloak.events
       KAFKA_EVENTS: REGISTER,CODE_TO_TOKEN,REFRESH_TOKEN
       KAFKA_CLIENT_ID: gateway-client-id
@@ -94,7 +101,7 @@ postgresql:
     repository: bitnamilegacy/postgresql
     tag: 15.4.0-debian-11-r45
   auth:
-    existingSecret: "studio-service-postgresql"
+    existingSecret: "keycloak-postgresql-secrets"
   primary:
     persistence:
       enabled: true

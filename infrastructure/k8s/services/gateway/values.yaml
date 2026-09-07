@@ -116,9 +116,9 @@ service:
         STUDIO_SERVICE_HOST: "http://studio-service:8080"
         USER_SERVICE_HOST: "http://user-service:8080"
 
-        JWKS_URI: "http://keycloak.infrastructure.svc.cluster.local:8080/realms/ams/protocol/openid-connect/certs"
-        AUTH_URI: "http://keycloak.infrastructure.svc.cluster.local:8080/realms/ams/protocol/openid-connect/auth"
-        TOKEN_URI: "http://keycloak.infrastructure.svc.cluster.local:8080/realms/ams/protocol/openid-connect/token"
+        JWKS_URI: "http://keycloak.infrastructure.svc.cluster.local:80/realms/ams/protocol/openid-connect/certs"
+        AUTH_URI: "http://keycloak.ams.by/realms/ams/protocol/openid-connect/auth"
+        TOKEN_URI: "http://keycloak.ams.by/realms/ams/protocol/openid-connect/token"
 
         THC_PORT: 8080
         REDIS_HOST: redis-master.infrastructure.svc.cluster.local
@@ -131,4 +131,6 @@ service:
         SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 15000
         SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.2
         SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 1000
-        SPRING_CLOUD_CONFIG_LABEL: AUS-6758551 # FIXME change to master
+        SPRING_CLOUD_CONFIG_LABEL: master
+
+        LOGGING_LEVEL_ROOT: INFO

@@ -39,5 +39,6 @@ services:
       retries: 100
     ports:
       - "8123:8080"
+      - "9000:9000"
     env_file:
       - ./infrastructure/keycloak/.env

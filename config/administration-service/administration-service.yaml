@@ -11,6 +11,8 @@ spring:
     url: jdbc:postgresql://${DBHOST}:${DBPORT}/${DBNAME}
     username: ${DBUSER}
     password: ${DBPASS}
+  jooq:
+    sql-dialect: POSTGRES
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
     producer:

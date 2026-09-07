@@ -123,15 +123,27 @@ minikube image load "$KAFKA_CONNECT_BUILD_IMAGE" # in order to speed up Kafka Co
 
 helm install kafka-connect ./kafka-infra/kafka-connect -n kafka
 
+cd "$SCRIPT_DIR"
+
 
 # === INFRASTRUCTURE ===
 
 echo ""
 echo "== ️️📥 Creating INFRASTRUCTURE namespace =="
 
+NAMESPACE="infrastructure"
 SECRETS=(
   ./secrets/github-secret.yaml
 )
+
+INF_DIR="$PROJECT_DIR/infrastructure/k8s/infrastructure"
+
+if ! kubectl get namespace "$NAMESPACE" >/dev/null 2>&1; then
+  echo "Creating namespace: $NAMESPACE"
+  kubectl create namespace "$NAMESPACE"
+else
+  echo "Namespace already exists: $NAMESPACE"
+fi
 
 echo ""
 echo "== 🛡️ Applying secrets =="
@@ -139,17 +151,6 @@ echo "== 🛡️ Applying secrets =="
 for path in "${SECRETS[@]}"; do
     kubectl apply -f "$path" -n "$NAMESPACE"
 done
-
-INF_DIR="$PROJECT_DIR/infrastructure/k8s/infrastructure"
-cd "$INF_DIR"
-
-NAMESPACE="infrastructure"
-if ! kubectl get namespace "$NAMESPACE" >/dev/null 2>&1; then
-  echo "Creating namespace: $NAMESPACE"
-  kubectl create namespace "$NAMESPACE"
-else
-  echo "Namespace already exists: $NAMESPACE"
-fi
 
 SERVICE="redis"
 
@@ -190,9 +191,9 @@ echo "📥 load $SERVICE_IMAGE to the minikube"
 minikube image load "$SERVICE_IMAGE" # in order to speed up service startup
 
 echo ""
-echo "== 🧩 Generate [ $service ] DB init scripts secret =="
-kubectl create secret generic "$service-postgres-init-scripts" \
-  --from-file=01-init.sql="$PROJECT_DIR/infrastructure/$service/database/init_db.sql" \
+echo "== 🧩 Generate [ $SERVICE ] DB init scripts secret =="
+kubectl create secret generic "$SERVICE-postgres-init-scripts" \
+  --from-file=01-init.sql="$PROJECT_DIR/infrastructure/$SERVICE/database/init_db.sql" \
   --dry-run=client -o yaml > ./templates/init-scripts_secret.yaml
 
 helm dependency update
