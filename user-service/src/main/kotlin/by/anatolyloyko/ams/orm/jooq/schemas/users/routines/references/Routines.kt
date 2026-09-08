@@ -17,13 +17,13 @@ import org.jooq.Field
  */
 fun createUser(
       configuration: Configuration
-    , iPassword: String?
+    , iIdpUuid: String?
     , iFirstName: String?
     , iLastName: String?
     , iPhoneNumber: String?
 ): Long? {
     val f = CreateUser()
-    f.setIPassword(iPassword)
+    f.setIIdpUuid(iIdpUuid)
     f.setIFirstName(iFirstName)
     f.setILastName(iLastName)
     f.setIPhoneNumber(iPhoneNumber)
@@ -36,13 +36,13 @@ fun createUser(
  * Get <code>users.create_user</code> as a field.
  */
 fun createUser(
-      iPassword: String?
+      iIdpUuid: String?
     , iFirstName: String?
     , iLastName: String?
     , iPhoneNumber: String?
 ): Field<Long?> {
     val f = CreateUser()
-    f.setIPassword(iPassword)
+    f.setIIdpUuid(iIdpUuid)
     f.setIFirstName(iFirstName)
     f.setILastName(iLastName)
     f.setIPhoneNumber(iPhoneNumber)
@@ -54,13 +54,13 @@ fun createUser(
  * Get <code>users.create_user</code> as a field.
  */
 fun createUser(
-      iPassword: Field<String?>
+      iIdpUuid: Field<String?>
     , iFirstName: Field<String?>
     , iLastName: Field<String?>
     , iPhoneNumber: Field<String?>
 ): Field<Long?> {
     val f = CreateUser()
-    f.setIPassword(iPassword)
+    f.setIIdpUuid(iIdpUuid)
     f.setIFirstName(iFirstName)
     f.setILastName(iLastName)
     f.setIPhoneNumber(iPhoneNumber)

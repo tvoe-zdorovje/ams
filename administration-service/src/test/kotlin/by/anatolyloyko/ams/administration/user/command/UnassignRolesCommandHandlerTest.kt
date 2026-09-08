@@ -5,6 +5,7 @@ import by.anatolyloyko.ams.administration.ROLE_ID
 import by.anatolyloyko.ams.administration.USER_ID
 import by.anatolyloyko.ams.administration.user.action.UnassignRolesAction
 import by.anatolyloyko.ams.administration.user.command.input.UserRolesInput
+import by.anatolyloyko.ams.administration.user.kafka.KafkaProducer
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.WithAssertions
@@ -13,7 +14,9 @@ import org.junit.jupiter.api.Test
 class UnassignRolesCommandHandlerTest : WithAssertions {
     private val action = mockk<UnassignRolesAction>(relaxed = true)
 
-    private val handler = UnassignRolesCommandHandler(action)
+    private val kafkaProducer = mockk<KafkaProducer>(relaxed = true)
+
+    private val handler = UnassignRolesCommandHandler(action, kafkaProducer)
 
     private val command = UnassignRolesCommand(
         input = UserRolesInput(
@@ -33,6 +36,15 @@ class UnassignRolesCommandHandlerTest : WithAssertions {
                 organizationId = command.input.organizationId,
                 roles = command.input.roles
             )
+        }
+    }
+
+    @Test
+    fun `must send kafka message`() {
+        handler.handle(command)
+
+        verify(exactly = 1) {
+            kafkaProducer.sendRolesUpdated(command.input.userId)
         }
     }
 }

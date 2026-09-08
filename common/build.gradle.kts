@@ -1,11 +1,10 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "0.1.1"
+version = "0.1.2"
 
 plugins {
     `java-library`
-    `java-test-fixtures`
     kotlin("jvm")
     kotlin("plugin.spring")
 
@@ -31,7 +30,11 @@ val springMockkVersion: String by project
 val h2Version: String by project
 
 dependencies {
+    compileOnly("jakarta.servlet:jakarta.servlet-api:6.0.0")
+
     api(kotlin("stdlib"))
+
+    api("io.projectreactor.kotlin:reactor-kotlin-extensions")
 
     api("org.springframework.boot:spring-boot-starter")
     api("org.springframework.boot:spring-boot-starter-actuator")
@@ -44,6 +47,7 @@ dependencies {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
     }
     api("org.springframework.boot:spring-boot-starter-jooq")
+    api("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     api(
         group = "org.jetbrains.exposed",
@@ -52,23 +56,16 @@ dependencies {
     )
     api(group = "org.zalando", name = "logbook-spring-boot-starter", version = logbookSpringBootStarterVersion)
 
-    compileOnly("org.springframework.graphql:spring-graphql-test")
-
     api(databaseDriver)
 
     api(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = jacksonModuleKotlinVersion)
 
 
-    testFixturesApi("org.springframework.boot:spring-boot-starter-test") {
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.mockito")
     }
-    testFixturesApi("org.springframework.graphql:spring-graphql-test")
-    testFixturesApi("org.springframework.boot:spring-boot-starter-webflux")
-
-    testFixturesApi(group = "io.mockk", name = "mockk", version = mockkVersion)
-    testFixturesApi(group = "com.ninja-squad", name = "springmockk", version = springMockkVersion)
-
-    testFixturesApi("com.h2database", "h2", h2Version)
+    testImplementation(group = "io.mockk", name = "mockk", version = mockkVersion)
+    testImplementation("io.projectreactor:reactor-test")
 }
 
 dependencyManagement { // doesn't affect child services, see root build.gradle.kts

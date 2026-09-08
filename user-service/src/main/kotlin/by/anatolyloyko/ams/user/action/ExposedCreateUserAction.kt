@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component
 
 @Component
 internal class ExposedCreateUserAction : CreateUserAction {
-    override fun invoke(user: User, password: String): Long = CreateUserFunction(
-        iPassword = password,
+    override fun invoke(user: User, externalId: String): Long = CreateUserFunction(
+        iIdpUuid = externalId,
         iFirstName = user.firstName,
         iLastName = user.lastName,
         iPhoneNumber = user.phoneNumber

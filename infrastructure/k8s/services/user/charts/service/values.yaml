@@ -59,6 +59,13 @@ service:
       SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.2
       SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 1000
       SPRING_CLOUD_CONFIG_LABEL: master
+
+      JWKS_URI: "http://auth-service:8080/.well-known/jwks"
+
+      KAFKA_BOOTSTRAP_SERVERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:29092"
+      KAFKA_GROUP_ID: user-service
+      KAFKA_KEYCLOAK_EVENTS_TOPIC: v1.keycloak.events
+
 # stored in secrets
 #      DBHOST: user_db
 #      DBPORT: 5432

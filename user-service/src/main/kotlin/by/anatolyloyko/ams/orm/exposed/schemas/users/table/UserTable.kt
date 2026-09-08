@@ -30,5 +30,7 @@ internal object UserTable : Table("users.user") {
 
   public val phoneNumber: Column<String> = varchar("phone_number", 15)
 
+  public val idpUuid: Column<String> = varchar("idp_uuid", 36)
+
   override val primaryKey: Table.PrimaryKey = PrimaryKey(id)
 }

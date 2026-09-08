@@ -19,7 +19,7 @@ import org.jooq.InverseForeignKey
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Records
-import org.jooq.Row4
+import org.jooq.Row5
 import org.jooq.Schema
 import org.jooq.SelectField
 import org.jooq.Table
@@ -89,6 +89,11 @@ open class User(
      */
     val PHONE_NUMBER: TableField<UserRecord, String?> = createField(DSL.name("phone_number"), SQLDataType.VARCHAR(15).nullable(false), this, "")
 
+    /**
+     * The column <code>users.user.idp_uuid</code>.
+     */
+    val IDP_UUID: TableField<UserRecord, String?> = createField(DSL.name("idp_uuid"), SQLDataType.VARCHAR(36), this, "")
+
     private constructor(alias: Name, aliased: Table<UserRecord>?): this(alias, null, null, null, aliased, null, null)
     private constructor(alias: Name, aliased: Table<UserRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, null, aliased, parameters, null)
 
@@ -109,6 +114,7 @@ open class User(
     override fun getSchema(): Schema? = if (aliased()) null else Users.USERS
     override fun getPrimaryKey(): UniqueKey<UserRecord> = Internal.createUniqueKey(User.USER, DSL.name("user_pkey"), arrayOf(User.USER.ID), true)
     override fun getUniqueKeys(): List<UniqueKey<UserRecord>> = listOf(
+        Internal.createUniqueKey(User.USER, DSL.name("user_idp_uuid_key"), arrayOf(User.USER.IDP_UUID), true), 
         Internal.createUniqueKey(User.USER, DSL.name("user_phone_number_key"), arrayOf(User.USER.PHONE_NUMBER), true)
     )
     override fun getChecks(): List<Check<UserRecord>> = listOf(
@@ -116,18 +122,18 @@ open class User(
     )
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row4<Long?, String?, String?, String?> = super.fieldsRow() as Row4<Long?, String?, String?, String?>
+    override fun fieldsRow(): Row5<Long?, String?, String?, String?, String?> = super.fieldsRow() as Row5<Long?, String?, String?, String?, String?>
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    fun <U> mapping(from: (Long?, String?, String?, String?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    fun <U> mapping(from: (Long?, String?, String?, String?, String?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    fun <U> mapping(toType: Class<U>, from: (Long?, String?, String?, String?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    fun <U> mapping(toType: Class<U>, from: (Long?, String?, String?, String?, String?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

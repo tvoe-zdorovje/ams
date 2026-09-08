@@ -1,13 +1,26 @@
 spring:
   application:
     name: administration-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWKS_URI}
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DBHOST}:${DBPORT}/${DBNAME}
     username: ${DBUSER}
     password: ${DBPASS}
+  jooq:
+    sql-dialect: POSTGRES
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        enable.idempotence: false
+        acks: 1
     consumer:
       group-id: ${KAFKA_GROUP_ID}
       key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
@@ -28,5 +41,7 @@ ams:
         name: ${KAFKA_TOPIC_BRAND}
       studio:
         name: ${KAFKA_TOPIC_STUDIO}
+      administration-user:
+        name: ${KAFKA_ADMINISTRATION_USER_EVENTS_TOPIC}
     props:
-      nack-cooldown: 100ms
+      nack-cooldown: ${KAFKA_NACK_COOLDOWN:100ms}

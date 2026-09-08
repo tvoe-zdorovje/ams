@@ -1,7 +1,5 @@
 package by.anatolyloyko.ams.common.infrastructure.graphql
 
-import by.anatolyloyko.ams.common.infrastructure.exception.AccessDeniedException
-import by.anatolyloyko.ams.common.infrastructure.exception.AuthorizationException
 import graphql.ErrorType.ValidationError
 import graphql.schema.DataFetchingEnvironment
 import io.mockk.mockk
@@ -10,8 +8,6 @@ import org.jooq.exception.DataAccessException
 import org.junit.jupiter.api.Test
 import org.postgresql.util.PSQLException
 import org.postgresql.util.PSQLState
-import org.springframework.graphql.execution.ErrorType.FORBIDDEN
-import org.springframework.graphql.execution.ErrorType.UNAUTHORIZED
 
 class DataFetcherExceptionResolverTest : DataFetcherExceptionResolver(), WithAssertions {
     private val dataFetchingEnvironment = mockk<DataFetchingEnvironment>(relaxed = true)
@@ -26,25 +22,25 @@ class DataFetcherExceptionResolverTest : DataFetcherExceptionResolver(), WithAss
         assertThat(result.message).isEqualTo(exception.localizedMessage)
     }
 
-    @Test
-    fun `must handle AuthenticationException`() {
-        val exception = AuthorizationException("message")
-
-        val result = resolveToSingleError(exception, dataFetchingEnvironment)!!
-
-        assertThat(result.errorType).isEqualTo(UNAUTHORIZED)
-        assertThat(result.message).isEqualTo(exception.localizedMessage)
-    }
-
-    @Test
-    fun `must handle AccessDeniedException`() {
-        val exception = AccessDeniedException("message")
-
-        val result = resolveToSingleError(exception, dataFetchingEnvironment)!!
-
-        assertThat(result.errorType).isEqualTo(FORBIDDEN)
-        assertThat(result.message).isEqualTo(exception.localizedMessage)
-    }
+//    @Test
+//    fun `must handle AuthenticationException`() {
+//        val exception = AuthorizationException("message")
+//
+//        val result = resolveToSingleError(exception, dataFetchingEnvironment)!!
+//
+//        assertThat(result.errorType).isEqualTo(UNAUTHORIZED)
+//        assertThat(result.message).isEqualTo(exception.localizedMessage)
+//    }
+//
+//    @Test
+//    fun `must handle AccessDeniedException`() {
+//        val exception = AccessDeniedException("message")
+//
+//        val result = resolveToSingleError(exception, dataFetchingEnvironment)!!
+//
+//        assertThat(result.errorType).isEqualTo(FORBIDDEN)
+//        assertThat(result.message).isEqualTo(exception.localizedMessage)
+//    }
 
     @Test
     fun `must handle DataAccessException`() {

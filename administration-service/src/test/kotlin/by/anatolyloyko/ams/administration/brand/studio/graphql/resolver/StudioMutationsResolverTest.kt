@@ -7,23 +7,21 @@ import by.anatolyloyko.ams.administration.USER_ID
 import by.anatolyloyko.ams.administration.brand.studio.command.CreateStudioRoleCommand
 import by.anatolyloyko.ams.administration.brand.studio.command.input.CreateStudioRoleInput
 import by.anatolyloyko.ams.common.infrastructure.service.command.CommandGateway
-import by.anatolyloyko.ams.common.infrastructure.testing.expectForbidden
-import by.anatolyloyko.ams.common.infrastructure.testing.expectUnauthorized
-import by.anatolyloyko.ams.common.infrastructure.testing.get
-import by.anatolyloyko.ams.common.infrastructure.testing.loginAs
-import by.anatolyloyko.ams.common.infrastructure.testing.matches
+import by.anatolyloyko.ams.commontest.graphql.GraphQLTest
+import by.anatolyloyko.ams.commontest.graphql.expectForbidden
+import by.anatolyloyko.ams.commontest.graphql.expectUnauthenticated
+import by.anatolyloyko.ams.commontest.graphql.get
+import by.anatolyloyko.ams.commontest.graphql.loginAs
+import by.anatolyloyko.ams.commontest.graphql.matches
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.graphql.test.tester.WebGraphQlTester
 
-@SpringBootTest
-@AutoConfigureHttpGraphQlTester
+@GraphQLTest
 class StudioMutationsResolverTest {
     @Autowired
     lateinit var graphQlTester: WebGraphQlTester
@@ -98,7 +96,7 @@ class StudioMutationsResolverTest {
         }
 
         @Test
-        fun `must return error when unauthorized`() {
+        fun `must return error when unauthenticated`() {
             val studioId = STUDIO_ID
             val roleId = ROLE_ID
             val role = NEW_ROLE
@@ -108,7 +106,7 @@ class StudioMutationsResolverTest {
                 .variable("name", role.name)
                 .variable("description", role.description)
                 .execute()
-                .expectUnauthorized()
+                .expectUnauthenticated()
         }
 
         @Test

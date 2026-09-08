@@ -5,7 +5,6 @@ package by.anatolyloyko.ams.orm.jooq.schemas.users
 
 
 import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.User
-import by.anatolyloyko.ams.orm.jooq.schemas.users.tables.UserPassword
 
 import kotlin.collections.List
 
@@ -31,13 +30,7 @@ open class Users : SchemaImpl("users", null) {
      */
     val USER: User get() = User.USER
 
-    /**
-     * The table <code>users.user_password</code>.
-     */
-    val USER_PASSWORD: UserPassword get() = UserPassword.USER_PASSWORD
-
     override fun getTables(): List<Table<*>> = listOf(
-        User.USER,
-        UserPassword.USER_PASSWORD
+        User.USER
     )
 }

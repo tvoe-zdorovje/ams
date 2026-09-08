@@ -1,6 +1,7 @@
 package by.anatolyloyko.ams.administration.user.command
 
 import by.anatolyloyko.ams.administration.user.action.AssignRolesAction
+import by.anatolyloyko.ams.administration.user.kafka.KafkaProducer
 import by.anatolyloyko.ams.common.infrastructure.service.command.BaseCommandHandler
 import org.springframework.stereotype.Component
 
@@ -11,11 +12,16 @@ import org.springframework.stereotype.Component
  */
 @Component
 class AssignRolesCommandHandler(
-    private val assignRolesAction: AssignRolesAction
+    private val assignRolesAction: AssignRolesAction,
+    private val kafkaProducer: KafkaProducer
 ) : BaseCommandHandler<AssignRolesCommand, Unit>() {
-    override fun handleInternal(command: AssignRolesCommand) = assignRolesAction(
-        userId = command.input.userId,
-        organizationId = command.input.organizationId,
-        roles = command.input.roles
-    )
+    override fun handleInternal(command: AssignRolesCommand) {
+        assignRolesAction(
+            userId = command.input.userId,
+            organizationId = command.input.organizationId,
+            roles = command.input.roles
+        )
+
+        kafkaProducer.sendRolesUpdated(command.input.userId)
+    }
 }

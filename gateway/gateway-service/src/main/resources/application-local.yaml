@@ -13,7 +13,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8180/.well-known/jwks
+          jwk-set-uri: ${ams.auth-server.jwks-uri}
   data:
     redis:
       connect-timeout: 3s
@@ -21,6 +21,8 @@ spring:
       port: 6379
       timeout: 3s
   cloud:
+    config:
+      enabled: false
     gateway:
       httpclient:
         connect-timeout: 3000
@@ -37,14 +39,6 @@ spring:
               burstCapacity: 20
               requestedTokens: 1
       routes:
-        - id: auth-service-route
-          uri: http://localhost:8180
-          predicates:
-            - Path=/auth/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: authServiceCircuitBreaker
         - id: administration-service-route
           uri: http://localhost:8181
           predicates:
@@ -102,8 +96,6 @@ resilience4j:
         base-config: default
       appointmentServiceCircuitBreaker:
         base-config: default
-      authServiceCircuitBreaker:
-        base-config: default
       brandServiceCircuitBreaker:
         base-config: default
       studioAggregateServiceCircuitBreaker:
@@ -125,7 +117,19 @@ management:
       probes:
         enabled: true
 
+ams:
+  auth-server:
+    keycloak-uidc-ep: http://keycloak:8123/realms/ams/protocol/openid-connect
+    jwks-uri: ${ams.auth-server.keycloak-uidc-ep}/certs
+    auth-uri: ${ams.auth-server.keycloak-uidc-ep}/auth
+    token-uri: ${ams.auth-server.keycloak-uidc-ep}/token
+  redis:
+    topic:
+      user-tokens:
+        key-prefix: "auth:token:userID:"
+
 logging:
   level:
+    org.springframework: DEBUG
     org.springframework.cloud.gateway: DEBUG
     org.springframework.security: TRACE

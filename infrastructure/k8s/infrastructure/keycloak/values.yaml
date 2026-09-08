@@ -1,0 +1,160 @@
+keycloak:
+  realm:
+    file:
+      path: "files/realms/ams-realm.json"
+    volume:
+      name: keycloak-import-realm-volume
+      mountPath: "/opt/keycloak/data/import/ams-realm.json"
+      subPath: "ams-realm.json"
+
+  deployment:
+    replicas: 1
+    imagePullSecrets:
+      - name: github-registry
+    image:
+      repository: "ghcr.io/tvoe-zdorovje/ams/keycloak"
+      tag: ""
+      pullPolicy: IfNotPresent
+    command:
+      args:
+        - "start"
+        - "--import-realm"
+    resources:
+      requests:
+        cpu: 125m
+        memory: 512Mi
+      limits:
+        memory: 1024Mi
+    ports:
+      - port: 8080
+        protocol: TCP
+      - port: 9000
+        protocol: TCP
+    startupProbe:
+      httpGet:
+        path: /health/ready
+        port: 9000
+      initialDelaySeconds: 40
+      periodSeconds: 15
+      successThreshold: 1
+    readinessProbe:
+      httpGet:
+        path: /health/ready
+        port: 9000
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+      successThreshold: 1
+    livenessProbe:
+      httpGet:
+        path: /health/live
+        port: 9000
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+      successThreshold: 1
+
+  service:
+    type: ClusterIP
+    ports:
+      - port: 80
+        targetPort: 8080
+        protocol: TCP
+        name: service
+      - port: 9000
+        targetPort: 9000
+        protocol: TCP
+        name: healthcheck
+
+  ingress:
+    host: keycloak.ams.by
+    path: /.*
+    port: 80
+    pathType: ImplementationSpecific
+
+  secrets:
+    - name: keycloak-secrets
+  cm:
+    env:
+# SECRET keycloak-secrets
+#      KC_DB: postgres
+#      KC_DB_URL: jdbc:postgresql://${DBHOST}:${DBPORT}/${DBNAME}
+#      KC_DB_USERNAME: ${DBUSER}
+#      KC_DB_PASSWORD: ${DBPASS}
+#
+#      KEYCLOAK_ADMIN: admin
+#      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: keycloak.ams.by
+      KC_HEALTH_ENABLED: true
+      KC_HTTP_ENABLED: true
+
+      # kafka spi
+      KAFKA_BOOTSTRAP_SERVERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:29092"
+      KAFKA_TOPIC: v1.keycloak.events
+      KAFKA_EVENTS: REGISTER,CODE_TO_TOKEN,REFRESH_TOKEN
+      KAFKA_CLIENT_ID: gateway-client-id
+
+postgresql:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 15.4.0-debian-11-r45
+  auth:
+    existingSecret: "keycloak-postgresql-secrets"
+  primary:
+    persistence:
+      enabled: true
+      size: 256Mi
+      accessModes:
+        - ReadWriteOnce
+      storage: 256Mi
+      mountPath: /bitnami/postgresql
+      storageClass: standard
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 560
+      failureThreshold: 6
+      successThreshold: 1
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6
+      successThreshold: 1
+    startupProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 10
+      successThreshold: 1
+    initdb:
+      scriptsSecret: keycloak-postgres-init-scripts
+
+global:
+  secrets:
+    - name: keycloak-postgresql-secrets
+      type: Opaque
+      data:
+        database: "keycloak_db"
+        username: "keycloak"
+        password: "keycloak"
+        postgres-password: "pass"
+    - name: keycloak-secrets
+      type: Opaque
+      data:
+        KC_DB: postgres
+        KC_DB_URL: jdbc:postgresql://keycloak-postgresql:5432/keycloak_db
+        KC_DB_USERNAME: keycloak
+        KC_DB_PASSWORD: keycloak
+
+        KEYCLOAK_ADMIN: admin
+        KEYCLOAK_ADMIN_PASSWORD: admin

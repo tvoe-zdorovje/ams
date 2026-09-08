@@ -27,7 +27,7 @@ echo '🔧 Composing Supergraph...'
 # merges all .graphqls files in the schemas directory into one file in reverse order for each service
 TMP_SCHEMAS_DIR="$WORK_DIR/schema/schemas"
 mkdir "$TMP_SCHEMAS_DIR"
-for service in administration appointment auth brand studio user; do
+for service in administration appointment brand studio user; do
   ext=".graphqls"
   sourceDir="$SOURCE_DIR"
   output="$TMP_SCHEMAS_DIR/$service$ext"

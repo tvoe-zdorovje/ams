@@ -7,7 +7,7 @@ import org.yaml.snakeyaml.Yaml
 
 private const val SOURCE_DIRECTORY = "src/main/resources"
 
-private const val CONFIG_FILE_NAME = "application.yaml"
+private const val CONFIG_FILE_NAME = "application-local.yaml"
 
 private val parameterPlaceholderRegex = Regex("\\\$\\{\\w+:(.+?)}")
 

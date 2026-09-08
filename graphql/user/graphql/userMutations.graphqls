@@ -3,8 +3,8 @@ extend type UserMutations {
     updateUser(request: UpdateUserRequest!): ID!
 }
 
-input CreateUserRequest {
-    password: String!
+input CreateUserRequest { # TODO admin access only
+    externalId: String!
     firstName: String!
     lastName: String!
     phoneNumber: String!

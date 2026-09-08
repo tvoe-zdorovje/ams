@@ -27,7 +27,7 @@ class UserMutationsResolver(
     private val commandGateway: CommandGateway
 ) {
     /**
-     * Resolves the createUser mutation for creating a new user.
+     * Resolves the createUser mutation for creating a new user manually by an admin.
      *
      * @param request the request containing the user's information.
      * @return the ID of the newly created user.
@@ -45,7 +45,7 @@ class UserMutationsResolver(
                     lastName = request.lastName,
                     phoneNumber = request.phoneNumber
                 ),
-                password = request.password
+                externalId = request.externalId
             )
         )
     )

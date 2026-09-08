@@ -48,13 +48,25 @@ kafka:
       deleteClaim: false
     affinity:
       podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                    - "{{ .Release.Name }}"
-            topologyKey: kubernetes.io/hostname
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - "{{ .Release.Name }}"
+              topologyKey: kubernetes.io/hostname
 
-  entityOperator: {}
+  entityOperator:
+    topicOperator: {}
+
+
+topics:
+  - name: "v1.keycloak.events"
+    partitions: 3
+    replicas: 1
+  - name: "v1.administration.user"
+    partitions: 3
+    replicas: 1

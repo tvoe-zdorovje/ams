@@ -2,7 +2,7 @@ import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "0.1.1"
+version = "0.1.2"
 
 plugins {
     kotlin("jvm")
@@ -21,7 +21,6 @@ kotlin {
 }
 
 val databaseDriver: String by project
-val argon2JvmVersion: String by project
 val nimbusJoseJwtVersion: String by project
 val mockkVersion: String by project
 val springMockkVersion: String by project
@@ -30,24 +29,23 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-logging")
-    implementation("org.springframework.boot:spring-boot-starter-graphql")
     implementation("org.springframework.boot:spring-boot-starter-jooq")
     implementation("org.springframework.boot:spring-boot-starter-aop")
-    implementation("org.springframework.retry:spring-retry")
-    implementation("org.springframework.cloud:spring-cloud-starter-config")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
     }
-        implementation("org.springframework.boot:spring-boot-starter-jetty")
+    implementation("org.springframework.boot:spring-boot-starter-jetty")
+    implementation("org.springframework.cloud:spring-cloud-starter-config")
+    implementation("org.springframework.retry:spring-retry")
+    implementation("org.springframework.kafka:spring-kafka")
 
     implementation(databaseDriver)
-    implementation(group = "de.mkammerer", name = "argon2-jvm", version = argon2JvmVersion)
     implementation(group = "com.nimbusds", name = "nimbus-jose-jwt", version = nimbusJoseJwtVersion)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.mockito")
     }
-    testImplementation("org.springframework.graphql:spring-graphql-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webflux")
     testImplementation(group = "io.mockk", name = "mockk", version = mockkVersion)
     testImplementation(group = "com.ninja-squad", name = "springmockk", version = springMockkVersion)
@@ -57,21 +55,6 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
-}
-
-sourceSets {
-    main {
-        resources {
-            srcDir("../graphql/common")
-            srcDir("../graphql/auth")
-        }
-    }
-    test {
-        resources {
-            srcDir("../graphql/common")
-            srcDir("../graphql/auth")
-        }
     }
 }
 

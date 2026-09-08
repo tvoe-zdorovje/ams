@@ -1,6 +1,5 @@
 package by.anatolyloyko.ams.auth.token.jwt.key
 
-import com.nimbusds.jose.jwk.JWK
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import io.mockk.every
@@ -10,7 +9,6 @@ import io.mockk.verifyOrder
 import org.assertj.core.api.WithAssertions
 import org.slf4j.Logger
 import java.lang.reflect.Field
-import kotlin.math.log
 import kotlin.test.Test
 
 private const val KID_FORMAT = "kid-%s"

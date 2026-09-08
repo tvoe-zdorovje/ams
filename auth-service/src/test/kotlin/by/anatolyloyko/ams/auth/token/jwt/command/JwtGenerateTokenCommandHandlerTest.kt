@@ -1,5 +1,7 @@
 package by.anatolyloyko.ams.auth.token.jwt.command
 
+import by.anatolyloyko.ams.auth.USER
+import by.anatolyloyko.ams.auth.USER_ID
 import by.anatolyloyko.ams.auth.token.action.GenerateTokenAction
 import by.anatolyloyko.ams.auth.token.command.GenerateTokenCommand
 import by.anatolyloyko.ams.auth.token.command.input.GenerateTokenCommandInput
@@ -10,8 +12,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.WithAssertions
 import org.junit.jupiter.api.Test
-
-private const val USER_ID = 100000001413121100
 
 private const val JWT = "my-awesome-jwt"
 
@@ -31,20 +31,20 @@ class JwtGenerateTokenCommandHandlerTest : WithAssertions {
 
     private val commandHandler = JwtGenerateTokenCommandHandler(tokenDataFinder, generateTokenAction)
 
-    private val command = GenerateTokenCommand(GenerateTokenCommandInput(USER_ID))
+    private val command = GenerateTokenCommand(GenerateTokenCommandInput(USER))
 
     @Test
     fun `must find token data by user ID`() {
         commandHandler.handle(command)
 
-        verify { tokenDataFinder.findByUserId(USER_ID) }
+        verify(exactly = 1) { tokenDataFinder.findByUserId(USER_ID) }
     }
 
     @Test
     fun `must call generateTokenAction with valid token data`() {
         commandHandler.handle(command)
 
-        verify { generateTokenAction(tokenData) }
+        verify(exactly = 1) { generateTokenAction(tokenData) }
     }
 
     @Test

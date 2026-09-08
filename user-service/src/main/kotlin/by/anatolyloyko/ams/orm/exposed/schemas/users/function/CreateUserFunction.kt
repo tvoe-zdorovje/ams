@@ -25,14 +25,14 @@ import org.jetbrains.exposed.sql.VarCharColumnType
  */
 @Suppress("MagicNumber", "ConstructorParameterNaming")
 internal class CreateUserFunction(
-  iPassword: String?,
+  iIdpUuid: String?,
   iFirstName: String?,
   iLastName: String?,
   iPhoneNumber: String?,
 ) : CustomFunction<Long>(
 	"users.create_user", 
 	LongColumnType(), 
-	QueryParameter(iPassword, VarCharColumnType().apply { nullable = true }), 
+	QueryParameter(iIdpUuid, VarCharColumnType().apply { nullable = true }), 
 	QueryParameter(iFirstName, VarCharColumnType().apply { nullable = true }), 
 	QueryParameter(iLastName, VarCharColumnType().apply { nullable = true }), 
 	QueryParameter(iPhoneNumber, VarCharColumnType().apply { nullable = true }), 

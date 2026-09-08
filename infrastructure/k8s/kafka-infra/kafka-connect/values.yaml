@@ -140,6 +140,8 @@ connectors:
     class: io.debezium.connector.jdbc.JdbcSinkConnector
     tasksMax: 1
     state: running
+    autoRestart:
+      enabled: true
     config:
       topics: v1.users.user
       connection.url: jdbc:postgresql://administration-service-postgresql.services.svc.cluster.local:5432/administration_db

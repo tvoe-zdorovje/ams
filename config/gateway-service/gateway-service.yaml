@@ -9,7 +9,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${JWKS_URI}
+          jwk-set-uri: ${ams.auth-server.jwks-uri}
   data:
     redis:
       connect-timeout: 3s
@@ -33,14 +33,6 @@ spring:
               burstCapacity: 20
               requestedTokens: 1
       routes:
-        - id: auth-service-route
-          uri: ${AUTH_SERVICE_HOST}
-          predicates:
-            - Path=/auth/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: authServiceCircuitBreaker
         - id: administration-service-route
           uri: ${ADMINISTRATION_SERVICE_HOST}
           predicates:
@@ -98,8 +90,6 @@ resilience4j:
         base-config: default
       appointmentServiceCircuitBreaker:
         base-config: default
-      authServiceCircuitBreaker:
-        base-config: default
       brandServiceCircuitBreaker:
         base-config: default
       studioAggregateServiceCircuitBreaker:
@@ -110,6 +100,16 @@ resilience4j:
     configs:
       default:
         timeout-duration: 5s
+
+ams:
+  auth-server:
+    jwks-uri: ${JWKS_URI}
+    auth-uri: ${AUTH_URI}
+    token-uri: ${TOKEN_URI}
+  redis:
+    topic:
+      user-tokens:
+        key-prefix: ${REDIS_USER_TOKENS_KEY_PREFIX}
 
 logging:
   level:

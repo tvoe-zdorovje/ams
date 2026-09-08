@@ -64,6 +64,8 @@ service:
       SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.2
       SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 1000
       SPRING_CLOUD_CONFIG_LABEL: master
+
+      JWKS_URI: "http://auth-service:8080/.well-known/jwks"
 # stored in secrets
 #      DBHOST: studio_db
 #      DBPORT: 5432

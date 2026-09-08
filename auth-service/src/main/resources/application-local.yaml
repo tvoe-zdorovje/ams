@@ -3,6 +3,9 @@ server:
   port: 8180
   shutdown: graceful
 spring:
+  cloud:
+    config:
+      enabled: false
   lifecycle:
     timeout-per-shutdown-phase: 30s
   main:
@@ -10,9 +13,6 @@ spring:
   output:
     ansi:
       enabled: always
-  graphql:
-    graphiql:
-      enabled: true
   datasource:
     user-db:
       driver-class-name: org.postgresql.Driver
@@ -24,6 +24,39 @@ spring:
       jdbcUrl: jdbc:postgresql://localhost:5441/administration_db
       username: ausportal
       password: ausportal
+  data:
+    redis:
+      connect-timeout: 3s
+      host: localhost
+      port: 6379
+      timeout: 3s
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: auth-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: latest
+      enable-auto-commit: false
+    listener:
+      ack-mode: manual
+      missing-topics-fatal: false
+
+ams:
+  redis:
+    topic:
+      user-tokens:
+        key-prefix: "auth:token:userID:"
+  kafka:
+    topic:
+      keycloak-events:
+        name: v1.keycloak.events
+        event-types: "CODE_TO_TOKEN, REFRESH_TOKEN"
+      administration-user:
+        name: v1.administration.user
+        event-types: "UPDATE_ROLES"
+    props:
+      nack-cooldown: 100ms
 
 management:
   endpoints:

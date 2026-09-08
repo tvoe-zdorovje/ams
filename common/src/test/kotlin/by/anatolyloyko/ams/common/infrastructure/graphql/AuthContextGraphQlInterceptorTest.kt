@@ -1,115 +1,79 @@
 package by.anatolyloyko.ams.common.infrastructure.graphql
 
 import by.anatolyloyko.ams.common.infrastructure.graphql.auth.AuthContextGraphQlInterceptor
-import by.anatolyloyko.ams.common.infrastructure.graphql.auth.CONTEXT_LOGGED_USER
-import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_AUTHORIZATION
-import by.anatolyloyko.ams.common.infrastructure.graphql.auth.HEADER_AUTHORIZATION_PREFIX
-import by.anatolyloyko.ams.common.infrastructure.graphql.auth.model.LoggedUser
-import by.anatolyloyko.ams.common.infrastructure.graphql.auth.model.LoggedUserTokenData
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import by.anatolyloyko.ams.common.infrastructure.graphql.auth.CONTEXT_AUTHENTICATION
 import graphql.ExecutionInput
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifyOrder
 import org.assertj.core.api.WithAssertions
 import org.junit.jupiter.api.Test
-import org.springframework.graphql.execution.ErrorType.UNAUTHORIZED
 import org.springframework.graphql.server.WebGraphQlInterceptor
 import org.springframework.graphql.server.WebGraphQlRequest
-import java.time.Duration
-import java.util.Base64
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
+import reactor.core.publisher.Mono
+import reactor.test.StepVerifier
 import java.util.function.BiFunction
 
-private const val USER_ID = 100000001413121100
-
-private const val ORGANIZATION_ID = 1000000001513221100
-
-private const val TEST_PERMISSION_NAME = "testPermission"
-
-private const val JWT_PAYLOAD = """
-    {
-        "data": {
-            "userId": $USER_ID,
-            "permissions": {
-                "$ORGANIZATION_ID": [
-                    {
-                        "id": -1001,
-                        "name": "$TEST_PERMISSION_NAME"
-                    }
-                ]
-            }
-        }
-    }
-"""
-
 class AuthContextGraphQlInterceptorTest : WithAssertions {
-    private val interceptor = AuthContextGraphQlInterceptor(jacksonObjectMapper())
+    private val interceptor = AuthContextGraphQlInterceptor()
 
     private val request = mockk<WebGraphQlRequest>(relaxed = true)
 
-    private val chain = mockk<WebGraphQlInterceptor.Chain>(relaxed = true)
+    private val chain = mockk<WebGraphQlInterceptor.Chain> {
+        every { next(any()) } returns Mono.just(mockk(relaxed = true))
+    }
 
     @Test
     fun `must inject logged user data into graphQL context`() {
-        val mockJwt = "header.${Base64.getEncoder().encodeToString(JWT_PAYLOAD.toByteArray())}.signature"
-        every { request.headers[HEADER_AUTHORIZATION] } returns listOf("$HEADER_AUTHORIZATION_PREFIX$mockJwt")
-
-        interceptor.intercept(request, chain)
-
-        val configurerCaptor = mutableListOf<BiFunction<ExecutionInput, ExecutionInput.Builder, ExecutionInput>>()
-        verifyOrder {
-            request.configureExecutionInput(capture(configurerCaptor))
-
-            chain.next(request)
+        val authenticationToken = UsernamePasswordAuthenticationToken("admin", "admin")
+        val securityContext = mockk<SecurityContext> {
+            every { authentication } returns authenticationToken
         }
+        SecurityContextHolder.setContext(securityContext)
 
-        val executionInputBuilder = ExecutionInput.Builder().query("query")
-        val graphQLContext = configurerCaptor[0]
-            .apply(mockk(), executionInputBuilder)
-            .graphQLContext
+        val monoResult = interceptor.intercept(request, chain)
 
-        val actualLoggedUserTokenData = graphQLContext.get<LoggedUserTokenData>(CONTEXT_LOGGED_USER)
-        assertThat(actualLoggedUserTokenData.id).isEqualTo(USER_ID)
-        assertThat(actualLoggedUserTokenData.permissions).hasSize(1)
-        assertThat(actualLoggedUserTokenData.permissions).containsKey(ORGANIZATION_ID)
-        assertThat(actualLoggedUserTokenData.permissions[ORGANIZATION_ID]).containsExactly(TEST_PERMISSION_NAME)
+        StepVerifier.create(monoResult)
+            .assertNext {
+                val captor = mutableListOf<BiFunction<ExecutionInput, ExecutionInput.Builder, ExecutionInput>>()
+                verify {
+                    request.configureExecutionInput(capture(captor))
+                }
 
-        val actualLoggedUser = graphQLContext.get<LoggedUser>(CONTEXT_LOGGED_USER)
-        assertThat(actualLoggedUser).hasSameClassAs(actualLoggedUserTokenData)
+                val executionInputBuilder = ExecutionInput.Builder().query("query")
+                val graphQLContext = captor[0]
+                    .apply(mockk(), executionInputBuilder)
+                    .graphQLContext
+                val graphQlContextAuthentication = graphQLContext
+                    .get<UsernamePasswordAuthenticationToken>(CONTEXT_AUTHENTICATION)
+
+                assertThat(graphQlContextAuthentication).isSameAs(authenticationToken)
+
+                verify(exactly = 1) {
+                    chain.next(request)
+                }
+            }
+            .verifyComplete()
     }
 
     @Test
-    fun `must skip logic when header value is null`() {
-        every { request.headers[HEADER_AUTHORIZATION] } returns null
+    fun `must set null when security context is empty`() {
+        SecurityContextHolder.clearContext()
 
-        interceptor.intercept(request, chain)
+        val monoResult = interceptor.intercept(request, chain)
 
-        verify(exactly = 0) {
-            request.configureExecutionInput(any())
-        }
-        verify(exactly = 1) {
-            chain.next(request)
-        }
-    }
-
-    @Test
-    fun `must return error when cannot parse token data`() {
-        val invalidJwtPayload = "invalid"
-        val mockJwt = "header.${Base64.getEncoder().encodeToString(invalidJwtPayload.toByteArray())}.signature"
-        every { request.headers[HEADER_AUTHORIZATION] } returns listOf("$HEADER_AUTHORIZATION_PREFIX$mockJwt")
-
-        val result = interceptor.intercept(request, chain).block(Duration.ZERO)
-
-        val error = result.errors.first()
-        assertThat(error.errorType).isEqualTo(UNAUTHORIZED)
-        assertThat(error.message).isEqualTo("Failed to parse authorization token data.")
-
-        verify(exactly = 0) {
-            request.configureExecutionInput(any())
-        }
-        verify(exactly = 0) {
-            chain.next(request)
-        }
+        StepVerifier.create(monoResult)
+            .assertNext {
+                verify(exactly = 0) {
+                    request.configureExecutionInput(any())
+                }
+                verify(exactly = 1) {
+                    chain.next(request)
+                }
+            }
+            .verifyComplete()
     }
 }

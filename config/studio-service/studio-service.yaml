@@ -1,6 +1,11 @@
 spring:
   application:
     name: studio-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWKS_URI}
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DBHOST}:${DBPORT}/${DBNAME}
@@ -25,4 +30,4 @@ ams:
         partitions: ${KAFKA_STUDIO_EVENTS_TOPIC_PARTITIONS_COUNT}
 
     props:
-      nack-cooldown: 100ms
+      nack-cooldown: ${KAFKA_NACK_COOLDOWN:100ms}

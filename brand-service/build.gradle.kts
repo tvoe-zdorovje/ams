@@ -3,7 +3,7 @@ import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "0.1.1"
+version = "0.1.2"
 
 plugins {
     kotlin("jvm")
@@ -36,7 +36,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-jetty")
 
-    testImplementation(testFixtures(project(":common")))
+    testImplementation(project(":common-test"))
 }
 
 sourceSets {

@@ -1,6 +1,11 @@
 spring:
   application:
     name: brand-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWKS_URI}
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DBHOST}:${DBPORT}/${DBNAME}
@@ -25,4 +30,4 @@ ams:
         replicas: ${KAFKA_BRAND_EVENTS_TOPIC_REPLICATION_FACTOR}
     
     props:
-      nack-cooldown: 100ms
+      nack-cooldown: ${KAFKA_NACK_COOLDOWN:100ms}

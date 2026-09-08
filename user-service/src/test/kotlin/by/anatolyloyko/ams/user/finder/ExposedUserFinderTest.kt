@@ -1,6 +1,7 @@
 package by.anatolyloyko.ams.user.finder
 
 import by.anatolyloyko.ams.orm.exposed.schemas.users.table.UserTable
+import by.anatolyloyko.ams.user.EXTERNAL_USER_ID
 import by.anatolyloyko.ams.user.ExposedTest
 import by.anatolyloyko.ams.user.USER
 import org.jetbrains.exposed.sql.insert
@@ -22,6 +23,7 @@ internal class ExposedUserFinderTest @Autowired constructor(
                 it[firstName] = USER.firstName
                 it[lastName] = USER.lastName
                 it[phoneNumber] = USER.phoneNumber
+                it[idpUuid] = EXTERNAL_USER_ID
             }
         }
     }

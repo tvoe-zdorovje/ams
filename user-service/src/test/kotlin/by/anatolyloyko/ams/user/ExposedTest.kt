@@ -43,7 +43,7 @@ internal abstract class ExposedTest : WithAssertions {
 
     companion object {
         @JvmStatic
-        fun insertUser(password: String, firstName: String, lastName: String, phoneNumber: String): ResultSet {
+        fun insertUser(idpUuid: String, firstName: String, lastName: String, phoneNumber: String): ResultSet {
             val userId = Random.nextLong()
 
             return function(LongColumnType(), userId) {
@@ -52,6 +52,7 @@ internal abstract class ExposedTest : WithAssertions {
                     it[UserTable.firstName] = firstName
                     it[UserTable.lastName] = lastName
                     it[UserTable.phoneNumber] = phoneNumber
+                    it[UserTable.idpUuid] = idpUuid
                 }
             }
         }
