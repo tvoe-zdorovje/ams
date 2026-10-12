@@ -1,0 +1,38 @@
+services:
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    restart: unless-stopped
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:9060
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/
+    ports:
+      - "9060:9060"
+    volumes:
+      - ./infrastructure/telemetry/grafana-alloy/config:/etc/alloy:ro
+      - alloy_data:/var/lib/alloy/data
+    env_file:
+      - ./infrastructure/telemetry/grafana-alloy/.env
+
+  # ---------------------------------------------------------------
+  # Prometheus — хранилище временных рядов (принимает remote_write)
+  # ---------------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/prometheus/config.yml"
+      - "--web.enable-remote-write-receiver"
+      - "--storage.tsdb.path=/prometheus"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/telemetry/prometheus/config.yml:/etc/prometheus/config.yml:ro
+      - prometheus_data:/prometheus
+
+volumes:
+  alloy_data:
+  prometheus_data:

@@ -4,3 +4,4 @@ include:
   - docker-compose-kafka.yml
   - docker-compose-migration.yml
   - docker-compose-service.yml
+  - docker-compose-telemetry.yml
