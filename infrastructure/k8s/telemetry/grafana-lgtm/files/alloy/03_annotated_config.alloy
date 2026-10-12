@@ -1,0 +1,58 @@
+// Scrapes pods annotated with prometheus.io/scrape=true.
+// Port/path come from prometheus.io/port and prometheus.io/path.
+discovery.relabel "annotated_targets" {
+  targets = discovery.relabel.common_targets.output
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+    regex         = "true"
+    action        = "keep"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+    target_label  = "__metrics_path__"
+    regex         = "(.+)"
+  }
+}
+
+// Gateway pod has two containers with different metrics paths.
+// Spring Boot is scraped via prometheus.io/* annotations (port from annotation).
+// Apollo Router listens on 4000 and exposes /metrics — scrape that port separately.
+discovery.relabel "apollo_targets" {
+  targets = discovery.relabel.common_targets.output
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+    regex         = "true"
+    action        = "keep"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_container_port_number"]
+    target_label  = "__meta_kubernetes_pod_annotation_prometheus_io_router_port"
+    action        = "keepequal"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_route_path"]
+    target_label  = "__metrics_path__"
+    regex         = "(.+)"
+  }
+
+//  rule {
+//    target_label = "application"
+//    replacement  = "apollo"
+//  }
+}
+
+prometheus.scrape "annotated_pods" {
+  targets         = array.concat(
+    discovery.relabel.annotated_targets.output,
+    discovery.relabel.apollo_targets.output,
+  )
+  forward_to      = [prometheus.remote_write.default.receiver]
+  job_name        = "kubernetes-pods"
+  scrape_interval = sys.env("SCRAPE_INTERVAL")
+  scrape_timeout  = sys.env("SCRAPE_TIMEOUT")
+}

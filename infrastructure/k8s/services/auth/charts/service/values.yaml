@@ -10,10 +10,10 @@ service:
     replicas: 1
     resources:
       requests:
-        cpu: 500m
-        memory: 888Mi
+        cpu: 100m
+        memory: 512Mi
       limits:
-        memory: 888Mi
+        memory: 700Mi
 
     readinessProbe:
       httpGet:
@@ -41,6 +41,10 @@ service:
       periodSeconds: 15
       successThreshold: 1
 
+    metrics:
+      port: 8080
+      path: /actuator/prometheus
+
   service:
     type: ClusterIP
     ports:
@@ -67,7 +71,7 @@ service:
       SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 15000
       SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.2
       SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 1000
-      SPRING_CLOUD_CONFIG_LABEL: master
+      SPRING_CLOUD_CONFIG_LABEL: MALT-6856254
 
       KAFKA_BOOTSTRAP_SERVERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:29092"
       KAFKA_GROUP_ID: "auth-service"

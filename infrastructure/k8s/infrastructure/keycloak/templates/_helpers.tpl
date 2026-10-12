@@ -7,6 +7,12 @@ chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 deploymentTime: {{ now | date "02.01.2006 15:04:05" }}
 {{- end }}
 
+{{- define "metrics.annotations" -}}
+prometheus.io/scrape: {{ .enabled | default "true" | quote }}
+prometheus.io/port: {{ .port | default "8080" | quote }}
+prometheus.io/path: {{ .path | default "/actuator/prometheus" | quote }}
+{{- end }}
+
 {{- define "default.configmap.annotations" }}
 {{- end }}
 

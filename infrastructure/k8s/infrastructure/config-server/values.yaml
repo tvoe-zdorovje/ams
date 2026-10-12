@@ -8,10 +8,10 @@ service:
         pullPolicy: IfNotPresent
       resources:
         requests:
-          cpu: 500m
-          memory: 888Mi
+          cpu: 100m
+          memory: 512Mi
         limits:
-          memory: 888Mi
+          memory: 700Mi
       ports:
         - port: 8888
           protocol: TCP
@@ -34,6 +34,9 @@ service:
       volumes:
         - name: tmp-directory
           mountPath: /tmp
+    metrics:
+      port: 8888
+      path: /actuator/prometheus
 
   service:
     type: ClusterIP

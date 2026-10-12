@@ -21,7 +21,7 @@ keycloak:
         - "--import-realm"
     resources:
       requests:
-        cpu: 125m
+        cpu: 100m
         memory: 512Mi
       limits:
         memory: 1024Mi
@@ -53,6 +53,9 @@ keycloak:
       periodSeconds: 15
       failureThreshold: 3
       successThreshold: 1
+    metrics:
+      port: 9000
+      path: /metrics
 
   service:
     type: ClusterIP
@@ -87,6 +90,9 @@ keycloak:
       KC_HOSTNAME: keycloak.ams.by
       KC_HEALTH_ENABLED: true
       KC_HTTP_ENABLED: true
+      KC_METRICS_ENABLED: true
+      KC_EVENT_METRICS_USER_ENABLED: true
+      KC_HTTP_METRICS_HISTOGRAMS_ENABLED: true
 
       # kafka spi
       KAFKA_BOOTSTRAP_SERVERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:29092"
@@ -113,7 +119,7 @@ postgresql:
       storageClass: standard
     resources:
       requests:
-        cpu: 125m
+        cpu: 50m
         memory: 256Mi
     livenessProbe:
       enabled: true

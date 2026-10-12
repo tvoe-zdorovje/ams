@@ -1,0 +1,77 @@
+///*
+//    Alloy discovers DB instances, fetch metrics from the postgres exporter providing discovered DB instance 'target'.
+//
+//    [Prometheus] <--push-- [Alloy] <--scrape (target=<DB>)--> [exporter]
+//                                ^                                |
+//                                |                                |
+//                           [discovery]                           |
+//                                |                                |
+//                           [databases] <-----------scrape---------
+//*/
+//
+discovery.relabel "postgres_targets" {
+  targets = discovery.relabel.common_targets.output
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+    regex         = "postgresql"
+    action        = "keep"
+  }
+
+  // scrape only the postgres port
+  rule {
+    source_labels = ["__meta_kubernetes_pod_container_port_number"]
+    regex         = "5432"
+    action        = "keep"
+  }
+
+  // set 'target' param for the exporter
+  rule {
+    source_labels = ["__address__"]
+    target_label  = "__param_target"
+  }
+
+  // substitute address with postgres_exporter
+  rule {
+    target_label = "__address__"
+    replacement  = sys.env("PG_EXPORTER_ADDRESS")
+  }
+
+  // set 'application' label from release instance label
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_instance"]
+    target_label  = "application"
+    regex = "(.+)"
+    replacement = "$1-db"
+  }
+
+  // set 'instance' label
+  rule {
+    source_labels = ["__param_target"]
+    target_label  = "instance"
+  }
+}
+
+prometheus.scrape "postgres" {
+  targets         = discovery.relabel.postgres_targets.output
+  forward_to      = [prometheus.remote_write.default.receiver]
+  job_name        = "postgres-multi-target"
+  metrics_path    = sys.env("PG_EXPORTER_METRICS_PATH")
+  scrape_interval = sys.env("SCRAPE_INTERVAL")
+  scrape_timeout  = sys.env("SCRAPE_TIMEOUT")
+
+  params = {
+    "auth_module" = [sys.env("PG_EXPORTER_METRICS_AUTH_MODULE")],
+  }
+
+  honor_labels = true
+}
+
+prometheus.scrape "postgres_exporter" {
+  targets         = [ { "__address__" = sys.env("PG_EXPORTER_ADDRESS") } ]
+  forward_to      = [prometheus.remote_write.default.receiver]
+  job_name        = "postgres-multi-target"
+  metrics_path    = "/metrics"
+  scrape_interval = sys.env("SCRAPE_INTERVAL")
+  scrape_timeout  = sys.env("SCRAPE_TIMEOUT")
+}

@@ -17,7 +17,7 @@ postgresql:
       storageClass: standard
     resources:
       requests:
-        cpu: 125m
+        cpu: 50m
         memory: 256Mi
     livenessProbe:
       enabled: true

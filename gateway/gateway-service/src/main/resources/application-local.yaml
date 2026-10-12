@@ -108,14 +108,24 @@ resilience4j:
         timeout-duration: 5s
 
 management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        all: true
   endpoints:
     web:
       exposure:
-        include: health
+        include: "health, metrics, prometheus"
   endpoint:
     health:
       probes:
         enabled: true
+    metrics:
+      access: read_only
+    prometheus:
+      access: read_only
 
 ams:
   auth-server:

@@ -1,0 +1,28 @@
+discovery.relabel "mimir_targets" {
+  targets = discovery.relabel.common_targets.output
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+    regex         = "mimir"
+    action        = "keep"
+  }
+
+  rule {
+    source_labels = ["__address__"]
+    regex         = "([^:]+):.*"
+    target_label  = "__address__"
+    replacement   = "$1:8080"
+  }
+
+  rule {
+    target_label = "application"
+    replacement  = "mimir"
+  }
+}
+
+prometheus.scrape "mimir" {
+  targets         = discovery.relabel.mimir_targets.output
+  forward_to      = [prometheus.remote_write.default.receiver]
+  scrape_interval = sys.env("SCRAPE_INTERVAL")
+  scrape_timeout  = sys.env("SCRAPE_TIMEOUT")
+}

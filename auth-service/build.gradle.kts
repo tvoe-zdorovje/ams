@@ -2,7 +2,7 @@ import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "0.1.2"
+version = "0.1.3"
 
 plugins {
     kotlin("jvm")
@@ -25,6 +25,8 @@ val nimbusJoseJwtVersion: String by project
 val mockkVersion: String by project
 val springMockkVersion: String by project
 
+val micrometerPrometheusVersion: String by project
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -42,6 +44,8 @@ dependencies {
 
     implementation(databaseDriver)
     implementation(group = "com.nimbusds", name = "nimbus-jose-jwt", version = nimbusJoseJwtVersion)
+
+    implementation(group = "io.micrometer", "micrometer-registry-prometheus", version = micrometerPrometheusVersion)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.mockito")

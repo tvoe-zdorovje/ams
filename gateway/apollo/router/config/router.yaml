@@ -9,6 +9,19 @@ health_check:
   path: /health
   enabled: true
 
+telemetry:
+  exporters:
+    metrics:
+      common:
+        service_name: "Apollo-Router"
+        resource:
+          application: "router"
+      prometheus:
+        listen: ${env.APOLLO_ROUTER_METRICS_LISTEN_ADDRESS:-0.0.0.0:8088}
+        path: /metrics
+        enabled: true
+        resource_selector: all
+
 headers:
   all:
     request:

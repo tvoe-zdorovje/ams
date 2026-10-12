@@ -1,0 +1,270 @@
+grafana:
+  enabled: true
+
+  adminUser: "admin"
+  adminPassword: "admin"
+#  admin:
+#    existingSecret:
+
+  ingress:
+    enabled: true
+    hosts:
+      - grafana.ams.by
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
+
+  grafana.ini:
+    analytics:
+      reporting_enabled: false
+
+  datasources:
+     datasources.yaml:
+       apiVersion: 1
+       datasources:
+#       - name: Loki
+#         type: loki
+#         url: http://loki-gateway:80 # FIXME
+#         access: proxy
+         - name: Mimir
+           type: prometheus
+           url: http://mimir.ams.by/prometheus # FIXME
+           access: proxy
+           uid: prometheus-ds
+           basicAuth: false
+           isDefault: true
+           version: 1
+           editable: true
+#       - name: Tempo
+#         type: tempo
+#         url: http://tempo-query-frontend:3200 # FIXME
+#         access: proxy
+
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana-dashboards
+      labelValue: "1"
+      searchNamespace: "telemetry"
+      folder: /tmp/dashboards
+#      folder: /etc/grafana/provisioning/dashboards
+
+loki:
+  enabled: false
+
+mimir:
+  enabled: true
+  mimir:
+    structuredConfig:
+      ingest_storage:
+        enabled: false
+        kafka:
+          address: null
+          topic: null
+          auto_create_topic_default_partitions: null
+      distributor:
+        remote_timeout: 2s
+      ingester:
+        push_grpc_method_enabled: true
+        ring:
+          zone_awareness_enabled: false
+          replication_factor: 1
+      store_gateway:
+        sharding_ring:
+          zone_awareness_enabled: false
+          replication_factor: 1
+
+  minio:
+    enabled: true
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 256Mi
+  kafka:
+    enabled: false
+
+  gateway:
+    enabled: true
+    replicas: 1
+    ingress:
+      enabled: true
+      ingressClassName: "nginx" # kubectl get ingressclass
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-redirect: "false"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+      hosts:
+        - host: mimir.ams.by
+          paths:
+            - path: /
+              pathType: Prefix
+
+  alertmanager:
+    enabled: false
+
+  distributor:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 256Mi
+
+  ingester:
+    replicas: 1
+    zoneAwareReplication:
+      enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+
+  querier:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
+  query_frontend:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 25m
+        memory: 64Mi
+      limits:
+        memory: 128Mi
+
+  query_scheduler:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 25m
+        memory: 64Mi
+      limits:
+        memory: 128Mi
+
+  store_gateway:
+    replicas: 1
+    zoneAwareReplication:
+      enabled: false
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+
+  compactor:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 256Mi
+
+tempo:
+  enabled: false
+
+alloy:
+  enabled: true
+
+  # Pod discovery limited to services/infrastructure/kafka/telemetry
+  rbac:
+    create: true
+
+  alloy:
+    enableReporting: false
+
+    configMap:
+      create: false
+      name: "alloy-config"
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 256Mi
+
+    extraEnv:
+      - name: PROMETHEUS_REMOTE_WRITE_URL
+        value: "http://lgtm-mimir-gateway.telemetry.svc.cluster.local/api/v1/push"
+
+      - name: SCRAPE_INTERVAL
+        value: "5s"
+      - name: SCRAPE_TIMEOUT
+        value: "3s"
+
+      # Deploy postgres_exporter in the same namespace as Alloy
+      - name: PG_EXPORTER_ADDRESS
+        value: "lgtm-pg-exporter:80"
+      - name: PG_EXPORTER_METRICS_PATH
+        value: "/probe"
+      - name: PG_EXPORTER_METRICS_AUTH_MODULE
+        value: "dev"
+
+      - name: KAFKA_BOOTSTRAP_SERVERS
+        value: "kafka-kafka-bootstrap.kafka.svc.cluster.local:29092"
+
+      - name: REDIS_ADDRESS
+        value: "redis-master.infrastructure.svc.cluster.local:6379"
+
+  controller:
+    type: deployment
+    replicas: 1
+
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    hosts:
+      - "alloy.ams.by"
+    faroPort: 12345
+    path: /
+    pathType: Prefix
+
+  configReloader:
+    enabled: true
+    customArgs:
+      - "--watched-dir=/etc/alloy"
+      - "--reload-url=http://127.0.0.1:12345/-/reload"
+
+pg-exporter:
+#  serviceAccount:
+#    create: false
+#    name: "***"
+
+  serviceMonitor:
+    multipleTarget:
+      enabled: true
+      sharedAuthModule:
+        enabled: true
+        name: "dev"
+  config:
+    datasource:
+      password: "dummy-password" # unused but required
+    # do not need secrets at the moment
+    postgresExporter: |
+      auth_modules:
+        dev:
+          type: userpass
+          userpass:
+            username: postgres
+            password: pass
+          options:
+            sslmode: disable
+            connect_timeout: "10"
