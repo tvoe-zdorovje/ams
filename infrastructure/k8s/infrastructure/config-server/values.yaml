@@ -51,7 +51,7 @@ service:
         SPRING_CLOUD_KUBERNETES_ENABLED: false
         SPRING_PROFILES_ACTIVE: git
         SPRING_CLOUD_CONFIG_SERVER_GIT_URI: "https://github.com/tvoe-zdorovje/ams.git"
-        SPRING_CLOUD_CONFIG_SERVER_GIT_SEARCH_PATHS: "/config,/config/{application}"
+        SPRING_CLOUD_CONFIG_SERVER_GIT_SEARCH_PATHS: "/configs,/configs/{application}"
         SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL: "master"
         LOGGING_LEVEL_ROOT: INFO
         SERVER_PORT: 8888
