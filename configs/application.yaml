@@ -19,11 +19,20 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: "health, metrics, prometheus"
   endpoint:
     health:
       probes:
         enabled: true
+    metrics:
+      access: read_only
+      tags:
+        application: ${spring.application.name}
+      distribution:
+        percentiles-histogram:
+          all: true
+    prometheus:
+      access: read_only
 
 logging:
   pattern:

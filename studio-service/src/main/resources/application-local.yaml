@@ -52,18 +52,28 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: "health, metrics, prometheus"
   endpoint:
     health:
       probes:
         enabled: true
+    metrics:
+      access: read_only
+      tags:
+        application: ${spring.application.name}
+      distribution:
+        percentiles-histogram:
+          all: true
+    prometheus:
+      access: read_only
 
 logging:
   pattern:
     console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){cyan} - %clr(%-5level){yellow} %clr(%logger{36}){green} - %msg%n"
   level:
     org.jooq: DEBUG
-    org.springframework: INFO
+    org.springframework: DEBUG
+    org.springframework.boot.actuate: DEBUG
     by.anatolyloyko: DEBUG
     org.zalando.logbook.Logbook: TRACE
   file:
