@@ -96,6 +96,7 @@ service:
         APOLLO_ROUTER_CONFIG_PATH: "/dist/mnt/config/router.yaml"
         APOLLO_ROUTER_LISTEN_ADDRESS: "0.0.0.0:4000"
         APOLLO_ROUTER_HEALTH_CHECK_LISTEN_ADDRESS: "0.0.0.0:4000"
+        APOLLO_ROUTER_METRICS_LISTEN_ADDRESS: "0.0.0.0:4000"
 
         # apollo router routes
         ADMINISTRATION_SERVICE_SUBGRAPH: "http://127.0.0.1:8080/administration/graphql"
