@@ -9,7 +9,7 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
     volumes:
-#      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./infrastructure/telemetry/grafana/dashboards:/etc/grafana/provisioning/dashboards
       - ./infrastructure/telemetry/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
 
   alloy:

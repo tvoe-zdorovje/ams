@@ -49,6 +49,12 @@ ams:
       nack-cooldown: 100ms
 
 management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        all: true
   endpoints:
     web:
       exposure:
@@ -59,11 +65,6 @@ management:
         enabled: true
     metrics:
       access: read_only
-      tags:
-        application: ${spring.application.name}
-      distribution:
-        percentiles-histogram:
-          all: true
     prometheus:
       access: read_only
 

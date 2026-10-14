@@ -1,1 +1,7 @@
-//# TODO
+discovery.relabel "alloy" {
+  targets = prometheus.exporter.self.alloy.targets
+  rule {
+    target_label = "application"
+    replacement  = "alloy"
+  }
+}
