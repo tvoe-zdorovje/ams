@@ -4,6 +4,8 @@ services:
     hostname: kafka
     container_name: kafka
     restart: on-failure
+    labels:
+      app: kafka
     ports:
       - "9092:9092"
       - "29092:29092"
