@@ -1,0 +1,19 @@
+prometheus.exporter.redis "redis" {
+  redis_addr = "redis:6379"
+}
+
+discovery.relabel "redis" {
+  targets = prometheus.exporter.redis.redis.targets
+  rule {
+    target_label = "application"
+    replacement  = "redis"
+  }
+}
+
+prometheus.scrape "redis" {
+  targets           = discovery.relabel.redis.output
+  forward_to        = [prometheus.remote_write.default.receiver]
+  job_name          = "redis"
+  scrape_interval   = sys.env("SCRAPE_INTERVAL")
+  scrape_timeout    = sys.env("SCRAPE_TIMEOUT")
+}
