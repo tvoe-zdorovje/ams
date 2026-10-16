@@ -1,0 +1,9 @@
+auth_modules:
+  test:
+    type: userpass
+    userpass:
+      username: postgres
+      password: pass
+    options:
+      sslmode: disable
+      connect_timeout: "10"

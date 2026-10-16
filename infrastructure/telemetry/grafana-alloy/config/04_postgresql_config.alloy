@@ -1,0 +1,73 @@
+/*
+    Alloy discovers DB instances, fetch metrics from the postgres exporter providing discovered DB instance 'target'.
+
+    [Prometheus] <--push-- [Alloy] <--scrab (target=<DB>)--> [exporter]
+                                ^                                |
+                                |                                |
+                           [discovery]                           |
+                                |                                |
+                            [databases] <-----------scrab---------
+*/
+
+discovery.relabel "postgres_targets" {
+  targets = discovery.relabel.common_targets.output
+
+  // filter by 'app' label
+  rule {
+    source_labels = ["__meta_docker_container_label_app"]
+    regex         = "postgres"
+    action        = "keep"
+  }
+
+  // set 'target' param for an exporter
+  rule {
+    source_labels = ["__meta_docker_network_ip", "__meta_docker_port_private"]
+    regex         = "(.+);(.+)"
+    replacement   = "$1:$2"
+    target_label  = "__param_target"
+  }
+
+  // substitute address
+  rule {
+    target_label = "__address__"
+    replacement  = sys.env("PG_EXPORTER_ADDRESS")
+  }
+
+  // set 'container' label
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+
+  // set 'application' label
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "application"
+  }
+
+  // set 'instance' label
+  rule {
+    source_labels = ["__meta_docker_network_ip", "__meta_docker_port_private"]
+    regex         = "(.+);(.+)"
+    replacement   = "$1:$2"
+    target_label  = "instance"
+  }
+}
+
+// 3. Скрейпинг экспортёра через /probe
+prometheus.scrape "postgres" {
+  targets         = discovery.relabel.postgres_targets.output
+  forward_to      = [prometheus.remote_write.default.receiver]
+  job_name        = "postgres-multi-target"
+  metrics_path    = sys.env("PG_EXPORTER_METRICS_PATH")
+  scrape_interval = sys.env("SCRAPE_INTERVAL")
+  scrape_timeout  = sys.env("SCRAPE_TIMEOUT")
+
+  params = {
+    "auth_module" = ["test"],
+  }
+
+  honor_labels = true
+}

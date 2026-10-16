@@ -3,6 +3,8 @@ services:
     image: postgres:17.2-alpine3.21
     container_name: administration_db
     restart: on-failure
+    labels:
+      app: postgres
     ports:
       - "5441:5432"
     healthcheck:
@@ -21,6 +23,8 @@ services:
     image: postgres:17.2-alpine3.21
     container_name: appointment_db
     restart: on-failure
+    labels:
+      app: postgres
     ports:
       - "5442:5432"
     healthcheck:
@@ -39,6 +43,8 @@ services:
     image: postgres:17.2-alpine3.21
     container_name: brand_db
     restart: on-failure
+    labels:
+      app: postgres
     ports:
       - "5443:5432"
     healthcheck:
@@ -58,6 +64,8 @@ services:
     image: postgres:17.2-alpine3.21
     container_name: studio_db
     restart: on-failure
+    labels:
+      app: postgres
     ports:
       - "5444:5432"
     healthcheck:
@@ -77,6 +85,8 @@ services:
     image: postgres:17.2-alpine3.21
     container_name: user_db
     restart: on-failure
+    labels:
+      app: postgres
     ports:
       - "5445:5432"
     healthcheck:
@@ -99,6 +109,8 @@ services:
     image: postgres:17.2-alpine3.21
     container_name: keycloak_db
     restart: on-failure
+    labels:
+      app: postgres
     ports:
       - "5430:5432"
     healthcheck:

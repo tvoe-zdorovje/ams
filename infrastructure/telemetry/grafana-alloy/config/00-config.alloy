@@ -16,7 +16,7 @@ discovery.relabel "common_targets" {
   rule {
     source_labels = ["__meta_docker_network_ip", "__meta_docker_port_private"]
 //    source_labels = ["__meta_docker_container_name", "__meta_docker_port_private"]
-    regex         = "/(.+);(.+)"
+    regex         = "(.+);(.+)"
     replacement   = "$1:$2"
     target_label  = "__address__"
   }
