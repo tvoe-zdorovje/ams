@@ -26,6 +26,7 @@ services:
     volumes:
       - ./infrastructure/telemetry/grafana-alloy/config:/etc/alloy:ro
       - alloy_data:/var/lib/alloy/data
+      - /var/run/docker.sock:/var/run/docker.sock # to enable discovering containers
     env_file:
       - ./infrastructure/telemetry/grafana-alloy/.env
 

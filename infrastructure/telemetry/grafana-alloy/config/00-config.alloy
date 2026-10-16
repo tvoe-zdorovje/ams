@@ -1,0 +1,30 @@
+prometheus.remote_write "default" {
+  endpoint {
+    url = sys.env("PROMETHEUS_REMOTE_WRITE_URL")
+  }
+}
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+  refresh_interval = "5s"
+}
+
+discovery.relabel "common_targets" {
+  targets = discovery.docker.containers.targets
+
+  // compute address: IP + Port
+  rule {
+    source_labels = ["__meta_docker_network_ip", "__meta_docker_port_private"]
+//    source_labels = ["__meta_docker_container_name", "__meta_docker_port_private"]
+    regex         = "/(.+);(.+)"
+    replacement   = "$1:$2"
+    target_label  = "__address__"
+  }
+
+  // add 'container' label
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+}

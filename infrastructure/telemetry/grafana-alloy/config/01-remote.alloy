@@ -1,5 +1,0 @@
-prometheus.remote_write "local" {
-  endpoint {
-    url = sys.env("PROMETHEUS_REMOTE_WRITE_URL")
-  }
-}
