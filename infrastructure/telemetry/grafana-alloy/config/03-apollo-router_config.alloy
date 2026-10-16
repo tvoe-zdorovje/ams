@@ -13,7 +13,7 @@ prometheus.scrape "router" {
   targets           = discovery.relabel.apollo_targets.output
   forward_to        = [prometheus.remote_write.default.receiver]
   job_name          = "apollo"
-  metrics_path      = sys.env("ROUTER_METRICS_PATH")
+  metrics_path      = sys.env("SIMPLE_METRICS_PATH")
   scrape_interval   = sys.env("SCRAPE_INTERVAL")
   scrape_timeout    = sys.env("SCRAPE_TIMEOUT")
 }

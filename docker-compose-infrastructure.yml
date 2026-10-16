@@ -24,9 +24,12 @@ services:
       SERVER_PORT: 8888
 
   keycloak:
-    image: ghcr.io/tvoe-zdorovje/ams/keycloak:26.7.1-1.0
+    image: ghcr.io/tvoe-zdorovje/ams/keycloak:26.8.1-1.0
     container_name: "keycloak"
     command: start --import-realm
+    labels:
+      app: keycloak
+      mnt_port: 9000
     volumes:
       - ./infrastructure/keycloak/realms:/opt/keycloak/data/import
     depends_on:

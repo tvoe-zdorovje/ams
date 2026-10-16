@@ -1,0 +1,24 @@
+discovery.relabel "keycloak_targets" {
+  targets = discovery.relabel.common_targets.output
+
+  // filter by 'app' label
+  rule {
+    source_labels = ["__meta_docker_container_label_app"]
+    regex         = "keycloak"
+    action        = "keep"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_app"]
+    target_label = "application"
+  }
+}
+
+prometheus.scrape "keycloak" {
+  targets           = discovery.relabel.keycloak_targets.output
+  forward_to        = [prometheus.remote_write.default.receiver]
+  job_name          = "keycloak"
+  metrics_path      = sys.env("SIMPLE_METRICS_PATH")
+  scrape_interval   = sys.env("SCRAPE_INTERVAL")
+  scrape_timeout    = sys.env("SCRAPE_TIMEOUT")
+}

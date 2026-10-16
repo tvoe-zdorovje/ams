@@ -12,10 +12,25 @@ discovery.docker "containers" {
 discovery.relabel "common_targets" {
   targets = discovery.docker.containers.targets
 
+  // use docker label 'mnt_port' value as port if exists
+  rule {
+    source_labels = ["__meta_docker_container_label_mnt_port", "__meta_docker_port_private"]
+    regex         = "(.+);(.+)"
+    replacement   = "$1"
+    target_label  = "__tmp_port"
+  }
+
+  // otherwise use docker container private port
+  rule {
+    source_labels = ["__meta_docker_container_label_mnt_port", "__meta_docker_port_private"]
+    regex         = ";(.+)"
+    replacement   = "$1"
+    target_label  = "__tmp_port"
+  }
   // compute address: IP + Port
   rule {
-    source_labels = ["__meta_docker_network_ip", "__meta_docker_port_private"]
-//    source_labels = ["__meta_docker_container_name", "__meta_docker_port_private"]
+    source_labels = ["__meta_docker_network_ip", "__tmp_port"]
+//    source_labels = ["__meta_docker_container_name", "__tmp_port"]
     regex         = "(.+);(.+)"
     replacement   = "$1:$2"
     target_label  = "__address__"
