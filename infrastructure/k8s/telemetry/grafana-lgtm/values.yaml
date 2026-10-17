@@ -1,0 +1,52 @@
+grafana:
+  enabled: true
+
+  adminUser: "admin"
+  adminPassword: "admin"
+#  admin:
+#    existingSecret:
+
+  ingress:
+    enabled: true
+    hosts:
+      - grafana.ams.by
+  resources:
+    requests:
+      cpu: 250m
+      memory: 750Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+  grafana.ini:
+    analytics:
+      reporting_enabled: false
+
+# datasources:
+#   datasources.yaml:
+#     apiVersion: 1
+#     datasources:
+#       - name: Loki
+#         type: loki
+#         url: http://loki-gateway:80 # FIXME
+#         access: proxy
+#       - name: Mimir
+#         type: prometheus
+#         url: http://mimir-nginx:80/prometheus # FIXME
+#         access: proxy
+#       - name: Tempo
+#         type: tempo
+#         url: http://tempo-query-frontend:3200 # FIXME
+#         access: proxy
+
+loki:
+  enabled: false
+
+mimir:
+  enabled: false
+
+tempo:
+  enabled: false
+
+alloy:
+  enabled: false
