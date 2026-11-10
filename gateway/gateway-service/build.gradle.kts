@@ -16,9 +16,10 @@ kotlin {
 }
 
 val mockkVersion: String by project
-val micrometerPrometheusVersion: String by project
 
 dependencies {
+    implementation(project(":common-telemetry"))
+
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
@@ -31,8 +32,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
-
-    implementation(group = "io.micrometer", "micrometer-registry-prometheus", version = micrometerPrometheusVersion)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.mockito")

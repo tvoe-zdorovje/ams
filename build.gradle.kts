@@ -73,7 +73,7 @@ subprojects {
 
     plugins.withId("org.springframework.boot") {
         tasks.named<BootBuildImage>("bootBuildImage") {
-            val exceptions = listOf(":common")
+            val exceptions = listOf(":common", ":common-test", ":common-telemetry")
             if (project.path in exceptions) {
                 enabled = false
             } else {

@@ -23,6 +23,7 @@ kotlin {
 
 dependencies {
     implementation(project(":common"))
+    implementation(project(":common-telemetry"))
 
     implementation("org.springframework.kafka:spring-kafka")
 

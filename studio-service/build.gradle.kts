@@ -29,6 +29,7 @@ dependencies {
     implementation(project(":common")) {
         exclude(group = "org.jetbrains.exposed")
     }
+    implementation(project(":common-telemetry"))
     implementation("org.springframework.kafka:spring-kafka")
     implementation(group = "io.confluent", name = "kafka-avro-serializer", version = confluentVersion)
     implementation(group = "org.apache.avro", name = "avro", version = apacheAvroVersion)

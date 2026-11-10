@@ -29,8 +29,6 @@ val mockkVersion: String by project
 val springMockkVersion: String by project
 val h2Version: String by project
 
-val micrometerPrometheusVersion: String by project
-
 dependencies {
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.0.0")
 
@@ -61,8 +59,6 @@ dependencies {
     api(databaseDriver)
 
     api(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = jacksonModuleKotlinVersion)
-
-    api(group = "io.micrometer", "micrometer-registry-prometheus", version = micrometerPrometheusVersion)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.mockito")

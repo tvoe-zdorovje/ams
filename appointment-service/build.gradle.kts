@@ -24,6 +24,7 @@ dependencies {
     implementation(project(":common")) {
         exclude(group = "org.jetbrains.exposed")
     }
+    implementation(project(":common-telemetry"))
 
     implementation("org.springframework.boot:spring-boot-starter-jetty")
 

@@ -8,6 +8,7 @@ rootProject.name = "ams"
 include(
     "common",
     "common-test",
+    "common-telemetry",
     "graphql", // just for nice ico
     "gateway", // just for nice ico
     "gateway:gateway-service",
