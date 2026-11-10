@@ -1,3 +1,23 @@
+otelcol.receiver.otlp "otlp_receiver" {
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+
+  output {
+    traces = [otelcol.exporter.otlp.tempo.input]
+  }
+}
+
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = sys.env("TEMPO_REMOTE_WRITE_URL")
+    tls {
+      insecure = true
+      insecure_skip_verify = true
+    }
+  }
+}
+
 prometheus.remote_write "default" {
   endpoint {
     url = sys.env("PROMETHEUS_REMOTE_WRITE_URL")

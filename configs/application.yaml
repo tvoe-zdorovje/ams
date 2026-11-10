@@ -45,3 +45,21 @@ logging:
     org.zalando.logbook.Logbook: TRACE
   file:
     name: ${APPLICATION_LOG_FILE:/tmp/log/application.log}
+
+otel:
+  resource:
+    attributes:
+      service.name: ${spring.application.name}
+      deployment.environment: ${ENVIRONMENT:dev}
+  traces:
+    exporter: otlp # Явно указываем, что используем OTLP
+    sampler: parentbased_always_on
+    sampler-arg: ${TRACING_COVERAGE:1}
+
+  exporter:
+    otlp:
+      endpoint: ${ALLOY_OTPL_ENDPOINT}
+      protocol: grpc
+
+  propagators:
+    - tracecontext

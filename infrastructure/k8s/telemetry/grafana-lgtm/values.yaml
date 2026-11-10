@@ -39,10 +39,12 @@ grafana:
            isDefault: true
            version: 1
            editable: true
-#       - name: Tempo
-#         type: tempo
-#         url: http://tempo-query-frontend:3200 # FIXME
-#         access: proxy
+         - name: Tempo
+           type: tempo
+           uid: tempo-ds
+           basicAuth: false
+           url: http://lgtm-tempo:3200
+           access: proxy
 
   sidecar:
     dashboards:
@@ -176,7 +178,34 @@ mimir:
         memory: 256Mi
 
 tempo:
-  enabled: false
+  enabled: true
+  tempo:
+    storage:
+      trace:
+        backend: local
+        local:
+          path: /var/tempo/traces
+        wal:
+          path: /var/tempo/wal
+    retention: 8h
+    resources:
+      requests:
+        cpu: 125m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+
+  persistence:
+    enabled: true
+    size: 1Gi
+
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
 
 alloy:
   enabled: true
@@ -187,6 +216,12 @@ alloy:
 
   alloy:
     enableReporting: false
+
+    extraPorts:
+      - name: otlp-grpc
+        port: 4317
+        targetPort: 4317
+        protocol: TCP
 
     configMap:
       create: false
@@ -202,6 +237,9 @@ alloy:
     extraEnv:
       - name: PROMETHEUS_REMOTE_WRITE_URL
         value: "http://lgtm-mimir-gateway.telemetry.svc.cluster.local/api/v1/push"
+
+      - name: TEMPO_REMOTE_WRITE_URL
+        value: "http://lgtm-tempo.telemetry.svc.cluster.local:4317"
 
       - name: SCRAPE_INTERVAL
         value: "5s"
