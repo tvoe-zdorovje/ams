@@ -3,6 +3,8 @@ package by.anatolyloyko.ams.studio.kafka
 import by.anatolyloyko.ams.studio.kafka.schema.EventType
 import by.anatolyloyko.ams.studio.kafka.schema.StudioEvent
 import by.anatolyloyko.ams.studio.model.Studio
+import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
@@ -26,6 +28,7 @@ class KafkaProducer(
      * @param ownerUserId identifier of a logged user. This user is considered the owner of the studio is created.
      * @param brandId identifier of a brand which the studio belongs to.
      */
+    @WithSpan(kind = SpanKind.PRODUCER)
     fun sendStudioCreated(studio: Studio, ownerUserId: Long, brandId: Long): Long {
         val id = requireNotNull(studio.id)
         val data = StudioEvent(id, brandId, ownerUserId, EventType.CREATED)

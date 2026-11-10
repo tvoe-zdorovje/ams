@@ -27,10 +27,18 @@ service:
         httpGet:
           path: "/health?live"
           port: 4000
+        initialDelaySeconds: 30
+        periodSeconds: 60
+        failureThreshold: 3
+        successThreshold: 1
       readinessProbe:
         httpGet:
           path: "/health?ready"
           port: 4000
+        initialDelaySeconds: 30
+        periodSeconds: 60
+        failureThreshold: 3
+        successThreshold: 1
       metrics:
         port: 4000
         path: /metrics
@@ -53,7 +61,7 @@ service:
           path: /actuator/health/readiness
           port: 8080
         initialDelaySeconds: 30
-        periodSeconds: 15
+        periodSeconds: 60
         failureThreshold: 3
         successThreshold: 1
       livenessProbe:
@@ -61,7 +69,7 @@ service:
           path: /actuator/health/liveness
           port: 8080
         initialDelaySeconds: 30
-        periodSeconds: 15
+        periodSeconds: 60
         failureThreshold: 3
         successThreshold: 1
       metrics:
@@ -104,6 +112,8 @@ service:
         APOLLO_ROUTER_HEALTH_CHECK_LISTEN_ADDRESS: "0.0.0.0:4000"
         APOLLO_ROUTER_METRICS_LISTEN_ADDRESS: "0.0.0.0:4000"
 
+        ALLOY_OTPL_ENDPOINT: "http://lgtm-alloy.telemetry.svc.cluster.local:4317"
+
         # apollo router routes
         ADMINISTRATION_SERVICE_SUBGRAPH: "http://127.0.0.1:8080/administration/graphql"
         APPOINTMENT_SERVICE_SUBGRAPH: "http://127.0.0.1:8080/appointment/graphql"
@@ -141,3 +151,5 @@ service:
         SPRING_CLOUD_CONFIG_LABEL: MALT-6856254
 
         LOGGING_LEVEL_ROOT: INFO
+
+        ALLOY_OTPL_ENDPOINT: "http://lgtm-alloy.telemetry.svc.cluster.local:4317"

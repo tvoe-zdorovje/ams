@@ -20,7 +20,7 @@ service:
         path: /actuator/health/readiness
         port: 8080
       initialDelaySeconds: 30
-      periodSeconds: 15
+      periodSeconds: 60
       failureThreshold: 3
       successThreshold: 1
 
@@ -29,7 +29,7 @@ service:
         path: /actuator/health/liveness
         port: 8080
       initialDelaySeconds: 30
-      periodSeconds: 15
+      periodSeconds: 60
       failureThreshold: 3
       successThreshold: 1
 
@@ -65,6 +65,9 @@ service:
       SPRING_CLOUD_CONFIG_LABEL: MALT-6856254
 
       JWKS_URI: "http://auth-service:8080/.well-known/jwks"
+
+      ALLOY_OTPL_ENDPOINT: "http://lgtm-alloy.telemetry.svc.cluster.local:4317"
+      OTEL_INSTRUMENTATION_HTTP_SERVER_IGNORE_URLS: "/actuator/**"
 
       KAFKA_BOOTSTRAP_SERVERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:29092"
       KAFKA_GROUP_ID: user-service

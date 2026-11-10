@@ -22,6 +22,18 @@ management:
     distribution:
       percentiles-histogram:
         all: true
+  tracing:
+    sampling:
+      probability: ${TRACING_COVERAGE:1.0}
+    propagation:
+      type: w3c
+  otlp:
+    tracing:
+      endpoint: ${ALLOY_OTPL_ENDPOINT}
+      transport: grpc
+  opentelemetry:
+    resource-attributes:
+      deployment.environment: ${ENVIRONMENT:dev}
   endpoints:
     web:
       exposure:
@@ -45,3 +57,25 @@ logging:
     org.zalando.logbook.Logbook: TRACE
   file:
     name: ${APPLICATION_LOG_FILE:/tmp/log/application.log}
+
+otel:
+  resource:
+    attributes:
+      service.name: ${spring.application.name}
+      deployment.environment: ${ENVIRONMENT:dev}
+  traces:
+    exporter: otlp
+    sampler: parentbased_always_on
+    sampler-arg: ${TRACING_COVERAGE:1}
+  instrumentation:
+    http:
+      server:
+        ignore-urls: ${OTEL_INSTRUMENTATION_HTTP_SERVER_IGNORE_URLS:/actuator/**}
+
+  exporter:
+    otlp:
+      endpoint: ${ALLOY_OTPL_ENDPOINT}
+      protocol: grpc
+
+  propagators:
+    - tracecontext

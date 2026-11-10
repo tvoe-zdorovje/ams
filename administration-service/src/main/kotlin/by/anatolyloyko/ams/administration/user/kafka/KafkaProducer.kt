@@ -1,6 +1,8 @@
 package by.anatolyloyko.ams.administration.user.kafka
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
@@ -25,6 +27,7 @@ class KafkaProducer(
      *
      * @param userId ID of an user whose role list was changed.
      */
+    @WithSpan(kind = SpanKind.PRODUCER)
     fun sendRolesUpdated(userId: Long) {
         kafkaTemplate
             .send(

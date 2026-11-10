@@ -1,4 +1,4 @@
-import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
@@ -87,11 +87,12 @@ subprojects {
         }
     }
 
-    apply(plugin = "io.spring.dependency-management")
+    dependencies {
+        val springCloudBom =
+            platform("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+        val springBootBom = platform(SpringBootPlugin.BOM_COORDINATES)
 
-    configure<DependencyManagementExtension> {
-        imports {
-            mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-        }
+        implementation(springBootBom)
+        implementation(springCloudBom)
     }
 }

@@ -10,7 +10,6 @@ plugins {
     kotlin("plugin.spring")
 
     id("org.springframework.boot")
-    id("io.spring.dependency-management")
 
     id("com.github.davidmc24.gradle.plugin.avro") version "1.9.1"
 

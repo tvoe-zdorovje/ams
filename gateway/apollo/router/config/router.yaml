@@ -11,6 +11,13 @@ health_check:
 
 telemetry:
   exporters:
+    tracing:
+      otlp:
+        enabled: true
+        endpoint: ${env.ALLOY_OTPL_ENDPOINT:-http://localhost:4317}
+        protocol: grpc
+      common:
+        service_name: "Apollo-Router"
     metrics:
       common:
         service_name: "Apollo-Router"

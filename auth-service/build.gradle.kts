@@ -9,7 +9,6 @@ plugins {
     kotlin("plugin.spring")
 
     id("org.springframework.boot")
-    id("io.spring.dependency-management")
 
     war
 }
@@ -26,10 +25,11 @@ val mockkVersion: String by project
 val springMockkVersion: String by project
 
 dependencies {
-    implementation(project(":common-telemetry"))
+    implementation(project(":common-telemetry")) {
+        exclude(group = "io.opentelemetry.instrumentation", module = "opentelemetry-graphql-java-20.0")
+    }
 
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-logging")
     implementation("org.springframework.boot:spring-boot-starter-jooq")
     implementation("org.springframework.boot:spring-boot-starter-aop")
@@ -52,12 +52,6 @@ dependencies {
     testImplementation(group = "io.mockk", name = "mockk", version = mockkVersion)
     testImplementation(group = "com.ninja-squad", name = "springmockk", version = springMockkVersion)
     testImplementation(kotlin("test"))
-}
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
 }
 
 tasks.register("generateDatabaseSchema") {

@@ -4,6 +4,8 @@ import by.anatolyloyko.ams.administration.brand.action.CreateBrandAction
 import by.anatolyloyko.ams.administration.infrastructure.kafka.MyKafkaListener
 import by.anatolyloyko.ams.brand.kafka.schema.BrandEvent
 import by.anatolyloyko.ams.brand.kafka.schema.EventType
+import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.kafka.support.KafkaHeaders
@@ -15,6 +17,7 @@ class BrandKafkaListener(
     private val createBrandAction: CreateBrandAction
 ) : MyKafkaListener<BrandEvent>() {
     @KafkaListener(topics = ["\${ams.kafka.topic.brand.name}"])
+    @WithSpan(kind = SpanKind.CONSUMER)
     fun onBrandEvent(
         event: BrandEvent,
         @Header(KafkaHeaders.RECEIVED_KEY) key: String,

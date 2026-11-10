@@ -6,6 +6,8 @@ import by.anatolyloyko.ams.auth.user.finder.UserFinder
 import by.anatolyloyko.ams.auth.user.model.User
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.annotation.KafkaListener
@@ -34,6 +36,7 @@ class KeycloakEventsKafkaListener(
      * Accepts [eventTypes] events, generates token containing data about the user and publishes it to Redis.
      */
     @KafkaListener(topics = ["\${ams.kafka.topic.keycloak-events.name}"])
+    @WithSpan(kind = SpanKind.CONSUMER)
     fun onKeycloakEvent(
         record: ConsumerRecord<String, String>,
         acknowledgment: Acknowledgment

@@ -20,7 +20,7 @@ service:
         path: /actuator/health/readiness
         port: 8080
       initialDelaySeconds: 30
-      periodSeconds: 15
+      periodSeconds: 60
       failureThreshold: 3
       successThreshold: 1
 
@@ -29,7 +29,7 @@ service:
         path: /actuator/health/liveness
         port: 8080
       initialDelaySeconds: 30
-      periodSeconds: 15
+      periodSeconds: 60
       failureThreshold: 3
       successThreshold: 1
 
@@ -89,6 +89,8 @@ service:
       JWKS_ROTATION_PERIOD: "3600000"
 
       LOGGING_LEVEL_ROOT: DEBUG
+
+      ALLOY_OTPL_ENDPOINT: "http://lgtm-alloy.telemetry.svc.cluster.local:4317"
 
   secrets:
     - name: auth-service-database-creds
