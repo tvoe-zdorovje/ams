@@ -141,3 +141,5 @@ service:
         SPRING_CLOUD_CONFIG_LABEL: MALT-6856254
 
         LOGGING_LEVEL_ROOT: INFO
+
+        ALLOY_OTPL_ENDPOINT: "http://lgtm-alloy.telemetry.svc.cluster.local:4317"

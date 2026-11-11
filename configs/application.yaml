@@ -52,7 +52,7 @@ otel:
       service.name: ${spring.application.name}
       deployment.environment: ${ENVIRONMENT:dev}
   traces:
-    exporter: otlp # Явно указываем, что используем OTLP
+    exporter: otlp
     sampler: parentbased_always_on
     sampler-arg: ${TRACING_COVERAGE:1}
 

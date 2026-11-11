@@ -90,5 +90,7 @@ service:
 
       LOGGING_LEVEL_ROOT: DEBUG
 
+      ALLOY_OTPL_ENDPOINT: "http://lgtm-alloy.telemetry.svc.cluster.local:4317"
+
   secrets:
     - name: auth-service-database-creds
