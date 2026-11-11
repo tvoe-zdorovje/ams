@@ -9,7 +9,6 @@ plugins {
     kotlin("plugin.spring")
 
     id("org.springframework.boot")
-    id("io.spring.dependency-management")
 }
 
 val jdkVersion: Int = (project.findProperty("jdkVersion") as String).toInt()
@@ -64,12 +63,6 @@ dependencies {
     }
     testImplementation(group = "io.mockk", name = "mockk", version = mockkVersion)
     testImplementation("io.projectreactor:reactor-test")
-}
-
-dependencyManagement { // doesn't affect child services, see root build.gradle.kts
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
 }
 
 tasks.withType<JacocoCoverageVerification> {

@@ -9,7 +9,6 @@ plugins {
     kotlin("plugin.spring")
 
     id("org.springframework.boot")
-    id("io.spring.dependency-management")
 
     war
 }
@@ -51,12 +50,6 @@ dependencies {
     testImplementation(group = "io.mockk", name = "mockk", version = mockkVersion)
     testImplementation(group = "com.ninja-squad", name = "springmockk", version = springMockkVersion)
     testImplementation(kotlin("test"))
-}
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
 }
 
 tasks.register("generateDatabaseSchema") {
