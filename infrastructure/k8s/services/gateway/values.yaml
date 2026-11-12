@@ -104,6 +104,8 @@ service:
         APOLLO_ROUTER_HEALTH_CHECK_LISTEN_ADDRESS: "0.0.0.0:4000"
         APOLLO_ROUTER_METRICS_LISTEN_ADDRESS: "0.0.0.0:4000"
 
+        ALLOY_OTPL_ENDPOINT: "http://lgtm-alloy.telemetry.svc.cluster.local:4317"
+
         # apollo router routes
         ADMINISTRATION_SERVICE_SUBGRAPH: "http://127.0.0.1:8080/administration/graphql"
         APPOINTMENT_SERVICE_SUBGRAPH: "http://127.0.0.1:8080/appointment/graphql"
