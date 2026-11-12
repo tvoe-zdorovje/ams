@@ -55,6 +55,10 @@ otel:
     exporter: otlp
     sampler: parentbased_always_on
     sampler-arg: ${TRACING_COVERAGE:1}
+  instrumentation:
+    http:
+      server:
+        ignore-urls: ${OTEL_INSTRUMENTATION_HTTP_SERVER_IGNORE_URLS:/actuator/**}
 
   exporter:
     otlp:
