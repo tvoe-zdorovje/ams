@@ -44,12 +44,6 @@ nohup.out
 
 /log/
 /infrastructure/k8s/secrets/
-/infrastructure/k8s/services/*/templates/init-scripts_secret.yaml
-/infrastructure/k8s/services/*/Chart.lock
-/infrastructure/k8s/services/*/charts/*.tgz
-/infrastructure/k8s/services/*/charts/*/charts/*.tgz
-/infrastructure/k8s/services/*/charts/*/Chart.lock
-
-/infrastructure/k8s/infrastructure/*/templates/init-scripts_secret.yaml
-/infrastructure/k8s/infrastructure/*/charts/*.tgz
-/infrastructure/k8s/infrastructure/*/Chart.lock
+/infrastructure/k8s/**/templates/init-scripts_secret.yaml
+/infrastructure/k8s/**/Chart.lock
+/infrastructure/k8s/**/charts/*.tgz

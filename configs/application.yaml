@@ -16,14 +16,36 @@ spring:
       enabled: true
 
 management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        all: true
+  tracing:
+    sampling:
+      probability: ${TRACING_COVERAGE:1.0}
+    propagation:
+      type: w3c
+  otlp:
+    tracing:
+      endpoint: ${ALLOY_OTPL_ENDPOINT}
+      transport: grpc
+  opentelemetry:
+    resource-attributes:
+      deployment.environment: ${ENVIRONMENT:dev}
   endpoints:
     web:
       exposure:
-        include: health
+        include: "health, metrics, prometheus"
   endpoint:
     health:
       probes:
         enabled: true
+    metrics:
+      access: read_only
+    prometheus:
+      access: read_only
 
 logging:
   pattern:

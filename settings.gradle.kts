@@ -8,6 +8,7 @@ rootProject.name = "ams"
 include(
     "common",
     "common-test",
+    "common-telemetry",
     "graphql", // just for nice ico
     "gateway", // just for nice ico
     "gateway:gateway-service",
@@ -31,7 +32,6 @@ dependencyResolutionManagement {
 pluginManagement {
     val kotlinVersion: String by settings
     val springBootVersion: String by settings
-    val springDependencyManagementVersion: String by settings
     val foojayResolverConventionVersion: String by settings
 
     plugins {
@@ -41,6 +41,5 @@ pluginManagement {
         id("org.gradle.toolchains.foojay-resolver-convention") version foojayResolverConventionVersion
 
         id("org.springframework.boot") version springBootVersion
-        id("io.spring.dependency-management") version springDependencyManagementVersion
     }
 }

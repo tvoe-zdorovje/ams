@@ -1,0 +1,17 @@
+prometheus.exporter.self "alloy" {
+}
+
+discovery.relabel "alloy" {
+  targets = prometheus.exporter.self.alloy.targets
+  rule {
+    target_label = "application"
+    replacement  = "alloy"
+  }
+}
+
+prometheus.scrape "alloy" {
+  targets    = discovery.relabel.alloy.output
+  forward_to = [prometheus.remote_write.default.receiver]
+  scrape_interval   = sys.env("SCRAPE_INTERVAL")
+  scrape_timeout    = sys.env("SCRAPE_TIMEOUT")
+}

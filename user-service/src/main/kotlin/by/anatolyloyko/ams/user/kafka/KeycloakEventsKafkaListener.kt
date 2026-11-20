@@ -4,6 +4,8 @@ import by.anatolyloyko.ams.common.infrastructure.logging.log
 import by.anatolyloyko.ams.user.action.CreateUserAction
 import by.anatolyloyko.ams.user.model.User
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.annotation.KafkaListener
@@ -27,6 +29,7 @@ class KeycloakEventsKafkaListener(
     private var nackCooldown: Duration = Duration.ZERO
 
     @KafkaListener(topics = ["\${ams.kafka.topic.keycloak-events.name}"])
+    @WithSpan(kind = SpanKind.CONSUMER)
     fun onKeycloakEvent(
         record: ConsumerRecord<String, String>,
         acknowledgment: Acknowledgment

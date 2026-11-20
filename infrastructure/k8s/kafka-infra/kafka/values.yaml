@@ -40,7 +40,7 @@ kafka:
       - broker
     resources:
       requests:
-        cpu: 125m
+        cpu: 100m
         memory: 256Mi
     storage:
       type: persistent-claim

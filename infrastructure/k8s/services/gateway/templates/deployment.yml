@@ -22,6 +22,10 @@ spec:
       labels:
         {{- include "default.labels" . | indent 8 }}
       annotations:
+        {{- /* Spring Boot on port X; Router on port Y is scraped separately by Alloy */}}
+        {{- include "metrics.annotations" (dict "enabled" .Values.service.deployment.gateway.metrics.enabled "port" .Values.service.deployment.gateway.metrics.port "path" .Values.service.deployment.gateway.metrics.path) | nindent 8 }}
+        prometheus.io/router-port: {{ .Values.service.deployment.gateway.metrics.port | default "4000" | quote }}
+        prometheus.io/router-path: {{ .Values.service.deployment.gateway.metrics.path | default "/metrics" | quote }}
         {{- if .Values.service.cm }}
         checksum/gateway-config: {{ include (print $.Template.BasePath "/configmap-gateway-env.yml") . | sha256sum }}
         checksum/router-config: {{ include (print $.Template.BasePath "/configmap-router-env.yml") . | sha256sum }}

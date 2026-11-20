@@ -3,14 +3,13 @@ import by.anatolyloyko.ams.tasks.GenerateDatabaseSchemasTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "0.1.2"
+version = "0.1.3"
 
 plugins {
     kotlin("jvm")
     kotlin("plugin.spring")
 
     id("org.springframework.boot")
-    id("io.spring.dependency-management")
 
     war
 }
@@ -23,6 +22,7 @@ kotlin {
 
 dependencies {
     implementation(project(":common"))
+    implementation(project(":common-telemetry"))
 
     implementation("org.springframework.kafka:spring-kafka")
 

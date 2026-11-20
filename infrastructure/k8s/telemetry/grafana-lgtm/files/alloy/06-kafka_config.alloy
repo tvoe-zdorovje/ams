@@ -1,0 +1,23 @@
+prometheus.exporter.kafka "kafka" {
+  kafka_uris = [sys.env("KAFKA_BOOTSTRAP_SERVERS")]
+
+  instance = "kafka-cluster"
+}
+
+discovery.relabel "kafka_targets" {
+  targets = prometheus.exporter.kafka.kafka.targets
+
+  rule {
+    target_label = "application"
+    replacement = "kafka"
+  }
+}
+
+prometheus.scrape "kafka" {
+  targets         = discovery.relabel.kafka_targets.output
+  forward_to      = [prometheus.remote_write.default.receiver]
+  job_name        = "kafka"
+  scrape_interval = sys.env("SCRAPE_INTERVAL")
+  scrape_timeout  = sys.env("SCRAPE_TIMEOUT")
+  honor_labels    = true
+}

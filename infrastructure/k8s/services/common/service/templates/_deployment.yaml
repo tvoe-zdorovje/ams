@@ -23,6 +23,7 @@ spec:
       labels:
         {{- include "default.labels" . | indent 8 }}
       annotations:
+        {{- include "metrics.annotations" (dict "enabled" .Values.service.deployment.metrics.enabled "port" .Values.service.deployment.metrics.port "path" .Values.service.deployment.metrics.path) | nindent 8 }}
         {{- if .Values.service.cm }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap-env.yml") . | sha256sum }}
         {{- end }}

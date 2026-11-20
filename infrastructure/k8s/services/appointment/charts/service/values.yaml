@@ -10,17 +10,17 @@ service:
     replicas: 1
     resources:
       requests:
-        cpu: 500m
-        memory: 888Mi
+        cpu: 100m
+        memory: 512Mi
       limits:
-        memory: 888Mi
+        memory: 700Mi
 
     readinessProbe:
       httpGet:
         path: /actuator/health/readiness
         port: 8080
       initialDelaySeconds: 30
-      periodSeconds: 15
+      periodSeconds: 60
       failureThreshold: 3
       successThreshold: 1
 
@@ -29,7 +29,7 @@ service:
         path: /actuator/health/liveness
         port: 8080
       initialDelaySeconds: 30
-      periodSeconds: 15
+      periodSeconds: 60
       failureThreshold: 3
       successThreshold: 1
 
@@ -40,6 +40,10 @@ service:
       initialDelaySeconds: 60
       periodSeconds: 15
       successThreshold: 1
+
+    metrics:
+      port: 8080
+      path: /actuator/prometheus
 
   service:
     type: ClusterIP
@@ -57,9 +61,11 @@ service:
       SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 15000
       SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER: 1.2
       SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 1000
-      SPRING_CLOUD_CONFIG_LABEL: master
+      SPRING_CLOUD_CONFIG_LABEL: MALT-6856254
 
       JWKS_URI: "http://auth-service:8080/.well-known/jwks"
+
+      ALLOY_OTPL_ENDPOINT: "http://lgtm-alloy.telemetry.svc.cluster.local:4317"
 # stored in secrets
 #      DBHOST: appointment_db
 #      DBPORT: 5432

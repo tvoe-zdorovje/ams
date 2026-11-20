@@ -19,7 +19,7 @@ CLUSTER_NAME="ams"
 echo "=== 👨🏻‍🔧 Starting Kubernetes cluster 🆕 ==="
 
 if ! minikube status >/dev/null 2>&1; then
-  minikube start --cpus=6 --memory=12g
+  minikube start --cpus=4 --memory=12g
 else
   echo "Minikube already running"
 fi
@@ -324,10 +324,33 @@ helm install "$RELEASE_NAME" . -n "$NAMESPACE" --timeout 30m
 
 cd "$SCRIPT_DIR"
 
+# === TELEMETRY ===
+
+echo ""
+echo "=== 📥 Creating [telemetry] namespace ==="
+
+NAMESPACE="telemetry"
+
+if ! kubectl get namespace "$NAMESPACE" >/dev/null 2>&1; then
+  echo "Creating namespace: $NAMESPACE"
+  kubectl create namespace "$NAMESPACE"
+else
+  echo "Namespace already exists: $NAMESPACE"
+fi
+
+echo ""
+echo "== 📥 Install [ Grafana LGTM ] Service =="
+
+cd "$INF_DIR/../telemetry/grafana-lgtm"
+helm dependency update
+helm install "lgtm" . -n "$NAMESPACE"
+
+cd "$SCRIPT_DIR"
+
 echo ""
 echo "=== 🧑🏻‍🔧💬 Cluster bootstrap finished ==="
 
 kubectl get pods -A
 
-# kubectl port-forward pod/user-service-postgresql-0 5432:5432 -n services
+# kubectl port-forward pod/studio-service-6448d9c854-bjcw8 8080:8080 -n services
 

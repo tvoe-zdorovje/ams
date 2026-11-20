@@ -3,6 +3,8 @@ package by.anatolyloyko.ams.brand.kafka
 import by.anatolyloyko.ams.brand.kafka.schema.BrandEvent
 import by.anatolyloyko.ams.brand.kafka.schema.EventType
 import by.anatolyloyko.ams.brand.model.Brand
+import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
@@ -25,6 +27,7 @@ class KafkaProducer(
      * @param brand the brand data.
      * @param ownerUserId identifier of a logged user. This user is considered the owner of the brand is created.
      */
+    @WithSpan(kind = SpanKind.PRODUCER)
     fun sendBrandCreated(brand: Brand, ownerUserId: Long): Long {
         val id = requireNotNull(brand.id)
         val data = BrandEvent(id, ownerUserId, EventType.CREATED)

@@ -4,6 +4,8 @@ import by.anatolyloyko.ams.administration.infrastructure.kafka.MyKafkaListener
 import by.anatolyloyko.ams.administration.studio.action.CreateStudioAction
 import by.anatolyloyko.ams.studio.kafka.schema.EventType
 import by.anatolyloyko.ams.studio.kafka.schema.StudioEvent
+import io.opentelemetry.api.trace.SpanKind
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.kafka.support.KafkaHeaders
@@ -15,6 +17,7 @@ class StudioKafkaListener(
     private val createStudioAction: CreateStudioAction
 ) : MyKafkaListener<StudioEvent>() {
     @KafkaListener(topics = ["\${ams.kafka.topic.studio.name}"])
+    @WithSpan(kind = SpanKind.CONSUMER)
     fun onStudioEvent(
         event: StudioEvent,
         @Header(KafkaHeaders.RECEIVED_KEY) key: String,

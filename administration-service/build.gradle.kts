@@ -3,14 +3,13 @@ import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 group = "by.anatolyloyko.ams"
-version = "0.1.2"
+version = "0.1.3"
 
 plugins {
     kotlin("jvm")
     kotlin("plugin.spring")
 
     id("org.springframework.boot")
-    id("io.spring.dependency-management")
 
     id("com.github.davidmc24.gradle.plugin.avro") version "1.9.1"
 
@@ -29,6 +28,7 @@ dependencies {
     implementation(project(":common")) {
         exclude(group = "org.jetbrains.exposed")
     }
+    implementation(project(":common-telemetry"))
     implementation("org.springframework.kafka:spring-kafka")
     implementation(group = "io.confluent", name = "kafka-avro-serializer", version = confluentVersion)
     implementation(group = "org.apache.avro", name = "avro", version = apacheAvroVersion)
